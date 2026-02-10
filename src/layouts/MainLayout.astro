@@ -1,0 +1,35 @@
+---
+import '../styles/global.css';
+const { title } = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{title}</title>
+	</head>
+	<body class="bg-black text-white antialiased">
+		<nav style="position: fixed; top: 0; left: 0; width: 100%; height: 80px; background-color: black; border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 1000; display: flex; align-items: center;">
+            <div style="width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 50px; display: flex; justify-content: space-between; align-items: center;">
+                
+                <a href="/" style="text-decoration: none; color: inherit; transition: opacity 0.2s ease;">
+                    <div style="font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; font-size: 24px; color: white;">
+                        EVAN <span style="color: var(--accent);">ELISE</span>
+                    </div>
+                </a>
+
+                <a href="/" style="text-decoration: none;">
+                    <div style="background-color: var(--accent); color: black; padding: 8px 20px; border-radius: 99px; font-weight: 900; text-transform: uppercase; font-size: 12px; letter-spacing: 0.1em; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        Home
+                    </div>
+                </a>
+
+            </div>
+        </nav>
+
+		<main>
+			<slot /> 
+		</main>
+	</body>
+</html>
