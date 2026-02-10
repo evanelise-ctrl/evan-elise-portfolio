@@ -4,7 +4,17 @@ import MainLayout from '../layouts/MainLayout.astro';
 
 <MainLayout title="Evan Elise | Creative Portfolio">
   <div class="fixed inset-0 z-0 h-screen w-screen overflow-hidden">
-    <video id="scroll-video" muted playsinline preload="auto" class="w-full h-full object-cover grayscale opacity-40">
+    <video 
+      id="scroll-video" 
+      muted 
+      autoplay 
+      loop 
+      playsinline 
+      webkit-playsinline
+      poster="/drone-poster.png"
+      preload="auto" 
+      class="w-full h-full object-cover grayscale opacity-40"
+    >
       <source src="/drone-road.mp4" type="video/mp4" />
     </video>
     <div class="absolute inset-0 bg-neutral-950/50"></div>
@@ -79,15 +89,15 @@ import MainLayout from '../layouts/MainLayout.astro';
   const heroPin = document.getElementById('hero-pin');
   const heroTrack = document.getElementById('hero-track');
   
-  // Expanded list to show off your full range of expertise
   const words = [
     "Videography", 
-    "Direction", 
+    "Creative Direction", 
     "Photography", 
-    "Strategy", 
+    "Brand Strategy", 
     "Design", 
     "Multimedia", 
     "Storytelling", 
+    "Development"
   ];
   
   let targetTime = 0;
@@ -104,7 +114,6 @@ import MainLayout from '../layouts/MainLayout.astro';
       targetTime = video.duration * (scrollPos / totalDocHeight);
     }
 
-    // Swapping words every 300px to keep the energy high with the longer list
     const wordIndex = Math.floor(scrollPos / 300) % words.length;
     
     if (evolvingText && wordIndex !== lastWordIndex) {
