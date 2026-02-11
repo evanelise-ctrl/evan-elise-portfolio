@@ -40,86 +40,86 @@ import MainLayout from '../layouts/MainLayout.astro';
     </section>
 
 <section id="featured-work" style="position: relative; z-index: 50; min-height: 100vh; background-color: black; padding: 100px 8%; border-top: 1px solid rgba(255,255,255,0.1);">
-  <h2 style="font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4); margin-bottom: 60px;">Featured Work</h2>
+      <h2 style="font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4); margin-bottom: 60px;">Featured Work</h2>
+  
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: clamp(24px, 5vw, 60px); max-width: 1600px; margin: 0 auto;">
+    
+        <a href="/cisco-spaces" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
+          <div class="group" style="cursor: pointer;">
+            <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative;">
+              <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-80" style="transition: opacity 0.5s ease;">
+                <source src="/spaces-launch.mp4" type="video/mp4" />
+              </video>
+              <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
+            </div>
+            <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Cisco Spaces</h3>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Creative Producer • Digital Strategy</p>
+          </div>
+        </a>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: clamp(24px, 5vw, 60px); max-width: 1600px; margin: 0 auto;">
+        <a href="/cisco-secure" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
+          <div class="group" style="cursor: pointer;">
+            <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative;">
+              <iframe 
+                src="https://player.vimeo.com/video/1164128684?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1" 
+                frameborder="0" 
+                allow="autoplay; fullscreen; picture-in-picture" 
+                style="position:absolute;top:0;left:0;width:100%;height:100%; pointer-events: none;" 
+                title="Cisco Secure Preview">
+              </iframe>
+              <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
+            </div>
+            <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Cisco Secure</h3>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Creative Lead • Brand Integration</p>
+          </div>
+        </a>
 
-    <a href="/cisco-spaces" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
-      <div class="group" style="cursor: pointer;">
-        <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative;">
-          <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-80" style="transition: opacity 0.5s ease;">
-            <source src="/spaces-launch.mp4" type="video/mp4" />
-          </video>
-          <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
-        </div>
-        <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Cisco Spaces</h3>
-        <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Creative Producer • Digital Strategy</p>
+        <a href="/bedrock-lifestyle" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
+          <div class="group" style="cursor: pointer;">
+            <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
+              <img src="/lifestyle-brakeman-3.webp" alt="Bedrock Lifestyle" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
+              <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
+            </div>
+            <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Urban Lifestyle & Identity</h3>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Bedrock Detroit • Editorial Strategy</p>
+          </div>
+        </a>
+
+        <a href="/bedrock-experiential" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
+          <div class="group" style="cursor: pointer;">
+            <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
+              <img src="/bedrock-qline.png" alt="Bedrock Experiential" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
+              <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
+            </div>
+            <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Experiential & Destination</h3>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Bedrock Detroit • Public Engagement</p>
+          </div>
+        </a>
+
+        <a href="/bedrock-culture" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
+          <div class="group" style="cursor: pointer;">
+            <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
+              <img src="/bedrock-culture-1.png" alt="Bedrock Culture" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
+              <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
+            </div>
+            <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Brand Culture & Advocacy</h3>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Bedrock Detroit • Talent Strategy</p>
+          </div>
+        </a>
+
+        <a href="/e3-refillery" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
+          <div class="group" style="cursor: pointer;">
+            <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
+              <img src="/e3-hero.png" alt="e3 Refillery Branding" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
+              <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
+            </div>
+            <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">e3 Refillery</h3>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Design • Development • Brand Strategy</p>
+          </div>
+        </a>
+
       </div>
-    </a>
-
-    <a href="/cisco-secure" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
-      <div class="group" style="cursor: pointer;">
-        <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative;">
-          <iframe 
-            src="https://player.vimeo.com/video/1164128684?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1" 
-            frameborder="0" 
-            allow="autoplay; fullscreen; picture-in-picture" 
-            style="position:absolute;top:0;left:0;width:100%;height:100%; pointer-events: none;" 
-            title="Cisco Secure Preview">
-          </iframe>
-          <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
-        </div>
-        <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Cisco Secure</h3>
-        <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Creative Lead • Brand Integration</p>
-      </div>
-    </a>
-
-    <a href="/bedrock-lifestyle" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
-      <div class="group" style="cursor: pointer;">
-        <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
-          <img src="/residential-hero.png" alt="Bedrock Lifestyle" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
-          <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
-        </div>
-        <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Urban Lifestyle & Identity</h3>
-        <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Bedrock Detroit • Editorial Strategy</p>
-      </div>
-    </a>
-
-    <a href="/bedrock-experiential" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
-      <div class="group" style="cursor: pointer;">
-        <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
-          <img src="/monroe-hero.png" alt="Bedrock Experiential" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
-          <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
-        </div>
-        <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Experiential & Destination</h3>
-        <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Bedrock Detroit • Public Engagement</p>
-      </div>
-    </a>
-
-    <a href="/bedrock-culture" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
-      <div class="group" style="cursor: pointer;">
-        <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
-          <img src="/culture-hero.png" alt="Bedrock Culture" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
-          <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
-        </div>
-        <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Brand Culture & Advocacy</h3>
-        <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Bedrock Detroit • Talent Strategy</p>
-      </div>
-    </a>
-
-    <a href="/e3-refillery" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
-      <div class="group" style="cursor: pointer;">
-        <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
-          <img src="/e3-hero.png" alt="e3 Refillery Branding" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
-          <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
-        </div>
-        <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">e3 Refillery</h3>
-        <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 8px; font-weight: 700;">Design • Development • Brand Strategy</p>
-      </div>
-    </a>
-
-  </div>
-</section>
+    </section>
   </main>
 </MainLayout>
 
