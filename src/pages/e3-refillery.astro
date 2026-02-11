@@ -67,10 +67,17 @@ import MainLayout from '../layouts/MainLayout.astro';
             <p class="text-[9px] text-white/30 uppercase tracking-widest text-center">Visual Systems</p>
           </div>
 
-          <div class="flex-1 min-w-[300px] space-y-6">
+            <div class="flex-1 min-w-[300px] space-y-6">
             <div class="rounded-lg overflow-hidden bg-neutral-900 shadow-xl border border-white/5">
-              <video autoplay muted loop playsinline class="w-full h-auto block pointer-events-none">
-                <source src="/e3-web-preview.mov" type="video/quicktime" />
+              <video 
+                autoplay 
+                muted 
+                loop 
+                playsinline 
+                preload="auto" 
+                class="w-full h-auto block pointer-events-none"
+              >
+                <source src="/e3-web-preview.mp4" type="video/mp4" />
               </video>
             </div>
             <p class="text-[9px] text-white/30 uppercase tracking-widest text-center">Web Interaction</p>
