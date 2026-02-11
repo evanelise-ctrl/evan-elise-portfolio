@@ -29,7 +29,7 @@ import MainLayout from '../layouts/MainLayout.astro';
                     Senior Creative Leader
                 </span>
                 
-                <h1 style="font-size: clamp(4rem, 10vw, 9rem); font-weight: 900; text-transform: uppercase; line-height: 0.8; letter-spacing: -0.05em; color: white; margin: 0;">
+                <h1 style="font-size: clamp(2.5rem, 8vw, 9rem); font-weight: 900; text-transform: uppercase; line-height: 0.9; letter-spacing: -0.05em; color: white; margin: 0;">
                   Scaling <br/> 
                   <span class="text-glow" style="color: var(--accent); font-style: italic;">Brands</span> <br/>
                   Through <br/>
@@ -46,19 +46,7 @@ import MainLayout from '../layouts/MainLayout.astro';
     
         <a href="/cisco-spaces" style="text-decoration: none; color: inherit; display: block;">
           <div class="group" style="cursor: pointer;">
-            <div style="
-              aspect-ratio: 16/9; 
-              border-radius: 24px; 
-              border: 1px solid rgba(255,255,255,0.1); 
-              background-image: url('/spaces-thumb.png'); 
-              background-size: cover; 
-              background-position: center;
-              transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-              overflow: hidden;
-            " 
-            onmouseover="this.style.borderColor='var(--accent)'; this.style.transform='scale(1.02)';" 
-            onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.transform='scale(1)';"
-            >
+            <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); background-image: url('/spaces-thumb.png'); background-size: cover; background-position: center; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden;" onmouseover="this.style.borderColor='var(--accent)'; this.style.transform='scale(1.02)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.transform='scale(1)';">
               <div style="width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3));"></div>
             </div>
             <h3 style="margin-top: 24px; font-size: 24px; font-weight: 700; text-transform: uppercase;">Cisco Spaces</h3>
@@ -89,14 +77,16 @@ import MainLayout from '../layouts/MainLayout.astro';
   const heroPin = document.getElementById('hero-pin');
   const heroTrack = document.getElementById('hero-track');
   
+  // Single words as requested
   const words = [
-    "Video", 
+    "Videography", 
     "Direction", 
-    "Photo", 
+    "Photography", 
     "Strategy", 
     "Design", 
     "Multimedia", 
     "Storytelling", 
+    "Development"
   ];
   
   let targetTime = 0;
