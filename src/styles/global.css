@@ -1,4 +1,19 @@
-/* Add to global.css */
+html {
+  scroll-behavior: smooth;
+}
+
+:root {
+  --accent: #ff0080;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}/* Add to global.css */
 html, body {
   margin: 0;
   padding: 0;
