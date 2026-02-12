@@ -48,11 +48,14 @@ import MainLayout from '../layouts/MainLayout.astro';
       </div>
     </header>
 
-    <section class="px-[10%] mb-32 flex flex-col gap-24">
-        <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4);">01 / Residential Identity & Marketing</h2>
+    <section class="px-[10%] mb-32">
+        <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4); margin-bottom: 40px;">01 / Residential Identity & Marketing</h2>
         
-        <div class="asset-trigger group cursor-pointer rounded-xl overflow-hidden bg-neutral-900 shadow-2xl relative w-full aspect-video" data-type="video" data-src="/residential-walkthrough-press321.mp4">
-          <video autoplay muted loop playsinline class="w-full h-full object-cover block">
+        <div class="asset-trigger group cursor-pointer rounded-xl overflow-hidden bg-neutral-900 shadow-2xl relative w-full mb-32" 
+             style="padding-top: 56.25%;" 
+             data-type="video" 
+             data-src="/residential-walkthrough-press321.mp4">
+          <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover block">
             <source src="/residential-walkthrough-press321.mp4" type="video/mp4" />
           </video>
           <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center text-[10px] uppercase font-bold opacity-0 group-hover:opacity-100 tracking-widest">Expand View</div>
