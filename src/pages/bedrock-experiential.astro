@@ -48,15 +48,15 @@ import MainLayout from '../layouts/MainLayout.astro';
       </div>
     </header>
 
-    <section class="px-[10%] mb-32">
-        <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4); margin-bottom: 40px;">01 / Placemaking & Activation</h2>
+    <section class="px-[10%] mb-32 flex flex-col gap-32">
+        <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4);">01 / Placemaking & Activation</h2>
         
-        <div class="asset-trigger group cursor-pointer rounded-xl overflow-hidden bg-neutral-900 shadow-2xl w-full mb-32" 
+        <div class="asset-trigger group cursor-pointer rounded-xl overflow-hidden shadow-2xl w-full" 
              style="padding-top: 56.25%; position: relative;" 
              data-type="video" 
              data-src="/experiential-hero-spacemakers.mp4">
              
-             <video autoplay muted loop playsinline class="absolute top-0 left-0 w-full h-full object-cover">
+             <video autoplay muted loop playsinline webkit-playsinline preload="auto" class="absolute top-0 left-0 w-full h-full object-cover z-0">
                 <source src="/experiential-hero-spacemakers.mp4" type="video/mp4" />
              </video>
              
