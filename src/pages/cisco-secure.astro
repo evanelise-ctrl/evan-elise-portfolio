@@ -48,23 +48,22 @@ import MainLayout from '../layouts/MainLayout.astro';
       </div>
     </header>
 
-    <div id="video-lightbox" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-12">
-      <button id="close-lightbox" class="absolute top-8 right-8 text-white/50 hover:text-white text-4xl font-light transition-colors" style="background: none; border: none; cursor: pointer;">&times;</button>
-      <div class="w-full max-w-5xl aspect-[4/3] bg-neutral-900 rounded-lg overflow-hidden shadow-2xl">
-        <iframe id="lightbox-iframe" class="w-full h-full" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+    <div id="universal-lightbox" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md p-4 md:p-12">
+      <button id="close-lightbox" class="absolute top-8 right-8 text-white/50 hover:text-white text-4xl font-light z-[110]" style="background:none; border:none; cursor:pointer;">&times;</button>
+      <div class="w-full max-w-5xl shadow-2xl relative">
+        <div id="lightbox-vimeo-container" class="hidden aspect-[4/3]">
+          <iframe id="lightbox-iframe" class="w-full h-full rounded-lg" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+        </div>
+        <img id="lightbox-img" class="hidden w-full h-auto max-h-[85vh] object-contain rounded-lg" src="" alt="Expanded View" />
+        <video id="lightbox-video" class="hidden w-full h-auto max-h-[85vh] rounded-lg" controls autoplay><source src="" type="video/mp4" /></video>
       </div>
     </div>
 
     <section class="px-[10%] mb-32">
         <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4); margin-bottom: 40px;">01 / Global Education Strategy</h2>
-        <div class="video-trigger group cursor-pointer rounded-xl overflow-hidden bg-neutral-900 shadow-2xl" data-vimeo-id="1164128684" style="padding-top: 75%; position: relative; width: 100%;">
-          <iframe 
-            src="https://player.vimeo.com/video/1164128684?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1" 
-            frameborder="0" 
-            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;" 
-            title="secure-passwordless-full">
-          </iframe>
-          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+        <div class="asset-trigger group cursor-pointer rounded-xl overflow-hidden bg-neutral-900 shadow-2xl" data-type="vimeo" data-src="1164128684" style="padding-top: 75%; position: relative;">
+          <iframe src="https://player.vimeo.com/video/1164128684?background=1" frameborder="0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></iframe>
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center text-center">
             <div class="opacity-0 group-hover:opacity-100 transition-all bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 text-[10px] uppercase tracking-widest font-bold">Watch Full Film</div>
           </div>
         </div>
@@ -75,13 +74,8 @@ import MainLayout from '../layouts/MainLayout.astro';
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 48px;">
             
             <div class="space-y-4">
-                <div class="video-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg" data-vimeo-id="1164129116" style="padding-top: 75%; position: relative;">
-                    <iframe 
-                      src="https://player.vimeo.com/video/1164129116?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1" 
-                      frameborder="0" 
-                      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;" 
-                      title="secure-talos-ransomware">
-                    </iframe>
+                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg" data-type="vimeo" data-src="1164129116" style="padding-top: 75%; position: relative;">
+                    <iframe src="https://player.vimeo.com/video/1164129116?background=1" frameborder="0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></iframe>
                     <div class="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-all">
                         <svg class="w-12 h-12 text-white/50 opacity-0 group-hover:opacity-100 transition-all" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                     </div>
@@ -90,35 +84,36 @@ import MainLayout from '../layouts/MainLayout.astro';
             </div>
 
             <div class="space-y-4">
-                <div class="rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg">
+                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg" data-type="video" data-src="/secure-passwordless-webpage.mp4">
                     <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/secure-passwordless-webpage.mp4" type="video/mp4" /></video>
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center text-[8px] uppercase font-bold opacity-0 group-hover:opacity-100 tracking-widest">Expand View</div>
                 </div>
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Web & UX Implementation</p>
             </div>
 
             <div class="space-y-4">
-                <div class="rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg">
+                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg" data-type="image" data-src="/secure-cisco-live.gif">
                     <img src="/secure-cisco-live.gif" class="w-full h-auto block" alt="Cisco Live" />
                 </div>
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Event Field Production</p>
             </div>
 
             <div class="space-y-4">
-                <div class="rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg">
+                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg" data-type="image" data-src="/secure-next-bts-1.png">
                     <img src="/secure-next-bts-1.png" class="w-full h-auto block" alt="BTS" />
                 </div>
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Episodic Series Direction</p>
             </div>
 
             <div class="space-y-4">
-                <div class="rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg">
-                    <img src="/secure-bts-cisco-live.png" class="w-full h-auto block" alt="Cisco Live BTS" />
+                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg" data-type="image" data-src="/secure-bts-cisco-live.png">
+                    <img src="/secure-bts-cisco-live.png" class="w-full h-auto block" alt="Production BTS" />
                 </div>
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">On-Site Creative Lead</p>
             </div>
 
             <div class="space-y-4">
-                <div class="rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg">
+                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg" data-type="image" data-src="/secure-interview-framing.png">
                     <img src="/secure-interview-framing.png" class="w-full h-auto block" alt="Framing" />
                 </div>
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Interview & Advocacy Direction</p>
@@ -132,20 +127,39 @@ import MainLayout from '../layouts/MainLayout.astro';
          Back to Work
        </a>
     </footer>
-
   </main>
 </MainLayout>
 
 <script is:inline>
-  const triggers = document.querySelectorAll('.video-trigger');
-  const lightbox = document.getElementById('video-lightbox');
-  const iframe = document.getElementById('lightbox-iframe');
+  const triggers = document.querySelectorAll('.asset-trigger');
+  const lightbox = document.getElementById('universal-lightbox');
+  const lbIframeContainer = document.getElementById('lightbox-vimeo-container');
+  const lbIframe = document.getElementById('lightbox-iframe');
+  const lbImg = document.getElementById('lightbox-img');
+  const lbVideo = document.getElementById('lightbox-video');
   const closeBtn = document.getElementById('close-lightbox');
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
-      const vimeoId = trigger.getAttribute('data-vimeo-id');
-      iframe.src = `https://player.vimeo.com/video/${vimeoId}?autoplay=1&badge=0&autopause=0`;
+      const type = trigger.getAttribute('data-type');
+      const src = trigger.getAttribute('data-src');
+
+      lbIframeContainer.classList.add('hidden');
+      lbImg.classList.add('hidden');
+      lbVideo.classList.add('hidden');
+
+      if (type === 'vimeo') {
+        lbIframe.src = `https://player.vimeo.com/video/${src}?autoplay=1&muted=0&badge=0&autopause=0`;
+        lbIframeContainer.classList.remove('hidden');
+      } else if (type === 'image') {
+        lbImg.src = src;
+        lbImg.classList.remove('hidden');
+      } else if (type === 'video') {
+        lbVideo.querySelector('source').src = src;
+        lbVideo.load();
+        lbVideo.classList.remove('hidden');
+      }
+
       lightbox.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
     });
@@ -153,18 +167,24 @@ import MainLayout from '../layouts/MainLayout.astro';
 
   const closeLightbox = () => {
     lightbox.classList.add('hidden');
-    iframe.src = '';
+    lbIframe.src = '';
+    lbVideo.pause();
     document.body.style.overflow = '';
   };
 
   closeBtn.addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
 </script>
 
 <style>
   .text-glow {
     text-shadow: 0 0 50px rgba(255, 0, 128, 0.4);
+  }
+  .asset-trigger {
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+  .asset-trigger:hover {
+    transform: scale(1.02);
   }
 </style>
