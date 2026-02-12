@@ -117,19 +117,20 @@ import MainLayout from '../layouts/MainLayout.astro';
     </footer>
   </main>
 
-  <div id="universal-lightbox" class="fixed inset-0 z-[9999] hidden bg-black/90 backdrop-blur-xl transition-all duration-300">
-    <button id="close-lightbox" class="absolute top-10 right-10 text-white/40 hover:text-white text-6xl font-thin z-[10000]" style="background:none; border:none; cursor:pointer; line-height: 0.5;">&times;</button>
+  <div id="universal-lightbox" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); z-index: 99999;">
     
-    <div class="absolute inset-0 flex items-center justify-center p-4 md:p-12 pointer-events-none">
-      <div class="w-full max-w-5xl h-auto shadow-2xl pointer-events-auto">
+    <button id="close-lightbox" style="position: absolute; top: 30px; right: 40px; color: rgba(255,255,255,0.5); font-size: 60px; font-weight: 100; background: none; border: none; cursor: pointer; z-index: 100000; line-height: 0.5;">&times;</button>
+    
+    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 40px; pointer-events: none;">
+      <div style="width: 100%; max-width: 1200px; position: relative; pointer-events: auto;">
         
-        <div id="lightbox-vimeo-container" class="hidden relative w-full" style="padding-top: 75%;">
-          <iframe id="lightbox-iframe" class="absolute inset-0 w-full h-full rounded-xl" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+        <div id="lightbox-vimeo-container" style="display: none; width: 100%; padding-top: 56.25%; position: relative; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+          <iframe id="lightbox-iframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"></iframe>
         </div>
 
-        <img id="lightbox-img" class="hidden w-full h-auto max-h-[80vh] object-contain rounded-xl mx-auto" src="" />
+        <img id="lightbox-img" style="display: none; width: 100%; height: auto; max-height: 85vh; object-fit: contain; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);" src="" />
 
-        <video id="lightbox-video" class="hidden w-full h-auto max-h-[80vh] rounded-xl mx-auto" controls autoplay>
+        <video id="lightbox-video" style="display: none; width: 100%; height: auto; max-height: 85vh; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);" controls autoplay>
           <source src="" type="video/mp4" />
         </video>
 
@@ -152,33 +153,36 @@ import MainLayout from '../layouts/MainLayout.astro';
       const type = trigger.getAttribute('data-type');
       const src = trigger.getAttribute('data-src');
 
-      lbIframeContainer.classList.add('hidden');
-      lbImg.classList.add('hidden');
-      lbVideo.classList.add('hidden');
+      // 1. Reset all states using inline styles
+      lbIframeContainer.style.display = 'none';
+      lbImg.style.display = 'none';
+      lbVideo.style.display = 'none';
       lbIframe.src = '';
       lbVideo.pause();
 
       setTimeout(() => {
+        // 2. Load correct media
         if (type === 'vimeo') {
           lbIframe.src = `https://player.vimeo.com/video/${src}?autoplay=1&muted=0&badge=0`;
-          lbIframeContainer.classList.remove('hidden');
+          lbIframeContainer.style.display = 'block';
         } else if (type === 'image') {
           lbImg.src = src;
-          lbImg.classList.remove('hidden');
+          lbImg.style.display = 'block';
         } else if (type === 'video') {
           lbVideo.querySelector('source').src = src;
           lbVideo.load();
-          lbVideo.classList.remove('hidden');
+          lbVideo.style.display = 'block';
         }
 
-        lightbox.classList.remove('hidden');
+        // 3. Show Lightbox
+        lightbox.style.display = 'block';
         document.body.style.overflow = 'hidden';
       }, 10);
     });
   });
 
   const closeLightbox = () => {
-    lightbox.classList.add('hidden');
+    lightbox.style.display = 'none';
     lbIframe.src = '';
     lbVideo.pause();
     document.body.style.overflow = '';
@@ -186,7 +190,9 @@ import MainLayout from '../layouts/MainLayout.astro';
 
   closeBtn.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox || e.target.classList.contains('flex')) closeLightbox();
+    if (e.target === lightbox || e.target.classList.contains('flex')) {
+      closeLightbox();
+    }
   });
 </script>
 
