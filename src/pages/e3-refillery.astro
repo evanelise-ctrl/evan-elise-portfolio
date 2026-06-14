@@ -1,5 +1,8 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+
+// 👇 Swap in your real live site URL here. It feeds the button + the link by the video.
+const liveUrl = "https://your-e3-site-url.com";
 ---
 
 <MainLayout title="e3 Refillery | Evan Elise">
@@ -17,24 +20,29 @@ import MainLayout from '../layouts/MainLayout.astro';
           e3 <span class="italic text-glow" style="color: #ff0080;">Refillery</span>
         </h1>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 80px; margin-bottom: 100px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 80px; margin-bottom: 48px;">
           <p style="font-size: 1.5rem; line-height: 1.2; font-weight: 500; color: white;">
             Developing a sustainable digital ecosystem from the ground up. As the lead for both design and development, I am responsible for the brand's complete visual and technical identity.
           </p>
           <div style="color: rgba(255,255,255,0.5); font-size: 1.1rem; line-height: 1.6;">
             <p style="margin-bottom: 20px;">
-              This project involves translating core sustainability values into a functional web and mobile experience. I designed the brand identity in Figma and am currently developing the platform using Astro and Tailwind CSS.
+              This project involves translating core sustainability values into a functional web and mobile experience. I designed the brand identity in Figma and built the platform using Astro and Tailwind CSS.
             </p>
             <p>
-              By owning the entire pipeline—from logo creation to full-stack development—I ensure a level of brand consistency that bridges the gap between marketing and product engineering.
+              By owning the entire pipeline, from logo creation to full-stack development, I ensure a level of brand consistency that bridges the gap between marketing and product engineering.
             </p>
           </div>
         </div>
 
+        <a href={liveUrl} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 12px; background-color: var(--accent); color: black; padding: 16px 32px; border-radius: 99px; font-weight: 900; text-transform: uppercase; font-size: 12px; letter-spacing: 0.1em; text-decoration: none; transition: transform 0.3s; margin-bottom: 100px;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          Visit Live Site
+          <span style="font-size: 14px;">↗</span>
+        </a>
+
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; padding-top: 48px; border-top: 1px solid rgba(255,255,255,0.1); margin-bottom: 120px;">
           <div>
             <p style="color: rgba(255,255,255,0.3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Status</p>
-            <p style="font-size: 13px; font-weight: 700; text-transform: uppercase;">Active Development</p>
+            <p style="font-size: 13px; font-weight: 700; text-transform: uppercase;">Live</p>
           </div>
           <div>
             <p style="color: rgba(255,255,255,0.3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Tech Stack</p>
@@ -49,9 +57,16 @@ import MainLayout from '../layouts/MainLayout.astro';
     </header>
 
     <section class="px-[10%] mb-32">
-        <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4); margin-bottom: 40px;">01 / The Landing Page</h2>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 40px;">
+          <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4);">01 / The Live Experience</h2>
+          <a href={liveUrl} target="_blank" rel="noopener noreferrer" style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); text-decoration: none;">
+            Explore the site ↗
+          </a>
+        </div>
         <div class="rounded-xl overflow-hidden bg-neutral-900 shadow-2xl">
-           <img src="/e3-hero.png" class="w-full h-auto block" alt="e3 Refillery Landing Page Preview" />
+           <video autoplay muted loop playsinline class="w-full h-auto block">
+             <source src="/e3-web-full.mp4" type="video/mp4" />
+           </video>
         </div>
     </section>
 
@@ -80,6 +95,10 @@ import MainLayout from '../layouts/MainLayout.astro';
     </section>
 
     <footer class="px-[10%] py-20 border-t border-white/5 text-center">
+       <a href={liveUrl} target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-bottom: 24px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: var(--accent); text-decoration: none;">
+         Visit e3 Refillery ↗
+       </a>
+       <br/>
        <a href="/" class="text-[10px] uppercase tracking-[0.5em] text-white/30 hover:text-[var(--accent)] transition-all">
          Back to Index
        </a>
