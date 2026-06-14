@@ -124,27 +124,29 @@ import MainLayout from '../layouts/MainLayout.astro';
 </MainLayout>
 
 <script>
-  const video = document.getElementById('scroll-video');
+  const video = document.getElementById('scroll-video') as HTMLVideoElement | null;
   const evolvingText = document.getElementById('evolving-text');
   const heroPin = document.getElementById('hero-pin');
   const heroTrack = document.getElementById('hero-track');
-  
+
   const words = [
-    "Videography", 
-    "Direction", 
-    "Photography", 
-    "Strategy", 
-    "Design", 
-    "Multimedia", 
-    "Storytelling", 
+    "Videography",
+    "Direction",
+    "Photography",
+    "Strategy",
+    "Design",
+    "Multimedia",
+    "Storytelling",
     "Development"
   ];
-  
+
   let targetTime = 0;
   let currentTime = 0;
   let lastWordIndex = 0;
 
   window.addEventListener('scroll', () => {
+    if (!heroTrack || !heroPin) return;
+
     const scrollPos = window.scrollY;
     const windowHeight = window.innerHeight;
     const trackHeight = heroTrack.offsetHeight;
@@ -155,7 +157,7 @@ import MainLayout from '../layouts/MainLayout.astro';
     }
 
     const wordIndex = Math.floor(scrollPos / 300) % words.length;
-    
+
     if (evolvingText && wordIndex !== lastWordIndex) {
       lastWordIndex = wordIndex;
       evolvingText.style.opacity = "0";
