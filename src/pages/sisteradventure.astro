@@ -1,0 +1,527 @@
+---
+// Unlisted page: not linked from anywhere in the site and marked noindex,
+// so it's reachable only by direct link. Served at /sisteradventure
+// Fully self-contained on purpose, so it doesn't inherit the site nav/layout.
+// To make it match the rest of the site later, wrap the <body> content in MainLayout.
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Tour du Mont Blanc Itinerary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style is:global>
+  :root{
+    --paper:#E9EBE6;
+    --card:#F3F4F0;
+    --ink:#1E2D27;
+    --spruce:#2C4339;
+    --glacier:#5E8497;
+    --signal:#AE463C;
+    --stone:#777C72;
+    --line:#CCD1C9;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Newsreader",Georgia,serif;
+    font-size:17px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 28px 72px;}
+
+  /* ---- data/mono token ---- */
+  .mono{font-family:"Space Mono",ui-monospace,monospace;}
+  .eyebrow{
+    font-family:"Space Mono",monospace;
+    font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--glacier);
+  }
+
+  /* ---- header ---- */
+  header{position:relative;overflow:hidden;padding:64px 28px 40px;margin:0 -28px;}
+  .contour{position:absolute;inset:0;width:100%;height:100%;z-index:0;color:var(--spruce);opacity:.10;}
+  .contour svg{width:100%;height:100%;display:block;}
+  header > *{position:relative;z-index:1;}
+  h1{
+    font-family:"Bricolage Grotesque",sans-serif;
+    font-weight:700;
+    font-size:clamp(40px,8.5vw,76px);
+    line-height:.95;
+    letter-spacing:-.02em;
+    margin:14px 0 0;
+    color:var(--spruce);
+  }
+  h1 .small{display:block;font-size:.42em;font-weight:600;letter-spacing:-.01em;color:var(--ink);margin-top:.35em;}
+  .lede{
+    margin:18px 0 0;max-width:46ch;color:var(--ink);font-size:18px;
+  }
+  .lede em{color:var(--stone);font-style:italic;}
+
+  /* ---- stat strip ---- */
+  .stats{
+    display:flex;flex-wrap:wrap;gap:30px;margin-top:30px;
+    padding-top:22px;border-top:1px solid var(--line);
+  }
+  .stat .n{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:26px;color:var(--spruce);line-height:1;}
+  .stat .l{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin-top:7px;}
+
+  /* ---- country ribbon ---- */
+  .ribbon{display:flex;margin:26px 0 4px;border:1px solid var(--line);border-radius:2px;overflow:hidden;}
+  .leg{flex:1;padding:9px 12px;font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.1em;display:flex;justify-content:space-between;align-items:baseline;color:#fff;}
+  .leg small{opacity:.8;font-size:9.5px;letter-spacing:.08em;}
+  .leg.fr{background:var(--spruce);flex:2.1;}
+  .leg.it{background:var(--glacier);flex:2.4;}
+  .leg.ch{background:#4a6b5c;flex:3.1;}
+  .leg.fr2{background:var(--spruce);flex:1.1;}
+
+  /* ---- section heading ---- */
+  .sec{font-family:"Space Mono",monospace;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--signal);margin:54px 0 4px;}
+  .sec-rule{height:1px;background:var(--line);margin-bottom:18px;}
+
+  /* ---- trail spine ---- */
+  .trail{position:relative;margin-top:8px;}
+  .day{position:relative;display:grid;grid-template-columns:54px 1fr;column-gap:20px;padding:0 0 26px;}
+  .spinecol{position:relative;}
+  .spinecol::before{content:"";position:absolute;left:18px;top:6px;bottom:-26px;width:2px;background:var(--line);}
+  .day:last-of-type .spinecol::before{display:none;}
+  .node{
+    position:relative;z-index:1;width:38px;height:38px;border-radius:50%;
+    background:var(--spruce);color:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+    font-family:"Space Mono",monospace;font-weight:700;font-size:14px;
+  }
+  .node.rest{background:var(--paper);border:2px dashed var(--glacier);color:var(--glacier);font-size:8.5px;letter-spacing:.05em;}
+
+  .content{padding-top:1px;}
+  .date{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--stone);}
+  .route{font-size:20px;font-weight:500;line-height:1.25;margin:3px 0 0;color:var(--ink);}
+  .route .via{color:var(--stone);font-style:italic;font-weight:400;font-size:.82em;}
+  .row{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin-top:7px;}
+  .stay{font-size:15px;}
+  .stay b{font-weight:500;}
+  .stay .tag{font-family:"Space Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--glacier);border:1px solid var(--line);border-radius:2px;padding:1px 6px;margin-left:2px;vertical-align:1px;}
+  .metrics{margin-left:auto;display:flex;gap:13px;align-items:baseline;font-family:"Space Mono",monospace;white-space:nowrap;}
+  .dist{font-family:"Space Mono",monospace;font-size:12px;color:var(--spruce);white-space:nowrap;}
+  .up{font-size:12px;color:var(--glacier);}
+  .note{font-size:14.5px;color:var(--stone);margin:8px 0 0;max-width:62ch;}
+  .prox{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.06em;color:var(--glacier);margin:8px 0 0;display:flex;gap:7px;align-items:baseline;}
+  .prox::before{content:"";flex:0 0 auto;width:6px;height:6px;margin-top:4px;border:1.5px solid var(--glacier);border-radius:50%;}
+  .day.restday .route{color:var(--glacier);}
+
+  /* elevation infographic */
+  .chartwrap{margin-top:10px;overflow-x:auto;}
+  .chart{width:100%;min-width:620px;height:auto;display:block;}
+  .chart .bar{fill:var(--spruce);stroke:var(--paper);stroke-width:1.2;}
+  .chart .cap{stroke:var(--glacier);stroke-width:2.5;}
+  .chart .grid{stroke:var(--line);stroke-width:1;stroke-dasharray:2 5;}
+  .chart .axis{stroke:var(--stone);stroke-width:1.2;}
+  .chart .rest{stroke:var(--glacier);stroke-width:1;stroke-dasharray:2 3;}
+  .chart text{font-family:"Space Mono",monospace;}
+  .chart .glabel{fill:var(--spruce);font-size:9.5px;}
+  .chart .dnum{fill:var(--spruce);font-size:11px;font-weight:700;}
+  .chart .dmi{fill:var(--stone);font-size:8.5px;}
+  .chart .ylab{fill:var(--stone);font-size:9px;}
+  .chart .restlab{fill:var(--glacier);font-size:8px;letter-spacing:.14em;}
+  .chartcap{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.04em;color:var(--stone);margin:14px 0 0;line-height:1.65;}
+  .chartcap b{color:var(--spruce);font-weight:700;}
+
+  /* border crossing marker */
+  .cross{display:grid;grid-template-columns:54px 1fr;column-gap:20px;padding:0 0 26px;}
+  .cross .spinecol{position:relative;}
+  .cross .spinecol::before{content:"";position:absolute;left:18px;top:-6px;bottom:-26px;width:2px;background:var(--line);}
+  .cross .pin{position:relative;z-index:1;width:14px;height:14px;margin:8px 0 0 12px;background:var(--signal);transform:rotate(45deg);border-radius:2px;}
+  .cross .label{padding-top:4px;font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--signal);}
+  .cross .label small{display:block;color:var(--stone);letter-spacing:.06em;margin-top:2px;}
+
+  /* ---- booking tiers ---- */
+  .tier{background:var(--card);border-left:3px solid var(--line);border-radius:0 3px 3px 0;padding:16px 20px;margin-bottom:14px;}
+  .tier.t1{border-left-color:var(--signal);}
+  .tier.t2{border-left-color:var(--glacier);}
+  .tier.t3{border-left-color:var(--spruce);}
+  .tier h3{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:16px;margin:0;color:var(--ink);}
+  .tier .when{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--stone);margin:3px 0 10px;}
+  .tier ul{margin:0;padding:0;list-style:none;}
+  .tier li{font-size:15px;padding:3px 0;display:flex;justify-content:space-between;gap:14px;border-top:1px solid var(--line);}
+  .tier li:first-child{border-top:0;}
+  .tier li .d{font-family:"Space Mono",monospace;font-size:11px;color:var(--glacier);white-space:nowrap;}
+
+  /* ---- notes ---- */
+  .notes{columns:2;column-gap:36px;margin-top:6px;}
+  .notes p{break-inside:avoid;margin:0 0 14px;font-size:15px;color:var(--ink);}
+  .notes p b{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--signal);display:block;margin-bottom:2px;font-weight:700;}
+
+  footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.05em;color:var(--stone);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+
+  @media (max-width:640px){
+    body{font-size:16px;}
+    .notes{columns:1;}
+    .metrics{margin-left:0;}
+    .day,.cross{column-gap:14px;grid-template-columns:44px 1fr;}
+    .spinecol::before,.cross .spinecol::before{left:15px;}
+    .node{width:32px;height:32px;font-size:12px;}
+    .cross .pin{margin-left:9px;}
+  }
+  @media print{
+    body{background:#fff;}
+    header{margin:0;padding:30px 0 24px;}
+    .wrap{padding:0 0 20px;}
+    .contour{opacity:.08;}
+    .day,.cross,.tier{break-inside:avoid;}
+    .sec{margin-top:34px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="contour" aria-hidden="true">
+      <svg viewBox="0 0 880 360" preserveAspectRatio="xMidYMid slice" fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M-40 250 C 120 210 200 270 320 230 S 560 170 700 215 920 200 980 175"/>
+        <path d="M-40 290 C 130 250 210 312 330 268 S 580 205 720 252 930 236 1000 210"/>
+        <path d="M-40 210 C 110 175 195 228 300 192 S 540 138 680 178 900 165 970 142"/>
+        <path d="M-40 170 C 100 142 185 188 290 156 S 520 110 660 144 880 132 950 112"/>
+        <path d="M-40 332 C 140 292 220 352 345 305 S 600 240 740 290 950 274 1020 248"/>
+        <path d="M120 132 C 180 96 240 150 320 120 S 470 78 560 110" stroke-dasharray="2 7"/>
+      </svg>
+    </div>
+
+    <p class="eyebrow">Anti-clockwise · Self-guided · Summer 2027</p>
+    <h1>Tour du<br>Mont Blanc<span class="small">June 28 – July 9, 2027</span></h1>
+    <p class="lede">A full loop of the massif on foot, through France, Italy, and Switzerland. <em>Ten walking stages, two rest days, three border crossings on foot.</em></p>
+
+    <div class="stats">
+      <div class="stat"><div class="n">~102</div><div class="l">Miles</div></div>
+      <div class="stat"><div class="n">~34,000</div><div class="l">Feet climbed</div></div>
+      <div class="stat"><div class="n">10</div><div class="l">Hiking days</div></div>
+      <div class="stat"><div class="n">2</div><div class="l">Rest days</div></div>
+      <div class="stat"><div class="n">3</div><div class="l">Countries</div></div>
+    </div>
+
+    <div class="ribbon">
+      <span class="leg fr">FR <small>Houches→Seigne</small></span>
+      <span class="leg it">IT <small>Val Veny→Ferret</small></span>
+      <span class="leg ch">CH <small>Ferret→Balme</small></span>
+      <span class="leg fr2">FR <small>finish</small></span>
+    </div>
+  </header>
+
+  <p class="sec">The Route, Day by Day</p>
+  <div class="sec-rule"></div>
+
+  <div class="trail">
+
+    <div class="day">
+      <div class="spinecol"><div class="node">01</div></div>
+      <div class="content">
+        <div class="date">Mon · June 28</div>
+        <p class="route">Les Houches → Les Contamines <span class="via">via Col de Tricot</span></p>
+        <div class="row">
+          <span class="stay"><b>Chalet Hôtel Gai Soleil</b><span class="tag">B&amp;B</span></span>
+          <span class="metrics"><span class="dist">~10.5 mi</span><span class="up">↑ 4,400 ft</span></span>
+        </div>
+        <p class="prox">In Les Contamines, on the valley trail · about 5 min off route</p>
+        <p class="note">The harder, prettier opener under the Bionnassay glacier. Jacuzzi and sauna waiting at the end of the day.</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="spinecol"><div class="node">02</div></div>
+      <div class="content">
+        <div class="date">Tue · June 29</div>
+        <p class="route">Les Contamines → Les Chapieux <span class="via">via Col du Bonhomme</span></p>
+        <div class="row">
+          <span class="stay"><b>Auberge de la Nova</b><span class="tag">Gîte</span></span>
+          <span class="metrics"><span class="dist">~11 mi</span><span class="up">↑ 4,750 ft</span></span>
+        </div>
+        <p class="prox">In the Les Chapieux hamlet · directly on the trail</p>
+        <p class="note">A long climb over two cols into the quiet Beaufortain. Optional higher Col des Fours if the weather is clear.</p>
+      </div>
+    </div>
+
+    <div class="cross">
+      <div class="spinecol"><div class="pin"></div></div>
+      <div class="label">Enter Italy<small>Col de la Seigne · 8,255 ft</small></div>
+    </div>
+
+    <div class="day">
+      <div class="spinecol"><div class="node">03</div></div>
+      <div class="content">
+        <div class="date">Wed · June 30</div>
+        <p class="route">Les Chapieux → Rifugio Elisabetta <span class="via">via Col de la Seigne</span></p>
+        <div class="row">
+          <span class="stay"><b>Rifugio Elisabetta</b><span class="tag">Refuge</span></span>
+          <span class="metrics"><span class="dist">~9.5 mi</span><span class="up">↑ 3,300 ft</span></span>
+        </div>
+        <p class="prox">Directly on the trail, at the head of Val Veny</p>
+        <p class="note">Glacier-side hut at the head of Val Veny. Books out fast, so reserve the day the platform opens.</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="spinecol"><div class="node">04</div></div>
+      <div class="content">
+        <div class="date">Thu · July 1</div>
+        <p class="route">Rifugio Elisabetta → Courmayeur <span class="via">via Mont Favre balcony</span></p>
+        <div class="row">
+          <span class="stay"><b>Au Cœur Des Neiges</b><span class="tag">B&amp;B</span></span>
+          <span class="metrics"><span class="dist">~11 mi</span><span class="up">↑ 2,300 ft</span></span>
+        </div>
+        <p class="prox">Dolonne side of Courmayeur, where the trail comes in · ~5–10 min to the center</p>
+        <p class="note">Balcony views the whole way down, then a real town: shower, laundry, Italian dinner.</p>
+      </div>
+    </div>
+
+    <div class="day restday">
+      <div class="spinecol"><div class="node rest">REST</div></div>
+      <div class="content">
+        <div class="date">Fri · July 2</div>
+        <p class="route">Rest day in Courmayeur</p>
+        <div class="row">
+          <span class="stay"><b>Au Cœur Des Neiges</b> · heated pool &amp; spa</span>
+        </div>
+        <p class="note">Placed right after the toughest opening stretch. Book both nights as one reservation.</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="spinecol"><div class="node">06</div></div>
+      <div class="content">
+        <div class="date">Sat · July 3</div>
+        <p class="route">Courmayeur → Rifugio Bonatti <span class="via">via Mont de la Saxe</span></p>
+        <div class="row">
+          <span class="stay"><b>Rifugio Bonatti</b><span class="tag">Refuge</span></span>
+          <span class="metrics"><span class="dist">~8 mi</span><span class="up">↑ 4,300 ft</span></span>
+        </div>
+        <p class="prox">Directly on the trail · the balcony path continues from its door</p>
+        <p class="note">The best Grandes Jorasses views on the whole circuit. Short distance, big payoff. The other must-book hut.</p>
+      </div>
+    </div>
+
+    <div class="cross">
+      <div class="spinecol"><div class="pin"></div></div>
+      <div class="label">Enter Switzerland<small>Grand Col Ferret · 8,323 ft</small></div>
+    </div>
+
+    <div class="day">
+      <div class="spinecol"><div class="node">07</div></div>
+      <div class="content">
+        <div class="date">Sun · July 4</div>
+        <p class="route">Rifugio Bonatti → La Fouly <span class="via">via Grand Col Ferret</span></p>
+        <div class="row">
+          <span class="stay"><b>Gîte / hotel, La Fouly</b><span class="tag">Gîte</span></span>
+          <span class="metrics"><span class="dist">~12 mi</span><span class="up">↑ 2,450 ft</span></span>
+        </div>
+        <p class="prox">In La Fouly village · on the trail</p>
+        <p class="note">Cross the border at the col and drop into the Swiss Val Ferret. Longest day of the trip.</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="spinecol"><div class="node">08</div></div>
+      <div class="content">
+        <div class="date">Mon · July 5</div>
+        <p class="route">La Fouly → Champex-Lac</p>
+        <div class="row">
+          <span class="stay"><b>B&amp;B La Grange</b><span class="tag">B&amp;B</span></span>
+          <span class="metrics"><span class="dist">~9.5 mi</span><span class="up">↑ 1,650 ft</span></span>
+        </div>
+        <p class="prox">Steps from the trail at the Arpette / Bovine junction · ~1 km (20 min) past the lake</p>
+        <p class="note">Gentle valley walking to a little turquoise lake. La Grange is small and beloved, so email early.</p>
+      </div>
+    </div>
+
+    <div class="day restday">
+      <div class="spinecol"><div class="node rest">REST</div></div>
+      <div class="content">
+        <div class="date">Tue · July 6</div>
+        <p class="route">Rest day at Champex-Lac</p>
+        <div class="row">
+          <span class="stay"><b>B&amp;B La Grange</b> · lakeside</span>
+        </div>
+        <p class="note">Doubles as a weather buffer before tomorrow's high variant. Prettiest valley stop to linger in.</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="spinecol"><div class="node">10</div></div>
+      <div class="content">
+        <div class="date">Wed · July 7</div>
+        <p class="route">Champex-Lac → Trient <span class="via">via Fenêtre d'Arpette</span></p>
+        <div class="row">
+          <span class="stay"><b>Auberge du Mont-Blanc</b><span class="tag">Gîte</span></span>
+          <span class="metrics"><span class="dist">~9.5 mi</span><span class="up">↑ 3,950 ft</span></span>
+        </div>
+        <p class="prox">In Trient village · on the trail</p>
+        <p class="note">The trip's hardest variant: a boulder scramble to a notch facing the Trient glacier. Clear forecast only; otherwise take the Bovine route, same schedule.</p>
+      </div>
+    </div>
+
+    <div class="cross">
+      <div class="spinecol"><div class="pin"></div></div>
+      <div class="label">Enter France<small>Col de Balme · 7,188 ft</small></div>
+    </div>
+
+    <div class="day">
+      <div class="spinecol"><div class="node">11</div></div>
+      <div class="content">
+        <div class="date">Thu · July 8</div>
+        <p class="route">Trient → Tré-le-Champ <span class="via">via Col de Balme</span></p>
+        <div class="row">
+          <span class="stay"><b>Auberge La Boerne</b><span class="tag">Gîte</span></span>
+          <span class="metrics"><span class="dist">~8.5 mi</span><span class="up">↑ 3,100 ft</span></span>
+        </div>
+        <p class="prox">In Tré-le-Champ · directly on the trail, right where the ladders begin</p>
+        <p class="note">Back into France at the col, with the Mont Blanc massif filling the view ahead the whole descent.</p>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="spinecol"><div class="node">12</div></div>
+      <div class="content">
+        <div class="date">Fri · July 9</div>
+        <p class="route">Tré-le-Champ → Les Houches <span class="via">via Lac Blanc &amp; Grand Balcon Sud</span></p>
+        <div class="row">
+          <span class="stay"><b>Finish</b> · Chamonix valley</span>
+          <span class="metrics"><span class="dist">~12.5 mi</span><span class="up">↑ 4,400 ft</span></span>
+        </div>
+        <p class="note">The ladders, then Lac Blanc, then the grand balcony home. Longest, hardest day. A cable car down from La Flégère or Le Brévent shortens it if knees are done.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="sec">The Shape of the Trek</p>
+  <div class="sec-rule"></div>
+  <div class="chartwrap">
+    <svg class="chart" viewBox="0 0 840 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bar chart of the ten hiking stages. Each bar's width is its distance and its height is its elevation gain.">
+      <line class="grid" x1="40" y1="81" x2="800" y2="81"/>
+      <line class="grid" x1="40" y1="190.5" x2="800" y2="190.5"/>
+      <line class="axis" x1="40" y1="300" x2="800" y2="300"/>
+      <text class="ylab" x="36" y="84" text-anchor="end">4,000 ft</text>
+      <text class="ylab" x="36" y="193.5" text-anchor="end">2,000 ft</text>
+      <text class="ylab" x="36" y="303" text-anchor="end">0</text>
+
+      <rect class="bar" x="40.0" y="59.2" width="78.2" height="240.8"/>
+      <rect class="bar" x="118.2" y="40.0" width="82.0" height="260.0"/>
+      <rect class="bar" x="200.2" y="119.4" width="70.8" height="180.6"/>
+      <rect class="bar" x="271.0" y="174.1" width="82.0" height="125.9"/>
+      <rect class="bar" x="352.9" y="64.6" width="59.6" height="235.4"/>
+      <rect class="bar" x="412.5" y="165.9" width="89.4" height="134.1"/>
+      <rect class="bar" x="502.0" y="209.7" width="70.8" height="90.3"/>
+      <rect class="bar" x="572.7" y="83.8" width="70.8" height="216.2"/>
+      <rect class="bar" x="643.5" y="130.3" width="63.3" height="169.7"/>
+      <rect class="bar" x="706.9" y="59.2" width="93.1" height="240.8"/>
+
+      <line class="cap" x1="40.0" y1="59.2" x2="118.2" y2="59.2"/>
+      <line class="cap" x1="118.2" y1="40.0" x2="200.2" y2="40.0"/>
+      <line class="cap" x1="200.2" y1="119.4" x2="271.0" y2="119.4"/>
+      <line class="cap" x1="271.0" y1="174.1" x2="353.0" y2="174.1"/>
+      <line class="cap" x1="352.9" y1="64.6" x2="412.5" y2="64.6"/>
+      <line class="cap" x1="412.5" y1="165.9" x2="501.9" y2="165.9"/>
+      <line class="cap" x1="502.0" y1="209.7" x2="572.8" y2="209.7"/>
+      <line class="cap" x1="572.7" y1="83.8" x2="643.5" y2="83.8"/>
+      <line class="cap" x1="643.5" y1="130.3" x2="706.8" y2="130.3"/>
+      <line class="cap" x1="706.9" y1="59.2" x2="800.0" y2="59.2"/>
+
+      <text class="glabel" x="79.1" y="54.2" text-anchor="middle">4,400</text>
+      <text class="glabel" x="159.2" y="35.0" text-anchor="middle">4,750</text>
+      <text class="glabel" x="235.6" y="114.4" text-anchor="middle">3,300</text>
+      <text class="glabel" x="312.0" y="169.1" text-anchor="middle">2,300</text>
+      <text class="glabel" x="382.7" y="59.6" text-anchor="middle">4,300</text>
+      <text class="glabel" x="457.2" y="160.9" text-anchor="middle">2,450</text>
+      <text class="glabel" x="537.4" y="204.7" text-anchor="middle">1,650</text>
+      <text class="glabel" x="608.1" y="78.8" text-anchor="middle">3,950</text>
+      <text class="glabel" x="675.2" y="125.3" text-anchor="middle">3,100</text>
+      <text class="glabel" x="753.4" y="54.2" text-anchor="middle">4,400</text>
+
+      <text class="dnum" x="79.1" y="315" text-anchor="middle">01</text>
+      <text class="dmi" x="79.1" y="327" text-anchor="middle">10.5 mi</text>
+      <text class="dnum" x="159.2" y="315" text-anchor="middle">02</text>
+      <text class="dmi" x="159.2" y="327" text-anchor="middle">11 mi</text>
+      <text class="dnum" x="235.6" y="315" text-anchor="middle">03</text>
+      <text class="dmi" x="235.6" y="327" text-anchor="middle">9.5 mi</text>
+      <text class="dnum" x="312.0" y="315" text-anchor="middle">04</text>
+      <text class="dmi" x="312.0" y="327" text-anchor="middle">11 mi</text>
+      <text class="dnum" x="382.7" y="315" text-anchor="middle">06</text>
+      <text class="dmi" x="382.7" y="327" text-anchor="middle">8 mi</text>
+      <text class="dnum" x="457.2" y="315" text-anchor="middle">07</text>
+      <text class="dmi" x="457.2" y="327" text-anchor="middle">12 mi</text>
+      <text class="dnum" x="537.4" y="315" text-anchor="middle">08</text>
+      <text class="dmi" x="537.4" y="327" text-anchor="middle">9.5 mi</text>
+      <text class="dnum" x="608.1" y="315" text-anchor="middle">10</text>
+      <text class="dmi" x="608.1" y="327" text-anchor="middle">9.5 mi</text>
+      <text class="dnum" x="675.2" y="315" text-anchor="middle">11</text>
+      <text class="dmi" x="675.2" y="327" text-anchor="middle">8.5 mi</text>
+      <text class="dnum" x="753.4" y="315" text-anchor="middle">12</text>
+      <text class="dmi" x="753.4" y="327" text-anchor="middle">12.5 mi</text>
+
+      <line class="rest" x1="352.9" y1="27" x2="352.9" y2="58"/>
+      <text class="restlab" x="352.9" y="22" text-anchor="middle">REST</text>
+      <line class="rest" x1="572.7" y1="27" x2="572.7" y2="58"/>
+      <text class="restlab" x="572.7" y="22" text-anchor="middle">REST</text>
+    </svg>
+  </div>
+  <p class="chartcap"><b>Bar width</b> = stage distance &nbsp;·&nbsp; <b>Bar height</b> = elevation gain &nbsp;·&nbsp; rest days sit at the dashed markers. The two biggest climbs are Day 2 into the Bonhomme cols and Day 6 up to Rifugio Bonatti, which packs its gain into a short distance so it walks steeper than the mileage suggests.</p>
+
+  <p class="sec">Booking Priority</p>
+  <div class="sec-rule"></div>
+
+  <div class="tier t1">
+    <h3>Book first, the moment they open</h3>
+    <p class="when">Central platform (Mon Tour du Mont Blanc) · opens ~mid-October 2026</p>
+    <ul>
+      <li><span>Rifugio Elisabetta</span><span class="d">Jun 30</span></li>
+      <li><span>Rifugio Bonatti</span><span class="d">Jul 3</span></li>
+    </ul>
+  </div>
+
+  <div class="tier t2">
+    <h3>Book direct as soon as dates are firm</h3>
+    <p class="when">Own websites / email · don't wait for October</p>
+    <ul>
+      <li><span>Chalet Hôtel Gai Soleil · Les Contamines</span><span class="d">Jun 28</span></li>
+      <li><span>Au Cœur Des Neiges · Courmayeur (2 nights)</span><span class="d">Jul 1 – 2</span></li>
+      <li><span>B&amp;B La Grange · Champex-Lac (2 nights)</span><span class="d">Jul 5 – 6</span></li>
+    </ul>
+  </div>
+
+  <div class="tier t3">
+    <h3>Book by end of November 2026</h3>
+    <p class="when">Valley gîtes · comfortable, not competitive</p>
+    <ul>
+      <li><span>Auberge de la Nova · Les Chapieux</span><span class="d">Jun 29</span></li>
+      <li><span>Gîte / hotel · La Fouly</span><span class="d">Jul 4</span></li>
+      <li><span>Auberge du Mont-Blanc · Trient</span><span class="d">Jul 7</span></li>
+      <li><span>Auberge La Boerne · Tré-le-Champ</span><span class="d">Jul 8</span></li>
+    </ul>
+  </div>
+
+  <p class="sec">Good to Know</p>
+  <div class="sec-rule"></div>
+  <div class="notes">
+    <p><b>Cash</b>Carry roughly 50–70 € per night for refuges. There are no ATMs above the valley towns.</p>
+    <p><b>Sleeping liner</b>A sleeping bag liner is required at refuges and most gîtes. Blankets and pillows are provided.</p>
+    <p><b>Half board</b>Dinner and breakfast are standard at the huts and gîtes. Order a packed lunch the night before.</p>
+    <p><b>Weather call</b>Fenêtre d'Arpette and Col des Fours both need clear conditions. Each has a safer standard alternative that keeps the schedule intact.</p>
+    <p><b>The last day</b>If a gentler finish appeals more than the rest day, trade one rest day to sleep at the Lac Blanc refuge July 8 and split the long final stage.</p>
+    <p><b>Direction</b>Anti-clockwise puts the sun behind you on the big Italian and Swiss balcony stages and saves the Chamonix-side finale for last.</p>
+  </div>
+
+  <footer>
+    <span>Tour du Mont Blanc · 12 days · Evan &amp; sister</span>
+    <span>Distances &amp; elevation approximate · Prepared for summer 2027</span>
+  </footer>
+
+</div>
+</body>
+</html>
