@@ -208,6 +208,15 @@
   .phrases td:first-child{color:var(--stone);}
   .phrases em{color:var(--spruce);font-style:italic;}
   @media (max-width:640px){.packgrid{columns:1;}.phrases{font-size:13px;}}
+
+  @media (max-width:640px){
+    header{padding:44px 24px 30px;}
+    .lede{font-size:16.5px;}
+    .stats{gap:18px 24px;padding-top:18px;}
+    .stat .n{font-size:21px;}
+    .ribbon{flex-wrap:wrap;}
+    .ribbon .leg{flex:1 1 46%;min-width:46%;}
+  }
   @media print{
     body{background:#fff;}
     header{margin:0;padding:30px 0 24px;}
@@ -223,7 +232,7 @@
 
   <header>
     <div class="contour" aria-hidden="true">
-      <svg viewBox="0 0 880 360" preserveAspectRatio="xMidYMid slice" fill="none" stroke="currentColor" stroke-width="1.4">
+      <svg viewBox="0 0 880 360" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="1.4">
         <path d="M-40 250 C 120 210 200 270 320 230 S 560 170 700 215 920 200 980 175"/>
         <path d="M-40 290 C 130 250 210 312 330 268 S 580 205 720 252 930 236 1000 210"/>
         <path d="M-40 210 C 110 175 195 228 300 192 S 540 138 680 178 900 165 970 142"/>
@@ -581,7 +590,6 @@
     <tr><td>One more coffee, please</td><td><em>Encore un café, s'il vous plaît</em></td><td><em>Ancora un caffè, per favore</em></td></tr>
     <tr><td>Cheers!</td><td><em>Santé !</em></td><td><em>Salute!</em></td></tr>
   </table>
-  <p class="chartcap">And one for Erin: <b>On fait une rando samedi ?</b> (shall we hike Saturday?)</p>
 
   <dialog id="lodgeModal">
     <div class="modal-art" id="modalArt"></div>
