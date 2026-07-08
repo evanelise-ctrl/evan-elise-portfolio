@@ -2,7 +2,9 @@
 // Unlisted page: not linked from anywhere in the site and marked noindex,
 // so it's reachable only by direct link. Served at /sisteradventure
 // Fully self-contained on purpose, so it doesn't inherit the site nav/layout.
-// To make it match the rest of the site later, wrap the <body> content in MainLayout.
+// Interactive bits (lodging pop-ups, packing checklist, countdown) are plain
+// vanilla JS in the is:inline script at the bottom. Checklist saves to this
+// browser's localStorage under the key 'tmb-packing-v1'.
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +12,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Tour du Mont Blanc Itinerary</title>
+<title>Evan &amp; Erin · Tour du Mont Blanc</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -170,12 +172,48 @@
     .node{width:32px;height:32px;font-size:12px;}
     .cross .pin{margin-left:9px;}
   }
+
+  /* interactive lodging */
+  .hint{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.05em;color:var(--stone);margin:-8px 0 18px;}
+  .lodge{font:inherit;font-weight:500;color:var(--ink);background:none;border:none;padding:0 0 1px;cursor:pointer;border-bottom:1.5px dotted var(--glacier);transition:color .12s;}
+  .lodge:hover{color:var(--glacier);}
+  dialog#lodgeModal{border:none;border-radius:5px;padding:0;max-width:520px;width:calc(100% - 40px);background:var(--card);color:var(--ink);box-shadow:0 24px 60px rgba(30,45,39,.35);}
+  dialog#lodgeModal::backdrop{background:rgba(30,45,39,.55);}
+  .modal-art svg{display:block;width:100%;height:auto;}
+  .modal-body{padding:18px 24px 22px;}
+  .modal-body h3{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:23px;margin:0;color:var(--spruce);}
+  .modal-sub{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--glacier);margin:4px 0 12px;}
+  .modal-kv{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:14.5px;margin:0 0 12px;}
+  .modal-kv dt{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);padding-top:2px;}
+  .modal-kv dd{margin:0;}
+  .modal-blurb{font-size:15px;margin:0 0 6px;}
+  .modal-book{font-size:13.5px;color:var(--stone);margin:0 0 16px;}
+  .modal-actions{display:flex;gap:12px;align-items:center;}
+  .modal-actions a{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.05em;color:var(--paper);background:var(--spruce);text-decoration:none;padding:9px 14px;border-radius:3px;}
+  .modal-actions a:hover{background:var(--glacier);}
+  .modal-actions button{font-family:"Space Mono",monospace;font-size:12px;color:var(--stone);background:none;border:1px solid var(--line);border-radius:3px;padding:8px 14px;cursor:pointer;}
+  /* packing checklist */
+  .packgrid{columns:2;column-gap:36px;}
+  .pack{display:flex;gap:10px;align-items:baseline;break-inside:avoid;padding:4px 0;font-size:15px;cursor:pointer;}
+  .pack input{accent-color:var(--spruce);transform:translateY(1px);}
+  .pack.done span{color:var(--stone);text-decoration:line-through;text-decoration-color:var(--glacier);}
+  .packadd{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .packadd input{font-family:"Newsreader",serif;font-size:15px;padding:7px 10px;border:1px solid var(--line);border-radius:3px;background:var(--card);color:var(--ink);flex:1;min-width:180px;}
+  .packadd button{font-family:"Space Mono",monospace;font-size:11.5px;letter-spacing:.05em;padding:7px 14px;border:1px solid var(--line);border-radius:3px;background:var(--card);color:var(--spruce);cursor:pointer;}
+  .packadd button:hover{border-color:var(--glacier);color:var(--glacier);}
+  /* phrasebook */
+  .phrases{width:100%;border-collapse:collapse;font-size:14.5px;}
+  .phrases th{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--glacier);text-align:left;padding:6px 10px 6px 0;border-bottom:1px solid var(--line);}
+  .phrases td{padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top;}
+  .phrases td:first-child{color:var(--stone);}
+  .phrases em{color:var(--spruce);font-style:italic;}
+  @media (max-width:640px){.packgrid{columns:1;}.phrases{font-size:13px;}}
   @media print{
     body{background:#fff;}
     header{margin:0;padding:30px 0 24px;}
     .wrap{padding:0 0 20px;}
     .contour{opacity:.08;}
-    .day,.cross,.tier{break-inside:avoid;}
+    .day,.cross,.tier{break-inside:avoid;} dialog,.packadd,.hint{display:none;}
     .sec{margin-top:34px;}
   }
 </style>
@@ -195,9 +233,9 @@
       </svg>
     </div>
 
-    <p class="eyebrow">Anti-clockwise · Self-guided · Summer 2027</p>
+    <p class="eyebrow">Evan &amp; Erin · Anti-clockwise · Summer 2027</p>
     <h1>Tour du<br>Mont Blanc<span class="small">June 28 – July 9, 2027</span></h1>
-    <p class="lede">A full loop of the massif on foot, through France, Italy, and Switzerland. <em>Ten walking stages, two rest days, three border crossings on foot.</em></p>
+    <p class="lede">A full loop of the massif on foot, through France, Italy, and Switzerland. <em>Two sisters, ten walking stages, two rest days, three borders on foot.</em></p>
 
     <div class="stats">
       <div class="stat"><div class="n">~102</div><div class="l">Miles</div></div>
@@ -205,6 +243,7 @@
       <div class="stat"><div class="n">10</div><div class="l">Hiking days</div></div>
       <div class="stat"><div class="n">2</div><div class="l">Rest days</div></div>
       <div class="stat"><div class="n">3</div><div class="l">Countries</div></div>
+      <div class="stat"><div class="n" id="countdown">·</div><div class="l">Days to go</div></div>
     </div>
 
     <div class="ribbon">
@@ -217,6 +256,7 @@
 
   <p class="sec">The Route, Day by Day</p>
   <div class="sec-rule"></div>
+  <p class="hint">Tap any underlined lodging for details, a postcard, and its photos &amp; map.</p>
 
   <div class="trail">
 
@@ -226,7 +266,7 @@
         <div class="date">Mon · June 28</div>
         <p class="route">Les Houches → Les Contamines <span class="via">via Col de Tricot</span></p>
         <div class="row">
-          <span class="stay"><b>Chalet Hôtel Gai Soleil</b><span class="tag">B&amp;B</span></span>
+          <span class="stay"><button class="lodge" data-lodge="gaisoleil">Chalet Hôtel Gai Soleil</button><span class="tag">B&amp;B</span></span>
           <span class="metrics"><span class="dist">~10.5 mi</span><span class="up">↑ 4,400 ft</span></span>
         </div>
         <p class="prox">In Les Contamines, on the valley trail · about 5 min off route</p>
@@ -240,7 +280,7 @@
         <div class="date">Tue · June 29</div>
         <p class="route">Les Contamines → Les Chapieux <span class="via">via Col du Bonhomme</span></p>
         <div class="row">
-          <span class="stay"><b>Auberge de la Nova</b><span class="tag">Gîte</span></span>
+          <span class="stay"><button class="lodge" data-lodge="nova">Auberge de la Nova</button><span class="tag">Gîte</span></span>
           <span class="metrics"><span class="dist">~11 mi</span><span class="up">↑ 4,750 ft</span></span>
         </div>
         <p class="prox">In the Les Chapieux hamlet · directly on the trail</p>
@@ -259,7 +299,7 @@
         <div class="date">Wed · June 30</div>
         <p class="route">Les Chapieux → Rifugio Elisabetta <span class="via">via Col de la Seigne</span></p>
         <div class="row">
-          <span class="stay"><b>Rifugio Elisabetta</b><span class="tag">Refuge</span></span>
+          <span class="stay"><button class="lodge" data-lodge="elisabetta">Rifugio Elisabetta</button><span class="tag">Refuge</span></span>
           <span class="metrics"><span class="dist">~9.5 mi</span><span class="up">↑ 3,300 ft</span></span>
         </div>
         <p class="prox">Directly on the trail, at the head of Val Veny</p>
@@ -273,7 +313,7 @@
         <div class="date">Thu · July 1</div>
         <p class="route">Rifugio Elisabetta → Courmayeur <span class="via">via Mont Favre balcony</span></p>
         <div class="row">
-          <span class="stay"><b>Au Cœur Des Neiges</b><span class="tag">B&amp;B</span></span>
+          <span class="stay"><button class="lodge" data-lodge="coeur">Au Cœur Des Neiges</button><span class="tag">B&amp;B</span></span>
           <span class="metrics"><span class="dist">~11 mi</span><span class="up">↑ 2,300 ft</span></span>
         </div>
         <p class="prox">Dolonne side of Courmayeur, where the trail comes in · ~5–10 min to the center</p>
@@ -287,7 +327,7 @@
         <div class="date">Fri · July 2</div>
         <p class="route">Rest day in Courmayeur</p>
         <div class="row">
-          <span class="stay"><b>Au Cœur Des Neiges</b> · heated pool &amp; spa</span>
+          <span class="stay"><button class="lodge" data-lodge="coeur">Au Cœur Des Neiges</button> · heated pool &amp; spa</span>
         </div>
         <p class="note">Placed right after the toughest opening stretch. Book both nights as one reservation.</p>
       </div>
@@ -299,7 +339,7 @@
         <div class="date">Sat · July 3</div>
         <p class="route">Courmayeur → Rifugio Bonatti <span class="via">via Mont de la Saxe</span></p>
         <div class="row">
-          <span class="stay"><b>Rifugio Bonatti</b><span class="tag">Refuge</span></span>
+          <span class="stay"><button class="lodge" data-lodge="bonatti">Rifugio Bonatti</button><span class="tag">Refuge</span></span>
           <span class="metrics"><span class="dist">~8 mi</span><span class="up">↑ 4,300 ft</span></span>
         </div>
         <p class="prox">Directly on the trail · the balcony path continues from its door</p>
@@ -318,7 +358,7 @@
         <div class="date">Sun · July 4</div>
         <p class="route">Rifugio Bonatti → La Fouly <span class="via">via Grand Col Ferret</span></p>
         <div class="row">
-          <span class="stay"><b>Gîte / hotel, La Fouly</b><span class="tag">Gîte</span></span>
+          <span class="stay"><button class="lodge" data-lodge="lafouly">Gîte / hotel, La Fouly</button><span class="tag">Gîte</span></span>
           <span class="metrics"><span class="dist">~12 mi</span><span class="up">↑ 2,450 ft</span></span>
         </div>
         <p class="prox">In La Fouly village · on the trail</p>
@@ -332,7 +372,7 @@
         <div class="date">Mon · July 5</div>
         <p class="route">La Fouly → Champex-Lac</p>
         <div class="row">
-          <span class="stay"><b>B&amp;B La Grange</b><span class="tag">B&amp;B</span></span>
+          <span class="stay"><button class="lodge" data-lodge="lagrange">B&amp;B La Grange</button><span class="tag">B&amp;B</span></span>
           <span class="metrics"><span class="dist">~9.5 mi</span><span class="up">↑ 1,650 ft</span></span>
         </div>
         <p class="prox">Steps from the trail at the Arpette / Bovine junction · ~1 km (20 min) past the lake</p>
@@ -346,7 +386,7 @@
         <div class="date">Tue · July 6</div>
         <p class="route">Rest day at Champex-Lac</p>
         <div class="row">
-          <span class="stay"><b>B&amp;B La Grange</b> · lakeside</span>
+          <span class="stay"><button class="lodge" data-lodge="lagrange">B&amp;B La Grange</button> · lakeside</span>
         </div>
         <p class="note">Doubles as a weather buffer before tomorrow's high variant. Prettiest valley stop to linger in.</p>
       </div>
@@ -358,7 +398,7 @@
         <div class="date">Wed · July 7</div>
         <p class="route">Champex-Lac → Trient <span class="via">via Fenêtre d'Arpette</span></p>
         <div class="row">
-          <span class="stay"><b>Auberge du Mont-Blanc</b><span class="tag">Gîte</span></span>
+          <span class="stay"><button class="lodge" data-lodge="trient">Auberge du Mont-Blanc</button><span class="tag">Gîte</span></span>
           <span class="metrics"><span class="dist">~9.5 mi</span><span class="up">↑ 3,950 ft</span></span>
         </div>
         <p class="prox">In Trient village · on the trail</p>
@@ -377,7 +417,7 @@
         <div class="date">Thu · July 8</div>
         <p class="route">Trient → Tré-le-Champ <span class="via">via Col de Balme</span></p>
         <div class="row">
-          <span class="stay"><b>Auberge La Boerne</b><span class="tag">Gîte</span></span>
+          <span class="stay"><button class="lodge" data-lodge="boerne">Auberge La Boerne</button><span class="tag">Gîte</span></span>
           <span class="metrics"><span class="dist">~8.5 mi</span><span class="up">↑ 3,100 ft</span></span>
         </div>
         <p class="prox">In Tré-le-Champ · directly on the trail, right where the ladders begin</p>
@@ -517,11 +557,193 @@
     <p><b>Direction</b>Anti-clockwise puts the sun behind you on the big Italian and Swiss balcony stages and saves the Chamonix-side finale for last.</p>
   </div>
 
+
+  <p class="sec">Packing Checklist</p>
+  <div class="sec-rule"></div>
+  <p class="chartcap" id="packProgress">Loading...</p>
+  <div class="packgrid" id="packList"></div>
+  <div class="packadd">
+    <input id="packInput" type="text" placeholder="Add your own item...">
+    <button id="packAddBtn" type="button">Add</button>
+    <button id="packReset" type="button">Reset all</button>
+  </div>
+
+  <p class="sec">Trail Phrasebook</p>
+  <div class="sec-rule"></div>
+  <table class="phrases">
+    <tr><th>English</th><th>French (FR/CH)</th><th>Italian (IT)</th></tr>
+    <tr><td>Hello</td><td><em>Bonjour</em></td><td><em>Buongiorno</em></td></tr>
+    <tr><td>Thank you so much</td><td><em>Merci beaucoup</em></td><td><em>Grazie mille</em></td></tr>
+    <tr><td>Two half-board, please</td><td><em>Deux demi-pensions, s'il vous plaît</em></td><td><em>Due mezze pensioni, per favore</em></td></tr>
+    <tr><td>A packed lunch for tomorrow, please</td><td><em>Un pique-nique pour demain, s'il vous plaît</em></td><td><em>Un pranzo al sacco per domani, per favore</em></td></tr>
+    <tr><td>What's the weather at the col?</td><td><em>Quel temps fait-il au col ?</em></td><td><em>Che tempo fa al colle?</em></td></tr>
+    <tr><td>Is it much farther?</td><td><em>C'est encore loin ?</em></td><td><em>Manca molto?</em></td></tr>
+    <tr><td>One more coffee, please</td><td><em>Encore un café, s'il vous plaît</em></td><td><em>Ancora un caffè, per favore</em></td></tr>
+    <tr><td>Cheers!</td><td><em>Santé !</em></td><td><em>Salute!</em></td></tr>
+  </table>
+  <p class="chartcap">And one for Erin: <b>On fait une rando samedi ?</b> (shall we hike Saturday?)</p>
+
+  <dialog id="lodgeModal">
+    <div class="modal-art" id="modalArt"></div>
+    <div class="modal-body">
+      <h3 id="modalName"></h3>
+      <p class="modal-sub" id="modalPlace"></p>
+      <dl class="modal-kv" id="modalKv"></dl>
+      <p class="modal-blurb" id="modalBlurb"></p>
+      <p class="modal-book" id="modalBook"></p>
+      <div class="modal-actions">
+        <a id="modalMaps" target="_blank" rel="noopener">View photos &amp; map ↗</a>
+        <button id="modalClose" type="button">Close</button>
+      </div>
+    </div>
+  </dialog>
+
   <footer>
-    <span>Tour du Mont Blanc · 12 days · Evan &amp; sister</span>
+    <span>Tour du Mont Blanc · 12 days · Evan &amp; Erin</span>
     <span>Distances &amp; elevation approximate · Prepared for summer 2027</span>
   </footer>
 
 </div>
+<script is:inline>
+(function(){
+  // ---- countdown ----
+  var target = new Date("2027-06-28T00:00:00");
+  var days = Math.max(0, Math.ceil((target - new Date()) / 86400000));
+  var cd = document.getElementById("countdown");
+  if (cd) cd.textContent = days.toLocaleString();
+
+  // ---- lodging modals ----
+  var LODGES = {
+    gaisoleil: {name:"Chalet Hôtel Gai Soleil", place:"Les Contamines-Montjoie · France", kind:"bnb",
+      night:"Mon June 28 (1 night)", elev:"~3,850 ft", prox:"About 5 min off the valley trail",
+      blurb:"Family-run chalet with a private jacuzzi and sauna, the right way to end Day 1's climb over the Col de Tricot. Hikers consistently mention the warmth of the hosts and the breakfast.",
+      book:"Books direct via its own site or email. Reserve as soon as dates are firm.",
+      maps:"Chalet Hotel Gai Soleil Les Contamines-Montjoie"},
+    nova: {name:"Auberge de la Nova", place:"Les Chapieux · France", kind:"gite",
+      night:"Tue June 29 (1 night)", elev:"~5,100 ft", prox:"Directly on the trail in the hamlet",
+      blurb:"A classic mountain gîte in the quiet Beaufortain valley, with dorms and a few private rooms. Simple, friendly, and exactly where you want to fall over after the Bonhomme cols.",
+      book:"Book by end of November 2026. Ask about private rooms early, there are few.",
+      maps:"Auberge de la Nova Les Chapieux"},
+    elisabetta: {name:"Rifugio Elisabetta", place:"Val Veny · Italy", kind:"refuge",
+      night:"Wed June 30 (1 night)", elev:"~7,200 ft", prox:"Directly on the trail at the head of Val Veny",
+      blurb:"The glacier-side hut, sitting under the Trélatête and Lex Blanche glaciers. Sunrise from the terrace is one of the images people carry home from the whole TMB.",
+      book:"The competitive one. Book the moment the central platform opens, around mid-October 2026.",
+      maps:"Rifugio Elisabetta Soldini Val Veny"},
+    coeur: {name:"Au Cœur Des Neiges", place:"Courmayeur · Italy", kind:"bnb",
+      night:"Thu July 1 & Fri July 2 (2 nights)", elev:"~4,000 ft", prox:"Dolonne side, where the trail descends · 5-10 min to center",
+      blurb:"A cluster of chalets with a heated pool and spa, your mid-trek reward. Walkable to Courmayeur's restaurants for two proper Italian dinners around the rest day.",
+      book:"Books direct. Reserve both nights as a single reservation once dates are firm.",
+      maps:"Au Coeur des Neiges Courmayeur"},
+    bonatti: {name:"Rifugio Bonatti", place:"Val Ferret · Italy", kind:"refuge",
+      night:"Sat July 3 (1 night)", elev:"~6,640 ft", prox:"Directly on the balcony trail",
+      blurb:"The most famous refuge on the circuit, named for the alpinist Walter Bonatti, facing the Grandes Jorasses head-on. Communal dinner, big views, deserved hype.",
+      book:"The other must-book. Grab it the day the platform opens in mid-October 2026; Saturday nights go first.",
+      maps:"Rifugio Bonatti Val Ferret Courmayeur"},
+    lafouly: {name:"La Fouly (pick a gîte)", place:"Val Ferret · Switzerland", kind:"gite",
+      night:"Sun July 4 (1 night)", elev:"~5,250 ft", prox:"The village sits on the trail",
+      blurb:"A small Swiss village night. Hôtel Edelweiss and Auberge des Glaciers are the two usual picks, both comfortable and hiker-oriented. Choose on price and room type.",
+      book:"Book by end of November 2026. Swiss prices jump, so keep this night simple.",
+      maps:"Hotel Edelweiss La Fouly Switzerland"},
+    lagrange: {name:"B&B La Grange", place:"Champex-Lac · Switzerland", kind:"bnb",
+      night:"Mon July 5 & Tue July 6 (2 nights)", elev:"~4,860 ft", prox:"Steps from the trail at the Arpette/Bovine junction · 20 min past the lake",
+      blurb:"Run by Delphine and Daniel, and repeatedly named the best stay on the whole TMB by hikers, largely for the dinners. Perfectly staged for the Fenêtre d'Arpette start.",
+      book:"Small and beloved, so email as early as possible. Buy trail snacks in the village before walking up.",
+      maps:"B&B La Grange Champex-Lac"},
+    trient: {name:"Auberge du Mont-Blanc", place:"Trient · Switzerland", kind:"gite",
+      night:"Wed July 7 (1 night)", elev:"~4,265 ft", prox:"In the village, on the trail",
+      blurb:"A friendly gîte in the tiny hamlet with the famous pink church. Simple and warm, which is all you need after the Arpette boulder field.",
+      book:"Book by end of November 2026.",
+      maps:"Auberge du Mont-Blanc Trient Switzerland"},
+    boerne: {name:"Auberge La Boerne", place:"Tré-le-Champ · France", kind:"gite",
+      night:"Thu July 8 (1 night)", elev:"~4,650 ft", prox:"Directly on the trail, right where the ladders begin",
+      blurb:"A rustic, creaky-beamed auberge sitting exactly at the base of the final day's ladder section. Wake up, coffee, climb. The location could not be better for the finale.",
+      book:"Book by end of November 2026.",
+      maps:"Auberge La Boerne Tre-le-Champ Argentiere"}
+  };
+
+  function art(kind){
+    var hut = "";
+    if (kind === "refuge") hut = '<g transform="translate(238,116)"><path d="M0 22 L16 4 L32 22 Z" fill="#2C4339"/><rect x="4" y="22" width="24" height="14" fill="#2C4339"/><rect x="13" y="27" width="6" height="9" fill="#E9EBE6"/><line x1="16" y1="4" x2="16" y2="-8" stroke="#AE463C" stroke-width="2"/><path d="M16 -8 L28 -5 L16 -2 Z" fill="#AE463C"/></g>';
+    else if (kind === "bnb") hut = '<g transform="translate(230,114)"><path d="M-2 24 L24 2 L50 24 Z" fill="#2C4339"/><rect x="4" y="24" width="40" height="16" fill="#2C4339"/><rect x="10" y="28" width="8" height="8" fill="#E9EBE6"/><rect x="28" y="28" width="8" height="12" fill="#E9EBE6"/><rect x="20" y="16" width="8" height="5" fill="#E9EBE6"/></g>';
+    else hut = '<g transform="translate(240,120)"><path d="M0 18 L14 4 L28 18 Z" fill="#2C4339"/><rect x="3" y="18" width="22" height="14" fill="#2C4339"/><rect x="11" y="23" width="6" height="9" fill="#E9EBE6"/></g>';
+    return '<svg viewBox="0 0 520 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustrated postcard of the lodging">'
+      + '<rect width="520" height="170" fill="#DCE3DD"/>'
+      + '<circle cx="430" cy="42" r="20" fill="#E9EBE6"/>'
+      + '<path d="M0 120 L90 48 L150 96 L210 30 L300 110 L360 60 L440 120 L520 84 L520 170 L0 170 Z" fill="#5E8497" opacity=".45"/>'
+      + '<path d="M195 46 L210 30 L226 46 L218 46 L210 38 L203 46 Z" fill="#F3F4F0"/>'
+      + '<path d="M0 150 L120 92 L240 146 L370 88 L520 148 L520 170 L0 170 Z" fill="#2C4339" opacity=".85"/>'
+      + hut
+      + '</svg>';
+  }
+
+  var dlg = document.getElementById("lodgeModal");
+  document.querySelectorAll(".lodge").forEach(function(btnEl){
+    btnEl.addEventListener("click", function(){
+      var d = LODGES[btnEl.getAttribute("data-lodge")];
+      if (!d) return;
+      document.getElementById("modalArt").innerHTML = art(d.kind);
+      document.getElementById("modalName").textContent = d.name;
+      document.getElementById("modalPlace").textContent = d.place;
+      document.getElementById("modalKv").innerHTML =
+        "<dt>Night</dt><dd>" + d.night + "</dd>" +
+        "<dt>Elevation</dt><dd>" + d.elev + "</dd>" +
+        "<dt>Trail</dt><dd>" + d.prox + "</dd>";
+      document.getElementById("modalBlurb").textContent = d.blurb;
+      document.getElementById("modalBook").textContent = d.book;
+      document.getElementById("modalMaps").href =
+        "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(d.maps);
+      dlg.showModal();
+    });
+  });
+  document.getElementById("modalClose").addEventListener("click", function(){ dlg.close(); });
+  dlg.addEventListener("click", function(e){ if (e.target === dlg) dlg.close(); });
+
+  // ---- packing checklist (saved in this browser) ----
+  var DEFAULTS = ["Passport","Reservations printed + offline copies","Euros cash (50-70 EUR per refuge night)","Swiss francs (small amount)","Sleeping bag liner (required in huts)","Trail shoes, broken in","Rain shell + pack cover","Warm layer (puffy)","Gloves + beanie (the cols are cold)","Sun hat + sunscreen + lip balm","Sunglasses","Trekking poles","2L water capacity","Blister kit + first aid","Headlamp","Earplugs (refuge dorms!)","Quick-dry towel","Swimsuit (Courmayeur pool + Champex lake)","Power bank + EU adapter","Trail snacks","Camera / phone mount","Small lock (dorm lockers)"];
+  var KEY = "tmb-packing-v1";
+  function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {checked:{}, custom:[]}; } catch(e){ return {checked:{}, custom:[]}; } }
+  function save(st){ try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e){} }
+  var state = load();
+  var listEl = document.getElementById("packList");
+  var progEl = document.getElementById("packProgress");
+
+  function render(){
+    var items = DEFAULTS.concat(state.custom);
+    listEl.innerHTML = "";
+    var done = 0;
+    items.forEach(function(item){
+      var checked = !!state.checked[item];
+      if (checked) done++;
+      var label = document.createElement("label");
+      label.className = "pack" + (checked ? " done" : "");
+      var cb = document.createElement("input");
+      cb.type = "checkbox"; cb.checked = checked;
+      cb.addEventListener("change", function(){
+        state.checked[item] = cb.checked; save(state); render();
+      });
+      var span = document.createElement("span");
+      span.textContent = item;
+      label.appendChild(cb); label.appendChild(span);
+      listEl.appendChild(label);
+    });
+    progEl.innerHTML = "<b>" + done + " of " + items.length + " packed.</b> Saved in this browser, so the list remembers between visits.";
+  }
+  document.getElementById("packAddBtn").addEventListener("click", function(){
+    var inp = document.getElementById("packInput");
+    var v = inp.value.trim();
+    if (v && state.custom.indexOf(v) === -1 && DEFAULTS.indexOf(v) === -1){
+      state.custom.push(v); save(state); render();
+    }
+    inp.value = "";
+  });
+  document.getElementById("packInput").addEventListener("keydown", function(e){
+    if (e.key === "Enter") document.getElementById("packAddBtn").click();
+  });
+  document.getElementById("packReset").addEventListener("click", function(){
+    if (confirm("Clear all checks and custom items?")){ state = {checked:{}, custom:[]}; save(state); render(); }
+  });
+  render();
+})();
+</script>
 </body>
 </html>
