@@ -1,0 +1,151 @@
+---
+// src/pages/selected-video.astro
+import MainLayout from '../layouts/MainLayout.astro';
+
+type Video = {
+  title: string;
+  eyebrow?: string;
+  provider: 'vimeo' | 'youtube';
+  id: string;
+  pad: string;       // aspect ratio as padding-top %. 56.25% = 16:9. Reel = 61.86%.
+  featured?: boolean;
+};
+
+// Add to this array as you post more to Vimeo. Order here is the order on the page.
+const videos: Video[] = [
+  { title: 'EG Loop 02',                eyebrow: 'Reel',                        provider: 'vimeo',   id: '1222352056', pad: '61.86%', featured: true },
+  { title: 'The Beach',                 eyebrow: 'Snarkitecture, experiential', provider: 'vimeo',   id: '1212165134', pad: '56.25%' },
+  { title: 'Cisco Secure Passwordless', eyebrow: 'Cisco Secure',                provider: 'vimeo',   id: '1164128684', pad: '56.25%' },
+  { title: 'Ransomware',                eyebrow: 'Cisco Talos',                 provider: 'vimeo',   id: '1164129116', pad: '56.25%' },
+  { title: 'Talent Garden',             eyebrow: 'Customer case study',         provider: 'youtube', id: 'Ux9AmnbUaiA', pad: '56.25%' },
+  { title: 'Sunrise',                   eyebrow: 'Customer case study',         provider: 'youtube', id: 'L2V9jXQYKhA', pad: '56.25%' },
+  { title: 'STC',                       eyebrow: 'Customer case study',         provider: 'youtube', id: '6EOsf6Lkgco', pad: '56.25%' },
+  { title: 'What is SASE?',             eyebrow: 'Animated explainer',          provider: 'youtube', id: 'rUGvZj3fZD0', pad: '56.25%' },
+];
+
+const featured = videos.find((v) => v.featured);
+const rest = videos.filter((v) => !v.featured);
+
+function src(v: Video) {
+  return v.provider === 'vimeo'
+    ? `https://player.vimeo.com/video/${v.id}?badge=0&autopause=0&player_id=0&app_id=58479`
+    : `https://www.youtube-nocookie.com/embed/${v.id}?rel=0`;
+}
+
+function allow(v: Video) {
+  return v.provider === 'vimeo'
+    ? 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share'
+    : 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen';
+}
+---
+
+<MainLayout title="Selected Video">
+  <main class="selected-video">
+    <header class="intro">
+      <h1>Selected Video</h1>
+      <p>Motion, brand, and experiential work.</p>
+    </header>
+
+    {featured && (
+      <section class="featured">
+        <div class="frame" style={`padding-top:${featured.pad}`}>
+          <iframe
+            src={src(featured)}
+            title={featured.title}
+            loading="lazy"
+            allow={allow(featured)}
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="meta">
+          {featured.eyebrow && <span class="eyebrow">{featured.eyebrow}</span>}
+          <h2>{featured.title}</h2>
+        </div>
+      </section>
+    )}
+
+    <section class="grid">
+      {rest.map((v) => (
+        <article class="item">
+          <div class="frame" style={`padding-top:${v.pad}`}>
+            <iframe
+              src={src(v)}
+              title={v.title}
+              loading="lazy"
+              allow={allow(v)}
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <div class="meta">
+            {v.eyebrow && <span class="eyebrow">{v.eyebrow}</span>}
+            <h3>{v.title}</h3>
+          </div>
+        </article>
+      ))}
+    </section>
+  </main>
+</MainLayout>
+
+<!-- Loaded once for the whole page, not per embed. Only needed if you use the Vimeo JS API. -->
+<script src="https://player.vimeo.com/api/player.js"></script>
+
+<style>
+  /* Neutral, restyle-able defaults. Swap these for your site's tokens,
+     or delete this block if MainLayout already styles the page shell. */
+  .selected-video {
+    max-width: var(--content-width, 1100px);
+    margin: 0 auto;
+    padding: 4rem 1.5rem 6rem;
+  }
+
+  .intro { margin-bottom: 3rem; }
+  .intro h1 {
+    margin: 0 0 0.5rem;
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.02em;
+  }
+  .intro p { margin: 0; color: var(--muted, #666); }
+
+  .featured { margin-bottom: 4rem; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem 2rem;
+  }
+
+  .frame {
+    position: relative;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--radius, 10px);
+    background: var(--frame-bg, #000);
+  }
+  .frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .meta { margin-top: 0.85rem; }
+  .eyebrow {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted, #888);
+    margin-bottom: 0.2rem;
+  }
+  .meta h2, .meta h3 { margin: 0; letter-spacing: -0.01em; }
+  .meta h2 { font-size: 1.5rem; }
+  .meta h3 { font-size: 1.15rem; }
+
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
