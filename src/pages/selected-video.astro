@@ -42,7 +42,7 @@ function allow(v: Video) {
 }
 ---
 
-<MainLayout title="Selected Video">
+<MainLayout title="Selected Video" noindex={true}>
   <main class="selected-video">
     <header class="intro">
       <h1>Selected Video</h1>
@@ -87,6 +87,9 @@ function allow(v: Video) {
           </div>
         </article>
       ))}
+      <a href="/selected-work" style="display: inline-block; background-color: var(--accent); color: black; padding: 10px 24px; border-radius: 99px; font-weight: 900; text-transform: uppercase; font-size: 12px; letter-spacing: 0.1em; text-decoration: none;">
+	View Selected Work
+</a>
     </section>
   </main>
 </MainLayout>
