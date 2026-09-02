@@ -3,10 +3,10 @@ import MainLayout from '../layouts/MainLayout.astro';
 const pdf = "/casestudy.pdf";
 
 const caseStudies = [
-  { title: 'Talent Garden Customer Case Study', url: 'https://www.youtube.com/watch?v=Ux9AmnbUaiA' },
-  { title: 'Sunrise',                           url: 'https://www.youtube.com/watch?v=L2V9jXQYKhA' },
-  { title: 'STC',                               url: 'https://www.youtube.com/watch?v=6EOsf6Lkgco' },
-  { title: 'What is SASE?',                      url: 'https://www.youtube.com/watch?v=rUGvZj3fZD0' },
+  { title: 'Talent Garden Customer Case Study', id: 'Ux9AmnbUaiA' },
+  { title: 'Sunrise',                           id: 'L2V9jXQYKhA' },
+  { title: 'STC',                               id: '6EOsf6Lkgco' },
+  { title: 'What is SASE?',                      id: 'rUGvZj3fZD0' },
 ];
 ---
 <MainLayout title="Evan Elise Gonzalez — Case Study" noindex={true}>
@@ -42,19 +42,56 @@ const caseStudies = [
     </iframe>
 
     <div style="margin-top: 48px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1);">
-      <p style="text-transform: uppercase; font-size: 12px; letter-spacing: 0.1em; opacity: 0.6; font-weight: 900; margin: 0 0 20px; text-align: center;">
+      <p style="text-transform: uppercase; font-size: 12px; letter-spacing: 0.1em; opacity: 0.6; font-weight: 900; margin: 0 0 24px; text-align: center;">
         Customer Case Studies
       </p>
-      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 640px; margin: 0 auto;">
+      <div class="cs-grid">
         {caseStudies.map((cs) => (
-          <a href={cs.url} target="_blank" rel="noopener"
-            style="display: flex; justify-content: space-between; align-items: center; gap: 16px; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 16px 24px; border-radius: 12px; font-weight: 900; text-transform: uppercase; font-size: 13px; letter-spacing: 0.05em; text-decoration: none;">
-            <span>{cs.title}</span>
-            <span style="color: var(--accent); white-space: nowrap;">Watch →</span>
-          </a>
+          <article>
+            <div class="cs-frame">
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${cs.id}?rel=0`}
+                title={cs.title}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <p style="margin: 12px 0 0; font-weight: 900; text-transform: uppercase; font-size: 13px; letter-spacing: 0.05em;">
+              {cs.title}
+            </p>
+          </article>
         ))}
       </div>
     </div>
 
   </section>
+
+  <style>
+    .cs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px 24px;
+    }
+    .cs-frame {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-top: 56.25%;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #000;
+    }
+    .cs-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    @media (max-width: 720px) {
+      .cs-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </MainLayout>
