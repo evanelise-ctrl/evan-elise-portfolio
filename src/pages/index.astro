@@ -5,7 +5,6 @@ import MainLayout from '../layouts/MainLayout.astro';
 <MainLayout title="Evan Elise | Creative Portfolio">
   <div class="fixed inset-0 z-0 h-screen w-screen overflow-hidden">
     <video 
-      id="scroll-video" 
       muted 
       autoplay 
       loop 
@@ -124,7 +123,6 @@ import MainLayout from '../layouts/MainLayout.astro';
 </MainLayout>
 
 <script>
-  const video = document.getElementById('scroll-video') as HTMLVideoElement | null;
   const evolvingText = document.getElementById('evolving-text');
   const heroPin = document.getElementById('hero-pin');
   const heroTrack = document.getElementById('hero-track');
@@ -140,24 +138,24 @@ import MainLayout from '../layouts/MainLayout.astro';
     "Development"
   ];
 
-  let targetTime = 0;
-  let currentTime = 0;
   let lastWordIndex = 0;
+  let ticking = false;
 
-  window.addEventListener('scroll', () => {
+  // Cache layout reads; refresh only on resize instead of every scroll frame.
+  let windowHeight = window.innerHeight;
+  let trackHeight = heroTrack ? heroTrack.offsetHeight : 0;
+
+  function measure() {
+    windowHeight = window.innerHeight;
+    trackHeight = heroTrack ? heroTrack.offsetHeight : 0;
+  }
+
+  function update() {
     if (!heroTrack || !heroPin) return;
-
     const scrollPos = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const trackHeight = heroTrack.offsetHeight;
-    const totalDocHeight = document.documentElement.scrollHeight - windowHeight;
 
-    if (video && video.duration) {
-      targetTime = video.duration * (scrollPos / totalDocHeight);
-    }
-
+    // Word swap
     const wordIndex = Math.floor(scrollPos / 300) % words.length;
-
     if (evolvingText && wordIndex !== lastWordIndex) {
       lastWordIndex = wordIndex;
       evolvingText.style.opacity = "0";
@@ -167,8 +165,8 @@ import MainLayout from '../layouts/MainLayout.astro';
       }, 150);
     }
 
+    // Pin release
     const releasePoint = trackHeight - windowHeight;
-
     if (scrollPos >= releasePoint) {
       heroPin.style.position = 'absolute';
       heroPin.style.top = releasePoint + 'px';
@@ -176,14 +174,25 @@ import MainLayout from '../layouts/MainLayout.astro';
       heroPin.style.position = 'fixed';
       heroPin.style.top = '0';
     }
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    }
   });
 
-  function render() {
-    currentTime += (targetTime - currentTime) * 0.1;
-    if (video) video.currentTime = currentTime;
-    requestAnimationFrame(render);
-  }
-  requestAnimationFrame(render);
+  window.addEventListener('resize', () => {
+    measure();
+    update();
+  });
+
+  measure();
+  update();
 </script>
 
 <style>
