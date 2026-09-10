@@ -46,9 +46,13 @@ import MainLayout from '../layouts/MainLayout.astro';
         <a href="/cisco-spaces" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
           <div class="group" style="cursor: pointer;">
             <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative;">
-              <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-80" style="transition: opacity 0.5s ease;">
-                <source src="/spaces-launch.mp4" type="video/mp4" />
-              </video>
+              <iframe 
+                src="https://player.vimeo.com/video/1225612183?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1" 
+                frameborder="0" 
+                allow="autoplay; fullscreen; picture-in-picture" 
+                style="position:absolute;top:0;left:0;width:100%;height:100%; pointer-events: none;" 
+                title="Cisco Spaces Preview">
+              </iframe>
               <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
             </div>
             <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Cisco Spaces</h3>
@@ -109,7 +113,13 @@ import MainLayout from '../layouts/MainLayout.astro';
         <a href="/e3-refillery" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
           <div class="group" style="cursor: pointer;">
             <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
-              <img src="/e3-hero.png" alt="e3 Refillery Branding" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
+              <iframe 
+                src="https://player.vimeo.com/video/1225636279?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1" 
+                frameborder="0" 
+                allow="autoplay; fullscreen; picture-in-picture" 
+                style="position:absolute;top:0;left:0;width:100%;height:100%; pointer-events: none;" 
+                title="e3 Refillery Preview">
+              </iframe>
               <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
             </div>
             <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">e3 Refillery</h3>
@@ -204,7 +214,7 @@ import MainLayout from '../layouts/MainLayout.astro';
     text-shadow: 0 0 50px rgba(255, 0, 128, 0.4);
   }
   /* HOVER EFFECTS */
-  .group:hover video, .group:hover img {
+  .group:hover video, .group:hover img, .group:hover iframe {
     opacity: 1 !important;
     transform: scale(1.05);
   }
