@@ -1,5 +1,22 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+
+// Fetch Vimeo thumbnails at build time from the video IDs.
+// Falls back to null (neutral tile) if Vimeo's oEmbed is unavailable.
+async function vimeoThumb(id: string) {
+  try {
+    const r = await fetch(`https://vimeo.com/api/oembed.json?url=https%3A%2F%2Fvimeo.com%2F${id}&width=1280`);
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d.thumbnail_url ?? null;
+  } catch {
+    return null;
+  }
+}
+
+const launchThumb  = await vimeoThumb('1225612183'); // spaces-launch
+const heroThumb    = await vimeoThumb('1225612122'); // spaces-hero
+const webinarThumb = await vimeoThumb('1225612182'); // spaces-webinar
 ---
 
 <MainLayout title="Cisco Spaces | Evan Elise">
@@ -50,10 +67,10 @@ import MainLayout from '../layouts/MainLayout.astro';
 
     <section class="px-[10%] mb-32">
         <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4); margin-bottom: 40px;">01 / Flagship Campaign</h2>
-        <div class="asset-trigger group cursor-pointer rounded-xl overflow-hidden bg-neutral-900 shadow-2xl relative" data-type="video" data-src="/spaces-launch.mp4">
-          <video autoplay muted loop playsinline preload="auto" class="w-full h-auto block">
-            <source src="/spaces-launch.mp4" type="video/mp4" />
-          </video>
+        <div class="asset-trigger group cursor-pointer rounded-xl overflow-hidden bg-neutral-900 shadow-2xl relative" data-type="vimeo" data-src="1225612183">
+          {launchThumb
+            ? <img src={launchThumb} class="w-full h-auto block" alt="Spaces Launch" />
+            : <div style="width:100%;padding-top:56.25%;"></div>}
           <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center text-center">
             <div class="opacity-0 group-hover:opacity-100 transition-all bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 text-[10px] uppercase tracking-widest font-bold">Watch Full Film</div>
           </div>
@@ -64,6 +81,7 @@ import MainLayout from '../layouts/MainLayout.astro';
         <h2 style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.4); margin-bottom: 64px;">02 / Campaign Ecosystem</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 48px;">
             
+            {/* TODO: no Vimeo ID provided for spaces-social-1 — still local */}
             <div class="space-y-4">
                 <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="video" data-src="/spaces-social-1.mp4">
                     <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/spaces-social-1.mp4" type="video/mp4" /></video>
@@ -72,6 +90,7 @@ import MainLayout from '../layouts/MainLayout.astro';
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Performance Ad 01</p>
             </div>
 
+            {/* TODO: no Vimeo ID provided for spaces-social-2 — still local */}
             <div class="space-y-4">
                 <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="video" data-src="/spaces-social-2.mp4">
                     <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/spaces-social-2.mp4" type="video/mp4" /></video>
@@ -81,21 +100,26 @@ import MainLayout from '../layouts/MainLayout.astro';
             </div>
 
             <div class="space-y-4">
-                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="video" data-src="/spaces-hero.mp4">
-                    <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/spaces-hero.mp4" type="video/mp4" /></video>
+                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="vimeo" data-src="1225612122">
+                    {heroThumb
+                      ? <img src={heroThumb} class="w-full h-auto block" alt="Hero Moment" />
+                      : <div style="width:100%;padding-top:56.25%;"></div>}
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center text-[8px] uppercase font-bold opacity-0 group-hover:opacity-100 tracking-widest">Expand View</div>
                 </div>
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Hero Moment</p>
             </div>
 
             <div class="space-y-4">
-                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="video" data-src="/spaces-webinar.mp4">
-                    <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/spaces-webinar.mp4" type="video/mp4" /></video>
+                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="vimeo" data-src="1225612182">
+                    {webinarThumb
+                      ? <img src={webinarThumb} class="w-full h-auto block" alt="Webinar Direction" />
+                      : <div style="width:100%;padding-top:56.25%;"></div>}
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center text-[8px] uppercase font-bold opacity-0 group-hover:opacity-100 tracking-widest">Expand View</div>
                 </div>
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Webinar Direction</p>
             </div>
 
+            {/* TODO: confirm if spaces-webinar-promo == spaces-webinar-2 (1225613373, 4:3) before swapping — still local */}
             <div class="space-y-4">
                 <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="video" data-src="/spaces-webinar-promo.mp4">
                     <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/spaces-webinar-promo.mp4" type="video/mp4" /></video>

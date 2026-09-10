@@ -1,5 +1,21 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+
+// Fetch Vimeo thumbnails at build time from the video IDs.
+// Falls back to null (neutral tile) if Vimeo's oEmbed is unavailable.
+async function vimeoThumb(id: string) {
+  try {
+    const r = await fetch(`https://vimeo.com/api/oembed.json?url=https%3A%2F%2Fvimeo.com%2F${id}&width=1280`);
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d.thumbnail_url ?? null;
+  } catch {
+    return null;
+  }
+}
+
+const careers1Thumb = await vimeoThumb('1225612121'); // bedrock-careers-1 (hero)
+const careers2Thumb = await vimeoThumb('1225612174'); // bedrock-careers-2 (4:3)
 ---
 
 <MainLayout title="Brand Culture & Employer Identity | Evan Elise Gonzalez">
@@ -53,12 +69,12 @@ import MainLayout from '../layouts/MainLayout.astro';
         
         <div class="asset-trigger group cursor-pointer rounded-xl overflow-hidden bg-neutral-900 shadow-2xl relative w-full" 
              style="height: 600px;" 
-             data-type="video" 
-             data-src="/bedrock-careers-1.mp4">
+             data-type="vimeo" 
+             data-src="1225612121">
              
-             <video autoplay muted loop playsinline class="w-full h-full object-cover block">
-                <source src="/bedrock-careers-1.mp4" type="video/mp4" />
-             </video>
+             {careers1Thumb
+               ? <img src={careers1Thumb} class="w-full h-full object-cover block" alt="Brand Foundation & Guidelines" />
+               : <div class="w-full h-full"></div>}
              
              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center z-10">
                 <div class="text-[10px] uppercase font-bold opacity-0 group-hover:opacity-100 tracking-widest bg-black/50 px-4 py-2 rounded text-white backdrop-blur-sm">Expand View</div>
@@ -69,6 +85,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 48px;">
             
+            {/* Local: no Vimeo ID (storage full) */}
             <div class="space-y-4">
                 <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="video" data-src="/bedrock-careerspage-scroll.mp4">
                     <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/bedrock-careerspage-scroll.mp4" type="video/mp4" /></video>
@@ -77,6 +94,7 @@ import MainLayout from '../layouts/MainLayout.astro';
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">UX/UI: Careers Digital Experience</p>
             </div>
 
+            {/* Local: no Vimeo ID (storage full) */}
             <div class="space-y-4">
                 <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="video" data-src="/bedrock-branding-doc.mp4">
                     <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/bedrock-branding-doc.mp4" type="video/mp4" /></video>
@@ -86,8 +104,10 @@ import MainLayout from '../layouts/MainLayout.astro';
             </div>
 
             <div class="space-y-4">
-                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="video" data-src="/bedrock-careers-2.mp4">
-                    <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/bedrock-careers-2.mp4" type="video/mp4" /></video>
+                <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="vimeo" data-src="1225612174">
+                    {careers2Thumb
+                      ? <img src={careers2Thumb} class="w-full h-auto block" alt="Talent Spotlight: Career Growth" />
+                      : <div style="width:100%;padding-top:75%;"></div>}
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center text-[8px] uppercase font-bold opacity-0 group-hover:opacity-100 tracking-widest">Expand View</div>
                 </div>
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Talent Spotlight: Career Growth</p>
@@ -112,6 +132,7 @@ import MainLayout from '../layouts/MainLayout.astro';
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Environment: The Office Space</p>
             </div>
 
+            {/* Local: no Vimeo ID (storage full) */}
             <div class="space-y-4">
                 <div class="asset-trigger group cursor-pointer rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg relative" data-type="video" data-src="/bedrock-myviewfrom.mp4">
                     <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/bedrock-myviewfrom.mp4" type="video/mp4" /></video>
