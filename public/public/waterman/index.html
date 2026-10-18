@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Camp Waterman</title>
+<style>body{margin:0}img{max-width:100%}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Yellowtail&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&family=Permanent+Marker&display=swap">
+<style>
+/* Layout: a canvas reunion banner hung from a string of bulbs and bandana pennants; photo stage below, name tags slide in from the side (bottom sheet on phones).
+   Light = the muslin banner by day. Dark = the same party at blue hour, lit by string lights. */
+:root {
+  --bg: #ece5d7;             /* muslin */
+  --surface: #f7f2e8;
+  --surface-2: #e2d9c7;
+  --fg: #4a2c1c;             /* banner ink brown */
+  --muted: #7c6553;
+  --line: #d6cab5;
+  --stamp: #d18a1c;          /* string-light amber: selection */
+  --stamp-text: #85520c;
+  --stamp-ink: #ffffff;
+  --cord: #5a4636;
+  --glow: .55;
+  --banner: #f3ede1;         /* the banner itself stays canvas in both themes */
+  --banner-ink: #5a3422;
+  --mustard: #c9973a; --denim: #8ea4c2; --paisley: #2f2a26; --sky: #b9c9dc;
+  --tag-paper: #ffffff;
+  --tag-ink: #161616;
+  --g1: #8e5b86; --g2: #c2593b; --g3: #4f8a5e; --g4: #5b80b3; --g5: #93b8dc; --g0: #a99a87;
+  --band-mix: 14%;
+  --shadow: 0 18px 48px rgb(60 36 20 / .20), 0 2px 6px rgb(60 36 20 / .12);
+  --f-display: "Josefin Sans", "Futura", "Century Gothic", sans-serif;
+  --f-script: "Yellowtail", "Brush Script MT", cursive;
+  --f-body: "Instrument Sans", "Helvetica Neue", "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --f-marker: "Permanent Marker", "Marker Felt", "Comic Sans MS", cursive;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1a2e; --surface: #15253f; --surface-2: #1d3152; --fg: #f1e7d4; --muted: #a8b3c6; --line: #2a3e5f;
+  --stamp: #f6c56a; --stamp-text: #f6c56a; --stamp-ink: #24180a; --cord: #0a1220; --glow: 1; --band-mix: 18%;
+  --shadow: 0 18px 48px rgb(0 0 0 / .55), 0 2px 6px rgb(0 0 0 / .4); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1a2e; --surface: #15253f; --surface-2: #1d3152; --fg: #f1e7d4; --muted: #a8b3c6; --line: #2a3e5f;
+  --stamp: #f6c56a; --stamp-text: #f6c56a; --stamp-ink: #24180a; --cord: #0a1220; --glow: 1; --band-mix: 18%;
+  --shadow: 0 18px 48px rgb(0 0 0 / .55), 0 2px 6px rgb(0 0 0 / .4); color-scheme: dark; }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--stamp); outline-offset: 2px; }
+.wrap { max-width: 1320px; margin: 0 auto; padding-block: 20px 48px; display: grid; gap: 18px; }
+
+/* Header: lights, banner, search */
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.lights { height: 96px; margin-bottom: -58px; position: relative; z-index: 1; pointer-events: none; }
+.lights svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.lights .cord { fill: none; stroke: var(--cord); stroke-width: 1.6; }
+.lights .bulb { fill: #fff3cf; }
+.lights .halo { fill: #ffc65c; opacity: calc(.35 * var(--glow)); }
+.top { display: grid; justify-items: center; text-align: center; gap: 16px; }
+.brand { display: grid; gap: 14px; min-width: 0; justify-items: center; }
+.banner { position: relative; z-index: 2; width: min(100%, 340px); padding: 40px 24px 24px; background: var(--banner); color: var(--banner-ink);
+  border-radius: 2px 2px 6px 6px; box-shadow: var(--shadow);
+  background-image: linear-gradient(100deg, rgb(120 90 60 / .06), transparent 30%, rgb(120 90 60 / .05) 55%, transparent 75%, rgb(120 90 60 / .07)),
+    radial-gradient(120% 60% at 50% 100%, rgb(150 170 190 / .16), transparent 70%); }
+.banner::before, .banner::after { content: ""; position: absolute; top: -6px; width: 22px; height: 16px; border-radius: 50% 50% 40% 40%;
+  background: var(--denim); box-shadow: inset 0 -3px 0 rgb(0 0 0 / .12); }
+.banner::before { left: -6px; } .banner::after { right: -6px; background: var(--mustard); }
+.wm { display: grid; justify-items: center; line-height: 1; }
+.wm .r1 { display: flex; align-items: center; gap: .32em; }
+.wm .yy { font: 600 clamp(12px, 1.6vw, 15px) var(--f-display); letter-spacing: .02em; transform: translateY(.12em); }
+.brand h1 { margin: 0; font-weight: 400; }
+.wm .camp, .wm .wat { display: block; font: 700 clamp(30px, 5vw, 44px)/.92 var(--f-display); text-transform: uppercase; letter-spacing: .01em; }
+.wm .script { font: 400 clamp(26px, 4.4vw, 38px)/1 var(--f-script); margin-top: .1em; transform: translateX(.6em) rotate(-4deg); display: grid; justify-items: start; }
+.wm .script span + span { margin-left: 1.3em; margin-top: -.15em; }
+.brand p { margin: 0; color: var(--muted); max-width: 52ch; }
+.search { position: relative; width: min(380px, 100%); text-align: left; }
+.search label { position: absolute; left: -9999px; }
+.search input { width: 100%; height: 44px; border-radius: 22px; border: 1px solid var(--line); background: var(--surface);
+  color: var(--fg); padding: 0 16px 0 40px; font: inherit; }
+.search svg { position: absolute; left: 14px; top: 13px; width: 18px; height: 18px; color: var(--muted); }
+.results { position: absolute; top: 50px; left: 0; right: 0; z-index: 30; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 14px; box-shadow: var(--shadow); padding: 6px; max-height: 340px; overflow: auto; }
+.results button { display: flex; width: 100%; gap: 10px; align-items: center; text-align: left; border: 0; background: none;
+  padding: 9px 10px; border-radius: 9px; cursor: pointer; }
+.results button:hover, .results button.on { background: var(--surface-2); }
+.results small { margin-left: auto; color: var(--muted); font: 500 11px var(--f-mono); }
+
+/* Nav */
+.nav { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.tab { border: 0; background: none; padding: 12px 14px 8px; min-height: 44px; border-radius: 22px; cursor: pointer; font: 700 14px var(--f-display); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.tab[aria-selected="true"] { color: var(--fg); background: var(--surface-2); }
+.stamp { display: inline-flex; border-radius: 22px; overflow: hidden; border: 1.5px solid var(--fg); margin-right: 6px; }
+.stamp button { border: 0; background: transparent; color: var(--fg); cursor: pointer; min-height: 40px; padding: 4px 16px 0;
+  font: 700 17px var(--f-display); letter-spacing: .04em; }
+.stamp button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.nav .spacer { flex: 1; }
+
+/* Photo view */
+.tools { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 11px; height: 11px; border-radius: 50%; background: var(--c, var(--g0)); flex: none; }
+.ctl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; min-height: 40px; }
+.switch input { width: 18px; height: 18px; accent-color: var(--stamp); }
+.iconbtn { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); cursor: pointer;
+  display: grid; place-items: center; font: 600 18px var(--f-mono); }
+.iconbtn:disabled { opacity: .4; cursor: default; }
+
+.stage { position: relative; overflow: auto; border-radius: 6px; background: var(--surface-2); max-width: 100%;
+  box-shadow: 0 1px 0 var(--line); overscroll-behavior: contain; }
+.print { position: relative; width: calc(100% * var(--z, 1)); transition: width .25s ease; }
+.print img { display: block; width: 100%; height: auto; max-width: none; user-select: none; -webkit-user-drag: none; transition: opacity .3s ease; }
+.print.swap img { opacity: 0; }
+.datemark { position: absolute; right: 2.2%; bottom: 3%; font: 600 clamp(12px, 1.8vw, 22px) var(--f-mono); color: #ff8a3d; z-index: 1;
+  letter-spacing: .12em; text-shadow: 0 0 6px rgb(255 120 40 / .55); pointer-events: none; }
+.face { position: absolute; transform: translate(-50%, -50%); aspect-ratio: 1; border-radius: 50%; border: 0; padding: 0;
+  background: transparent; cursor: pointer; box-shadow: 0 0 0 2px transparent; transition: box-shadow .15s ease; }
+.face:hover { box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgb(0 0 0 / .35); }
+.stage:not(.gen) .face:not(.unk) { --c: #ffffff !important; }
+/* Rings */
+.m-rings .face { box-shadow: 0 0 0 2.5px var(--c, var(--g0)); }
+.m-rings .face.unk { box-shadow: none; outline: 2px dashed rgb(255 255 255 / .8); outline-offset: -1px; }
+/* Dots: a small sticker under each chin */
+.m-dots .face::after { content: ""; position: absolute; left: 50%; top: 100%; width: clamp(7px, 32%, 13px); aspect-ratio: 1; border-radius: 50%;
+  background: var(--c); border: 2px solid #fff; transform: translate(-50%, 1px); box-shadow: 0 1px 3px rgb(0 0 0 / .45); }
+.m-dots .face.unk::after { background: transparent; border-style: dashed; }
+/* Spotlight dims the rest of the photo around the selected face */
+.spot { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s ease; z-index: 3;
+  background: radial-gradient(circle at var(--sx, 50%) var(--sy, 50%), transparent var(--sr, 40px), rgb(8 10 6 / .62) calc(var(--sr, 40px) + 8px)); }
+.spot.on { opacity: 1; }
+.face.sel { box-shadow: 0 0 0 3.5px var(--stamp), 0 0 0 7px rgb(0 0 0 / .35), 0 0 26px 8px rgb(255 196 92 / .7) !important; z-index: 4; outline: none !important; }
+.face.sel::after { display: none; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.seg button { border: 0; background: none; min-height: 40px; padding: 0 12px; cursor: pointer; font-size: 14px; color: var(--muted); }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--surface-2); color: var(--fg); font-weight: 600; }
+.ctl .lab { font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* Tree: list view */
+.tlist { display: grid; gap: 10px; }
+.branch { display: grid; gap: 8px; }
+.kids { display: grid; gap: 8px; padding: 10px 10px 10px clamp(10px, 3vw, 22px); border-radius: 12px;
+  background: color-mix(in srgb, var(--c) calc(var(--band-mix) + 4%), var(--bg)); }
+.couple { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-height: 44px; }
+.disc { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; display: grid; place-items: center; flex: none; }
+.disc svg { transition: transform .2s ease; }
+.disc[aria-expanded="false"] svg { transform: rotate(-90deg); }
+.disc.blank { visibility: hidden; }
+.pill { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 12px 4px 8px; border-radius: 20px; border: 1px solid var(--line);
+  background: var(--surface); cursor: pointer; text-align: left; max-width: 100%; }
+.pill .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pill .nm.ph { font-style: italic; font-weight: 500; color: var(--muted); }
+.pill.sel { border-color: var(--stamp); box-shadow: 0 0 0 1.5px var(--stamp); }
+.pill .yrs { font-size: 10px; }
+.amp { color: var(--muted); font-size: 13px; }
+.kcount { color: var(--muted); font-size: 12px; font-family: var(--f-mono); }
+.genhead { display: flex; align-items: center; gap: 8px; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* Tree: family (focus) view */
+.focus { display: grid; gap: 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 10px 14px; background: var(--surface); border-bottom: 1px solid var(--line); font-size: 14px; }
+.crumbs button { border: 0; background: none; padding: 6px 6px; min-height: 36px; cursor: pointer; color: var(--muted); border-radius: 6px; }
+.crumbs button:hover { color: var(--fg); background: var(--surface-2); }
+.crumbs .here { font-weight: 600; padding: 6px; }
+.frow { display: grid; gap: 10px; padding: 16px clamp(12px, 3vw, 24px) 20px; background: color-mix(in srgb, var(--c) var(--band-mix), var(--surface)); }
+.frow + .frow { border-top: 1px solid color-mix(in srgb, var(--c) 35%, transparent); }
+.frow h4 { margin: 0; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.fcards { display: flex; flex-wrap: wrap; gap: 10px; }
+.fcard { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; text-align: left; padding: 10px 14px 10px 10px; min-height: 64px;
+  border-radius: 14px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; width: min(100%, 250px); min-width: 0; }
+.fcard:hover { border-color: var(--muted); }
+.fcard .av { grid-row: span 2; width: 48px; height: 48px; border-radius: 50%; background: var(--surface-2) no-repeat; display: grid; place-items: center;
+  font: 700 17px var(--f-display); color: var(--muted); }
+.fcard .nm { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fcard .nm.ph { font-style: italic; font-weight: 500; color: var(--muted); }
+.fcard .sub { font-size: 12px; color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fcard.big { width: min(100%, 320px); padding: 14px 18px 14px 14px; }
+.fcard.big .av { width: 72px; height: 72px; font-size: 24px; }
+.fcard.big .nm { font: 700 20px var(--f-display); padding-top: 4px; }
+.fcard.sel { border-color: var(--stamp); box-shadow: 0 0 0 2px var(--stamp); }
+.empty { color: var(--muted); font-size: 14px; font-style: italic; }
+.hint { color: var(--muted); font-size: 13px; margin: 0; }
+
+.roster { display: grid; gap: 10px; }
+.roster h2, .section-h { margin: 6px 0 0; font: 700 18px var(--f-display); letter-spacing: .1em; text-transform: uppercase; }
+.chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; }
+.chip { display: flex; align-items: center; gap: 8px; min-height: 40px; text-align: left; border: 1px solid var(--line); background: var(--surface);
+  border-radius: 10px; padding: 6px 10px; cursor: pointer; min-width: 0; }
+.chip b { font: 600 12px var(--f-mono); color: var(--muted); width: 2.2em; flex: none; font-variant-numeric: tabular-nums; }
+.chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip.unk span { color: var(--muted); font-style: italic; }
+.chip.on { border-color: var(--stamp); box-shadow: inset 0 0 0 1px var(--stamp); }
+
+/* Tree */
+.treebar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.treebox { position: relative; overflow: auto; border-radius: 6px; border: 1px solid var(--line); background: var(--surface);
+  height: min(72vh, 760px); overscroll-behavior: contain; }
+.tree { position: relative; }
+.band { position: absolute; left: 0; background: color-mix(in srgb, var(--c) var(--band-mix), var(--surface)); border-top: 1px solid color-mix(in srgb, var(--c) 35%, transparent); }
+.band .lbl { position: sticky; left: 0; display: inline-block; padding: 8px 12px; font: 600 11px var(--f-mono); letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); background: linear-gradient(90deg, color-mix(in srgb, var(--c) var(--band-mix), var(--surface)) 70%, transparent); }
+.tree svg { position: absolute; left: 0; top: 0; pointer-events: none; }
+.tree svg path { fill: none; stroke: var(--muted); stroke-opacity: .55; stroke-width: 1.5; }
+.node { position: absolute; display: grid; align-content: center; gap: 1px; text-align: left; padding: 6px 10px; border-radius: 10px;
+  border: 1px solid var(--line); background: var(--surface); cursor: pointer; overflow: hidden; font-size: calc(13px * var(--tz)); }
+.node:hover { border-color: var(--muted); }
+.node .nm { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; gap: 6px; align-items: center; }
+.node .nm.ph { font-style: italic; font-weight: 500; color: var(--muted); }
+.node .meta { display: flex; gap: 6px; align-items: center; color: var(--muted); font: 500 calc(11px * var(--tz)) var(--f-mono); }
+.node .yr { padding: 0 4px; border-radius: 4px; border: 1px solid var(--line); }
+.node.sel { border-color: var(--stamp); box-shadow: 0 0 0 2px var(--stamp); }
+.node.rel { border-color: color-mix(in srgb, var(--stamp) 55%, var(--line)); }
+
+/* Everyone */
+.everyone { display: grid; gap: 22px; }
+.gen-group { display: grid; gap: 8px; }
+.gen-group h3 { margin: 0; display: flex; gap: 10px; align-items: center; font: 700 16px var(--f-display); letter-spacing: .08em; text-transform: uppercase; }
+.gen-group h3 small { font: 500 13px var(--f-body); color: var(--muted); }
+.list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 6px; }
+.row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; min-height: 52px; text-align: left; padding: 8px 12px;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; min-width: 0; }
+.row .who { min-width: 0; }
+.row .who div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .who div:first-child { font-weight: 600; }
+.row .who div:last-child { font-size: 13px; color: var(--muted); }
+.row .ph { font-style: italic; font-weight: 500 !important; color: var(--muted); }
+.yrs { display: flex; gap: 4px; font: 600 11px var(--f-mono); }
+.yrs i { font-style: normal; padding: 2px 5px; border-radius: 5px; border: 1px solid var(--line); color: var(--muted); }
+.yrs i.in { border-color: var(--stamp); color: var(--stamp-text); }
+.row.sel { border-color: var(--stamp); }
+
+/* Name tag panel */
+.tag { position: fixed; z-index: 40; top: calc(16px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px));
+  width: 360px; max-height: calc(100% - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); overflow: auto;
+  background: var(--tag-paper); color: var(--tag-ink); border-radius: 16px; box-shadow: var(--shadow); transform: translateX(0); transition: transform .28s ease, opacity .28s ease; }
+.tag[hidden] { display: block !important; transform: translateX(calc(100% + 40px)); opacity: 0; pointer-events: none; visibility: hidden; }
+.tag-head { background: var(--c, var(--g0)); color: #141414; padding: 14px 18px 10px; position: relative; }
+.tag-head .hello { font: 700 38px/1 var(--f-display); letter-spacing: .04em; padding-top: 4px; }
+.tag-head .mni { font: 600 13px var(--f-body); letter-spacing: .06em; text-transform: lowercase; }
+.tag-head .gl { position: absolute; right: 52px; top: 16px; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; opacity: .8; }
+.tag-close { position: absolute; right: 8px; top: 8px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgb(255 255 255 / .35); color: #141414; cursor: pointer; display: grid; place-items: center; }
+.tag-body { padding: 14px 18px 18px; display: grid; gap: 14px; }
+.tag-name { font: 400 clamp(26px, 4vw, 32px)/1.1 var(--f-marker); color: #1d2a6b; word-break: break-word; }
+.tag-name.ph { color: #6b6b6b; }
+.tag-sub { font-size: 13px; color: #555; margin-top: 2px; }
+.facepair { display: flex; gap: 12px; }
+.facepair button { border: 0; background: none; padding: 0; cursor: pointer; display: grid; gap: 4px; justify-items: center; color: #555; font: 600 11px var(--f-mono); }
+.facepair .crop { width: 76px; height: 76px; border-radius: 50%; background-repeat: no-repeat; background-color: #ddd; box-shadow: 0 0 0 2px #ddd; }
+.facepair button.cur .crop { box-shadow: 0 0 0 3px var(--stamp); }
+.facepair button.cur { color: #85520c; }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 14px; }
+.facts dt { font: 600 11px/1.9 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: #707070; }
+.facts dd { margin: 0; }
+.facts .none { color: #8a8a8a; font-style: italic; }
+.rels { display: grid; gap: 6px; }
+.rels h4 { margin: 0; font: 600 11px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: #707070; }
+.rels div { display: flex; flex-wrap: wrap; gap: 6px; }
+.rels button { border: 1px solid #d5d5d5; background: #f4f4f4; color: #161616; border-radius: 16px; padding: 4px 10px; min-height: 32px; cursor: pointer; font-size: 13px; display: inline-flex; gap: 6px; align-items: center; }
+.rels button:hover { border-color: #999; }
+.acts { display: flex; flex-wrap: wrap; gap: 8px; }
+.acts button { flex: 1 1 auto; min-height: 44px; border-radius: 10px; border: 1.5px solid #161616; background: #161616; color: #fff; font-weight: 600; cursor: pointer; padding: 0 12px; }
+.acts button.alt { background: #fff; color: #161616; }
+.note { font-size: 13px; color: #6a6a6a; margin: 0; }
+.foot { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; }
+
+@media (max-width: 720px) {
+  .tag { top: auto; bottom: 0; right: 0; left: 0; width: auto; border-radius: 18px 18px 0 0; max-height: 78%;
+    padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .tag[hidden] { transform: translateY(105%); }
+  .nav .spacer { display: none; }
+  .tag-head .hello { font-size: 30px; }
+}
+@media (max-width: 520px) {
+  .tab { padding: 10px 9px 6px; font-size: 12px; letter-spacing: .08em; }
+  .stamp button { padding: 4px 12px 0; font-size: 15px; }
+  #stats { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="lights" id="lights" aria-hidden="true"></div>
+  <header class="top">
+    <div class="brand">
+      <div class="banner">
+        <h1 class="wm" aria-label="Camp Waterman">
+          <span class="r1" aria-hidden="true"><span class="yy" id="yyL">19</span><span class="camp">Camp</span><span class="yy" id="yyR">97</span></span>
+          <span class="wat" aria-hidden="true">Waterman</span>
+        </h1>
+      </div>
+      <p>The Waterman family, photographed in 1997 and again in 2026. Tap anyone to see who they are, then follow them into the family tree.</p>
+    </div>
+    <div class="search">
+      <label for="q">Find a person</label>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Find a person" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="results">
+      <div class="results" id="results" role="listbox" hidden></div>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Views">
+    <div class="stamp" role="group" aria-label="Photo year">
+      <button type="button" data-year="1997" aria-pressed="true">'97</button>
+      <button type="button" data-year="2026" aria-pressed="false">'26</button>
+    </div>
+    <button class="tab" type="button" data-view="photos" aria-selected="true">Photo</button>
+    <button class="tab" type="button" data-view="tree" aria-selected="false">Family tree</button>
+    <button class="tab" type="button" data-view="everyone" aria-selected="false">Everyone</button>
+    <span class="spacer"></span>
+    <span class="hint" id="stats"></span>
+  </nav>
+
+  <!-- PHOTO -->
+  <section id="v-photos" aria-label="Group photo">
+    <div style="display:grid;gap:12px">
+      <div class="tools">
+        <div class="legend" id="legend"></div>
+        <div class="ctl">
+          <span class="lab" id="mlab">Markers</span>
+          <div class="seg" role="group" aria-labelledby="mlab" id="markseg">
+            <button type="button" data-mark="rings" aria-pressed="true">Rings</button>
+            <button type="button" data-mark="dots" aria-pressed="false">Dots</button>
+            <button type="button" data-mark="none" aria-pressed="false">Off</button>
+          </div>
+          <label class="switch"><input type="checkbox" id="gentoggle" checked> Generation colors</label>
+          <button class="iconbtn" type="button" id="zout" aria-label="Zoom out">−</button>
+          <button class="iconbtn" type="button" id="zin" aria-label="Zoom in">+</button>
+        </div>
+      </div>
+      <div class="stage gen m-rings" id="stage">
+        <div class="print" id="print">
+          <img id="photo" src="/waterman/img/1997.jpg" alt="The Waterman family reunion group photo" width="2200" height="1520">
+          <div class="datemark" id="datemark" aria-hidden="true">'97</div>
+          <div class="spot" id="spot"></div>
+          <div id="faces"></div>
+        </div>
+      </div>
+      <p class="hint" id="photohint">Tap a face. Dashed markers are people we haven't named yet.</p>
+      <div class="roster">
+        <h2 id="rosterh">In the 1997 photo</h2>
+        <div class="chips" id="chips"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TREE -->
+  <section id="v-tree" aria-label="Family tree" hidden>
+    <div style="display:grid;gap:12px">
+      <div class="treebar">
+        <div class="ctl">
+          <span class="lab" id="tlab">View</span>
+          <div class="seg" role="group" aria-labelledby="tlab" id="treeseg">
+            <button type="button" data-tmode="list" aria-pressed="true">List</button>
+            <button type="button" data-tmode="family" aria-pressed="false">One family</button>
+            <button type="button" data-tmode="chart" aria-pressed="false">Full chart</button>
+          </div>
+        </div>
+        <div class="ctl" id="listctl">
+          <div class="seg"><button type="button" id="expandall">Collapse all</button></div>
+        </div>
+        <div class="ctl" id="chartctl" hidden>
+          <button class="iconbtn" type="button" id="tzout" aria-label="Zoom tree out">−</button>
+          <button class="iconbtn" type="button" id="tzin" aria-label="Zoom tree in">+</button>
+        </div>
+      </div>
+      <div class="legend" id="legend2"></div>
+      <div id="t-list" class="tlist"></div>
+      <div id="t-family" hidden></div>
+      <div id="t-chart" hidden>
+        <div style="display:grid;gap:10px">
+          <div class="treebox" id="treebox"><div class="tree" id="tree"></div></div>
+          <p class="hint">Scroll or drag sideways to see the whole family. Each band is a generation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVERYONE -->
+  <section id="v-everyone" aria-label="Everyone" hidden>
+    <div class="everyone" id="everyone"></div>
+  </section>
+
+  <footer class="foot">Names and dates are still being collected. Know someone we haven't named, or spot a mistake? Tell Evan.</footer>
+</div>
+
+<aside class="tag" id="tag" hidden aria-live="polite" aria-label="Person details"></aside>
+
+<script>
+/* ---------- DATA ---------- */
+// Hotspots: [number, x% of width, y% of height, radius% of width]
+const HOTSPOTS = { "1997": [[1,7.1,29.12,1.73],[2,10.18,24.63,1.75],[3,14.45,31.18,1.75],[4,18.11,28.85,1.68],[5,23.33,27.4,1.93],[6,29.28,28.38,1.87],[7,32.15,26.49,1.69],[8,34.46,32.76,1.7],[9,37.03,28.94,1.76],[10,40.66,28.49,1.66],[11,43.64,28.81,1.78],[12,47.03,29.14,1.61],[13,50.62,31.19,1.72],[14,52.44,26.62,1.85],[15,55.58,27.95,1.82],[16,55.75,32.96,1.68],[17,63.16,31.29,1.54],[18,64.04,26.72,1.48],[19,67.97,27.68,1.84],[20,73.77,27.29,1.77],[21,76.07,29.59,1.78],[22,80.46,30.98,1.69],[23,84.4,31.08,1.46],[24,87.02,26.95,1.82],[25,88.81,30.82,1.6],[26,94.55,28.0,1.71],[27,26.33,34.08,1.8],[28,13.61,39.14,2.44],[29,22.25,40.86,2.0],[30,27.58,41.41,1.79],[31,30.72,42.08,1.62],[32,38.7,41.92,1.84],[33,47.68,42.11,1.76],[34,59.4,41.72,1.91],[35,71.0,42.45,2.02],[36,73.85,40.03,1.86],[37,77.29,40.42,1.7],[38,81.49,43.43,1.81],[39,85.83,41.01,1.7],[40,90.98,44.41,1.82],[41,18.66,48.87,2.22],[42,28.91,49.43,1.85],[43,36.83,49.34,1.95],[44,54.6,48.45,2.1],[45,62.26,49.69,2.12],[46,89.81,51.16,2.05],[47,28.78,55.77,2.0],[48,39.35,54.4,1.72],[49,50.61,57.05,2.2],[50,63.4,57.19,1.99],[51,69.78,54.44,1.73],[52,77.72,54.15,1.85],[53,33.39,61.88,1.92],[54,71.8,59.94,1.73],[55,82.17,61.85,1.49],[56,90.55,60.91,1.71]], "2026": [[1,12.27,41.49,1.71],[2,14.35,38.34,1.82],[3,17.98,40.55,1.47],[4,19.93,38.46,1.53],[5,23.37,41.45,1.54],[6,24.91,38.53,1.43],[7,28.06,40.59,1.55],[8,32.68,39.02,1.45],[9,33.96,43.69,1.6],[10,35.81,42.93,1.31],[11,38.87,42.4,1.46],[12,39.95,40.8,1.4],[13,42.58,43.54,1.27],[14,44.88,40.8,1.38],[15,46.58,43.03,1.21],[16,50.84,43.61,1.29],[17,52.12,41.98,1.06],[18,55.46,42.85,1.26],[19,58.64,44.63,1.23],[20,59.8,42.1,1.12],[21,64.26,42.03,1.34],[22,66.28,42.44,0.98],[23,68.33,44.25,1.22],[24,68.42,40.14,1.21],[25,71.77,43.61,1.4],[26,76.72,42.16,1.32],[27,81.56,39.59,1.42],[28,84.46,43.75,1.58],[29,87.06,39.95,1.45],[30,90.24,42.48,1.52],[31,47.67,46.69,1.3],[32,52.81,47.89,1.48],[33,57.84,49.23,1.44],[34,62.53,45.26,1.35],[35,78.14,46.8,1.44],[36,56.56,54.27,1.19],[37,64.3,51.56,1.72],[38,78.45,54.07,1.54],[39,32.13,60.05,1.43],[40,39.69,60.48,1.59],[41,47.81,58.68,1.5],[42,53.96,59.25,1.49],[43,61.67,56.81,1.45],[44,73.37,59.91,1.4]] };
+const PHOTO = { "1997": { w: 2200, h: 1520, src: "/waterman/img/1997.jpg", mark: "'97" }, "2026": { w: 2200, h: 1650, src: "/waterman/img/2026.jpg", mark: "" } };
+
+// Privacy: living people show birth year only; under-18s show name and family only.
+const PRIVACY = { fullBirthDatesForLiving: false, hideMinors: true, minorCutoffYear: 2008 };
+
+// p = parents, s = spouse, g = generation, ph = placeholder name, a = parents assumed (needs confirming)
+const PEOPLE = [
+  { id: "buel", name: "Buel Waterman", g: 1, s: "lilly" },
+  { id: "lilly", name: "Lilly Waterman", g: 1, s: "buel" },
+  { id: "virginia", name: "Virginia Dee Gerrity", goes: "Ginger", maiden: "Waterman", g: 2, p: ["buel","lilly"], s: "robert_sr", y97: 32 },
+  { id: "robert_sr", name: "Robert Gerrity", g: 2, s: "virginia" },
+  { id: "joyce", name: "Joyce Norberg", goes: "Joy", maiden: "Waterman", g: 2, p: ["buel","lilly"], s: "walter", y97: 33 },
+  { id: "walter", name: "Walter Norberg", g: 2, s: "joyce", y97: 19 },
+  { id: "lee", name: "Lee Waterman", g: 2, p: ["buel","lilly"], a: true, y97: 34 },
+  { id: "shirley", name: "Shirley Finn", goes: "June", maiden: "Waterman", g: 2, p: ["buel","lilly"], a: true, y97: 38 },
+
+  { id: "ann", name: "Ann Casey", maiden: "Gerrity", g: 3, p: ["virginia","robert_sr"], s: "scott", lives: "Livonia, MI", y97: 43, y26: 1 },
+  { id: "scott", name: "Scott Casey", g: 3, s: "ann", lives: "Livonia, MI", y97: 2 },
+  { id: "patty", name: "Patricia Joy Guzman", goes: "Patty", maiden: "Gerrity", g: 3, p: ["virginia","robert_sr"], s: "greg_sr", lives: "Canton, MI", y97: 23, y26: 5 },
+  { id: "greg_sr", name: "Greg Guzman", g: 3, s: "patty" },
+  { id: "bob", name: "Robert John Gerrity", goes: "Bob", g: 3, p: ["virginia","robert_sr"], s: "julie", lives: "New Boston, MI", y97: 9, y26: 30 },
+  { id: "julie", name: "Julie Gerrity", g: 3, s: "bob", lives: "New Boston, MI", y97: 10, y26: 26 },
+  { id: "kiki", name: "Carolyn Fine", goes: "Kiki", maiden: "Gerrity", g: 3, p: ["virginia","robert_sr"], s: "mikefine", lives: "Summit, NJ", y97: 3, y26: 35 },
+  { id: "mikefine", name: "Michael Fine", goes: "Mike", g: 3, s: "kiki", y97: 11, y26: 28 },
+  { id: "leo", name: "Leo Gerrity", g: 3, p: ["virginia","robert_sr"], lives: "Birmingham, MI", y97: 18 },
+  { id: "jan", name: "Jan Vessel", maiden: "Norberg", g: 3, p: ["joyce","walter"], s: "dick", y97: 39, y26: 19 },
+  { id: "dick", name: "Dick Vessel", g: 3, s: "jan", y97: 46, y26: 18 },
+  { id: "jim", name: "Jim Norberg", g: 3, p: ["joyce","walter"], s: "annette", y97: 14, y26: 21 },
+  { id: "annette", name: "Annette Norberg", g: 3, s: "jim", y97: 12, y26: 25 },
+  { id: "jill", name: "Jill", g: 3, p: ["joyce","walter"], y97: 25 },
+  { id: "susan", name: "Susan Finn", g: 3, p: ["shirley"], s: "susan_h", y97: 37, y26: 15 },
+  { id: "susan_h", name: "Susan's husband", ph: true, g: 3, s: "susan", y26: 14 },
+  { id: "mikefinn", name: "Mike Finn", g: 3, p: ["shirley"], y26: 20 },
+  { id: "lynn", name: "Lynn", g: 3, s: "rick", y97: 21, y26: 3 },
+  { id: "rick", name: "Rick", g: 3, s: "lynn", y97: 20, y26: 2 },
+
+  { id: "kelsey", name: "Kelsey Marie Casey", g: 4, p: ["ann","scott"], lives: "Livonia, MI", y97: 48, y26: 9 },
+  { id: "ginny", name: "Virginia Casey", goes: "Ginny", g: 4, p: ["ann","scott"], y97: 6 },
+  { id: "allison", name: "Allison Casey", g: 4, p: ["ann","scott"], y97: 49 },
+  { id: "kendall", name: "Kendall Joy Casey", g: 4, p: ["ann","scott"], s: "tom", lives: "Dearborn Heights, MI", y97: 52 },
+  { id: "tom", name: "Tom", g: 4, s: "kendall" },
+  { id: "gregory", name: "Gregory Guzman", g: 4, p: ["patty","greg_sr"], s: "catherine", y26: 8 },
+  { id: "catherine", name: "Catherine", g: 4, s: "gregory", y26: 10 },
+  { id: "paula", name: "Paula Joy Guzman", g: 4, p: ["patty","greg_sr"], s: "ryanc" },
+  { id: "ryanc", name: "Ryan Canna", g: 4, s: "paula" },
+  { id: "daniel", name: "Daniel Patrick Gerrity", g: 4, p: ["bob","julie"], s: "jennifer", lives: "Ferndale, MI", y97: 41, y26: 27 },
+  { id: "jennifer", name: "Jennifer Gerrity", g: 4, s: "daniel" },
+  { id: "philip", name: "Philip Andrew Gerrity", g: 4, p: ["bob","julie"], s: "annmarie", lives: "Plymouth, MI", y97: 42, y26: 29 },
+  { id: "annmarie", name: "Ann-Marie Gerrity", g: 4, s: "philip" },
+  { id: "erin", name: "Erin Lee Milliken", maiden: "Gerrity", g: 4, p: ["bob","julie"], s: "matthew", born: "1976-04-03", lives: "Dearborn, MI", y97: 47, y26: 31 },
+  { id: "matthew", name: "Matthew Milliken", g: 4, s: "erin" },
+  { id: "evan", name: "Evan Elise Gonzalez", maiden: "Gerrity", g: 4, p: ["bob","julie"], s: "michael", born: "1992-08-01", bplace: "Garden City, MI", lives: "Dearborn, MI", y97: 53, y26: 11 },
+  { id: "michael", name: "Michael Gonzalez", g: 4, s: "evan" },
+  { id: "benfine", name: "Benjamin Fine", g: 4, p: ["kiki","mikefine"], y97: 55 },
+  { id: "alyssa", name: "Alyssa Fine", g: 4, p: ["kiki","mikefine"], y97: 56 },
+  { id: "ryan", name: "Ryan Vessel", g: 4, p: ["jan","dick"], y97: 50, y26: 32 },
+  { id: "katie", name: "Katie Vessel", g: 4, p: ["jan","dick"], y97: 51 },
+  { id: "sydney", name: "Sydney Trigg", maiden: "Norberg", g: 4, p: ["jim","annette"], s: "kyle", y97: 54, y26: 33 },
+  { id: "kyle", name: "Kyle Trigg", g: 4, s: "sydney", y26: 37 },
+  { id: "shelby", name: "Shelby Norberg", g: 4, p: ["jim","annette"], y26: 34 },
+  { id: "joel", name: "Joel", g: 4, p: ["susan","susan_h"], s: "joel_s", y26: 17 },
+  { id: "joel_s", name: "Joel's spouse", ph: true, g: 4, s: "joel", y26: 16 },
+  { id: "aidan", name: "Aidan", g: 4, p: ["susan","susan_h"], s: "aidan_w", y26: 24 },
+  { id: "aidan_w", name: "Aidan's wife", ph: true, g: 4, s: "aidan", y26: 38 },
+  { id: "ricky", name: "Ricky", g: 4, p: ["lynn","rick"], y97: 45, y26: 4 },
+  { id: "lizzie", name: "Lizzie", g: 4, p: ["lynn","rick"], s: "sean", y97: 44, y26: 7 },
+  { id: "sean", name: "Sean", g: 4, s: "lizzie", y26: 6 },
+
+  { id: "lucy", name: "Lucy Gonzalez", g: 5, p: ["evan","michael"], born: "2014-03-08", bplace: "Novi, MI", lives: "Dearborn, MI" },
+  { id: "ben", name: "Benjamin Gonzalez", g: 5, p: ["evan","michael"], born: "2016-05-20", bplace: "Novi, MI", lives: "Dearborn, MI" },
+  { id: "rivi", name: "Rivi Trigg", g: 5, p: ["sydney","kyle"], y26: 36 },
+  { id: "ford", name: "Ford Trigg", g: 5, p: ["sydney","kyle"], y26: 39 },
+  { id: "reid", name: "Reid Trigg", g: 5, p: ["sydney","kyle"], y26: 44 },
+  { id: "zariana", name: "Zariana", g: 5, p: ["katie"], y26: 41 },
+  { id: "aidanbaby", name: "Aidan's baby", ph: true, g: 5, p: ["aidan","aidan_w"], y26: 22 },
+  { id: "cora", name: "Cora", g: 5, p: ["aidan","aidan_w"], y26: 40 },
+  { id: "lizdau", name: "Lizzie's daughter", ph: true, g: 5, p: ["lizzie","sean"], y26: 42 },
+  { id: "lizson", name: "Lizzie's son", ph: true, g: 5, p: ["lizzie","sean"], y26: 43 },
+  { id: "annalise", name: "Annalise", g: 5, s: "annalise_bf", y26: 13 },
+  { id: "annalise_bf", name: "Annalise's boyfriend", ph: true, g: 5, s: "annalise", y26: 12 },
+
+  { id: "sally", name: "Sally", y26: 23 },
+  { id: "jack", name: "Jack", y97: 26 },
+];
+const GEN_LABEL = { 1: "Buel & Lilly", 2: "Their children", 3: "Grandchildren", 4: "Great-grandchildren", 5: "Great-great-grandchildren", 0: "Not placed yet" };
+
+/* ---------- INDEX ---------- */
+const byId = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
+const byNum = { "1997": {}, "2026": {} };
+PEOPLE.forEach(p => { if (p.y97) byNum["1997"][p.y97] = p.id; if (p.y26) byNum["2026"][p.y26] = p.id; });
+const kidsOf = id => PEOPLE.filter(c => (c.p || []).includes(id));
+const genColor = g => `var(--g${g || 0})`;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const yearOf = d => d ? +String(d).slice(0, 4) : null;
+const isMinor = p => PRIVACY.hideMinors && yearOf(p.born) && yearOf(p.born) >= PRIVACY.minorCutoffYear;
+const fmtDate = d => {
+  if (!d) return "";
+  const [y, m, dd] = String(d).split("-");
+  if (!m) return y;
+  return new Date(+y, +m - 1, +(dd || 1)).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+};
+
+/* ---------- STATE ---------- */
+const S = { view: "photos", year: "1997", sel: null, unk: null, zoom: 1, tz: 0.9, tmode: "list", closed: new Set(), focus: null };
+
+/* family helpers shared by the tree views */
+const unitOf = id => { const p = byId[id]; return p.s && byId[p.s] ? [id, p.s] : [id]; };
+const kidsOfUnit = u => { const seen = new Set(); return PEOPLE.filter(c => (c.p || []).some(pid => u.includes(pid)) && !seen.has(c.id) && seen.add(c.id)); };
+const TREE_ROOTS = ["buel", "lynn", "annalise"];
+const ancestorsOf = id => { const out = []; let cur = byId[id]; const guard = new Set();
+  while (cur) { let par = (cur.p || []).map(i => byId[i]).filter(Boolean)[0];
+    if (!par || guard.has(par.id)) break; guard.add(par.id); out.unshift(par.id); cur = par; }
+  return out; };
+const $ = s => document.querySelector(s);
+
+/* ---------- PHOTO ---------- */
+function renderLegend(el) {
+  el.innerHTML = [1, 2, 3, 4, 5].map(g => `<span><i class="dot" style="--c:${genColor(g)}"></i>${GEN_LABEL[g]}</span>`).join("");
+}
+function renderFaces() {
+  const box = $("#faces");
+  box.innerHTML = HOTSPOTS[S.year].map(([n, x, y, r]) => {
+    const id = byNum[S.year][n], p = byId[id];
+    const label = p ? `${p.name}, number ${n}` : `Unnamed person, number ${n}`;
+    const sel = (p && S.sel === id) || (!p && S.unk === n);
+    return `<button type="button" class="face${p ? "" : " unk"}${sel ? " sel" : ""}" data-n="${n}" aria-label="${esc(label)}"
+      style="left:${x}%;top:${y}%;width:${r * 2}%;--c:${p ? genColor(p.g) : "transparent"}"></button>`;
+  }).join("");
+  updateSpot();
+}
+function updateSpot() {
+  const spot = $("#spot"), p = byId[S.sel];
+  const n = p ? (S.year === "1997" ? p.y97 : p.y26) : S.unk;
+  const hs = n && HOTSPOTS[S.year].find(h => h[0] === n);
+  if (!hs) { spot.classList.remove("on"); return; }
+  const w = $("#print").offsetWidth;
+  spot.style.setProperty("--sx", hs[1] + "%");
+  spot.style.setProperty("--sy", hs[2] + "%");
+  spot.style.setProperty("--sr", (hs[3] / 100 * w * 1.6) + "px");
+  spot.classList.add("on");
+}
+function renderChips() {
+  $("#rosterh").textContent = `In the ${S.year} photo`;
+  $("#chips").innerHTML = HOTSPOTS[S.year].map(([n]) => {
+    const p = byId[byNum[S.year][n]];
+    const on = (p && S.sel === p.id) || (!p && S.unk === n);
+    return `<button type="button" class="chip${p ? "" : " unk"}${on ? " on" : ""}" data-n="${n}"><b>${n}</b>
+      ${p ? `<i class="dot" style="--c:${genColor(p.g)}"></i>` : ""}<span>${p ? esc(p.goes ? `${p.name} (${p.goes})` : p.name) : "Not named yet"}</span></button>`;
+  }).join("");
+}
+function setYear(y, keep = true) {
+  if (y === S.year) return;
+  const pr = $("#print");
+  pr.classList.add("swap");
+  setTimeout(() => {
+    S.year = y;
+    const ph = PHOTO[y];
+    const img = $("#photo");
+    img.src = ph.src; img.width = ph.w; img.height = ph.h;
+    $("#datemark").textContent = ph.mark;
+    setWordmarkYear(y);
+    if (!keep) { S.sel = null; S.unk = null; }
+    S.unk = null;
+    renderFaces(); renderChips(); syncNav();
+    img.decode ? img.decode().catch(() => {}).finally(() => pr.classList.remove("swap")) : pr.classList.remove("swap");
+    if (S.sel) { scrollToFace(); openTag(); }
+  }, 180);
+}
+function scrollToFace() {
+  const p = byId[S.sel]; const n = p && (S.year === "1997" ? p.y97 : p.y26);
+  const hs = HOTSPOTS[S.year].find(h => h[0] === (n || S.unk)); if (!hs) return;
+  const st = $("#stage"), pr = $("#print");
+  const cx = hs[1] / 100 * pr.offsetWidth, cy = hs[2] / 100 * pr.offsetHeight;
+  st.scrollTo({ left: cx - st.clientWidth / 2, top: cy - st.clientHeight / 2, behavior: "smooth" });
+}
+function setZoom(z) {
+  S.zoom = Math.max(1, Math.min(3, z));
+  $("#print").style.setProperty("--z", S.zoom);
+  $("#zout").disabled = S.zoom <= 1; $("#zin").disabled = S.zoom >= 3;
+  setTimeout(() => { updateSpot(); scrollToFace(); }, 280);
+}
+if (window.ResizeObserver) new ResizeObserver(() => updateSpot()).observe(document.getElementById("print"));
+
+/* ---------- TREE ---------- */
+function layoutTree() {
+  const z = S.tz, W = 168 * z, H = 58 * z, CG = 8 * z, SG = 26 * z, ROW = 128 * z, TOP = 34 * z, LEFT = 120 * z;
+  const pos = {}, links = [];
+  const unitOf = id => { const p = byId[id]; return p.s && byId[p.s] ? [id, p.s] : [id]; };
+  const kidsOfUnit = u => { const seen = new Set(); return PEOPLE.filter(c => (c.p || []).some(pid => u.includes(pid)) && !seen.has(c.id) && seen.add(c.id)); };
+  const width = {};
+  const measure = id => {
+    const u = unitOf(id), kids = kidsOfUnit(u), uw = u.length * W + (u.length - 1) * CG;
+    if (!kids.length) return (width[id] = uw);
+    const kw = kids.reduce((s, k) => s + measure(k.id), 0) + SG * (kids.length - 1);
+    return (width[id] = Math.max(uw, kw));
+  };
+  const rowY = g => TOP + ((g || 6) - 1) * ROW + (ROW - H) / 2;
+  const place = (id, x) => {
+    const u = unitOf(id), kids = kidsOfUnit(u), uw = u.length * W + (u.length - 1) * CG, tw = width[id];
+    const kw = kids.length ? kids.reduce((s, k) => s + width[k.id], 0) + SG * (kids.length - 1) : 0;
+    let cx = x + (tw - kw) / 2;
+    const kidX = [];
+    kids.forEach(k => { place(k.id, cx); kidX.push(k.id); cx += width[k.id] + SG; });
+    const ux = x + (tw - uw) / 2;
+    u.forEach((pid, i) => { pos[pid] = { x: ux + i * (W + CG), y: rowY(byId[pid].g) }; });
+    if (kids.length) links.push({ from: u, kids: kidX });
+  };
+  // roots: people with no parents who are not a spouse of someone with parents
+  const roots = ["buel", "lynn", "annalise"];
+  let x = LEFT;
+  roots.forEach(r => { measure(r); place(r, x); x += width[r] + SG * 3; });
+  // anyone left (unplaced)
+  PEOPLE.filter(p => !pos[p.id]).forEach(p => { pos[p.id] = { x, y: rowY(p.g || 6) }; x += W + SG; });
+  const totalW = x + LEFT * .4, totalH = TOP + 6 * ROW + 10 * z;
+  return { pos, links, W, H, ROW, TOP, totalW, totalH };
+}
+function renderTree() {
+  const L = layoutTree(), t = $("#tree");
+  t.style.width = L.totalW + "px"; t.style.height = L.totalH + "px"; t.style.setProperty("--tz", S.tz);
+  const bands = [1, 2, 3, 4, 5, 6].map(g => `<div class="band" style="top:${L.TOP + (g - 1) * L.ROW}px;height:${L.ROW}px;width:${L.totalW}px;--c:${genColor(g === 6 ? 0 : g)}">
+    <span class="lbl">${g === 6 ? "Not placed yet" : `Gen ${g} · ${GEN_LABEL[g]}`}</span></div>`).join("");
+  const mid = ids => { const xs = ids.map(i => L.pos[i].x + L.W / 2); return (Math.min(...xs) + Math.max(...xs)) / 2; };
+  const paths = L.links.map(({ from, kids }) => {
+    const px = mid(from), py = L.pos[from[0]].y + L.H;
+    const ky = L.pos[kids[0]].y, bus = py + (ky - py) / 2;
+    const kx = kids.map(k => L.pos[k].x + L.W / 2);
+    let d = `M${px},${py}V${bus}M${Math.min(px, ...kx)},${bus}H${Math.max(px, ...kx)}`;
+    kids.forEach((k, i) => { d += `M${kx[i]},${bus}V${L.pos[k].y}`; });
+    return `<path d="${d}"/>`;
+  }).join("");
+  const couples = PEOPLE.filter(p => p.s && byId[p.s] && p.id < p.s && L.pos[p.id] && L.pos[p.s]).map(p => {
+    const a = L.pos[p.id], b = L.pos[p.s]; const y = a.y + L.H / 2;
+    return `<path d="M${Math.min(a.x, b.x) + L.W},${y}H${Math.max(a.x, b.x)}" style="stroke-dasharray:3 3"/>`;
+  }).join("");
+  const sel = byId[S.sel];
+  const rel = new Set(sel ? [...(sel.p || []), sel.s, ...kidsOf(sel.id).map(k => k.id)].filter(Boolean) : []);
+  const nodes = PEOPLE.map(p => {
+    const q = L.pos[p.id]; if (!q) return "";
+    const yrs = p.born ? (isMinor(p) ? "" : `b. ${yearOf(p.born)}`) : "";
+    return `<button type="button" class="node${S.sel === p.id ? " sel" : ""}${rel.has(p.id) ? " rel" : ""}" data-id="${p.id}"
+      style="left:${q.x}px;top:${q.y}px;width:${L.W}px;height:${L.H}px">
+      <span class="nm${p.ph ? " ph" : ""}"><i class="dot" style="--c:${genColor(p.g)}"></i>${esc(shortName(p))}</span>
+      <span class="meta">${p.y97 ? `<span class="yr">'97</span>` : ""}${p.y26 ? `<span class="yr">'26</span>` : ""}${yrs ? `<span>${yrs}</span>` : ""}</span></button>`;
+  }).join("");
+  t.innerHTML = bands + `<svg width="${L.totalW}" height="${L.totalH}" aria-hidden="true">${couples}${paths}</svg>` + nodes;
+  t._layout = L;
+}
+function centerTreeOn(id) {
+  const L = $("#tree")._layout, q = L && L.pos[id]; if (!q) return;
+  const b = $("#treebox");
+  b.scrollTo({ left: q.x + L.W / 2 - b.clientWidth / 2, top: q.y + L.H / 2 - b.clientHeight / 2, behavior: "smooth" });
+}
+
+/* ---------- TREE: view switch ---------- */
+// The "line" a person belongs to: their own parents, or for someone who married in, their spouse's.
+function lineOf(id) {
+  const p = byId[id];
+  if (!(p.p || []).length && p.s && byId[p.s] && (byId[p.s].p || []).length) return [...ancestorsOf(p.s), p.s];
+  return ancestorsOf(id);
+}
+function renderTreeView() {
+  ["list", "family", "chart"].forEach(m => { $("#t-" + m).hidden = m !== S.tmode; });
+  document.querySelectorAll("#treeseg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.tmode === S.tmode));
+  $("#listctl").hidden = S.tmode !== "list";
+  $("#chartctl").hidden = S.tmode !== "chart";
+  if (S.tmode === "list") renderList();
+  if (S.tmode === "family") renderFamily();
+  if (S.tmode === "chart") renderTree();
+}
+function revealInTree(id) {
+  if (!id) return;
+  if (S.tmode === "chart") centerTreeOn(id);
+  if (S.tmode === "list") {
+    const el = document.querySelector(`#t-list .pill[data-id="${id}"]`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+/* ---------- TREE: list ---------- */
+const chev = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>`;
+function pill(id) {
+  const p = byId[id];
+  return `<button type="button" class="pill${S.sel === id ? " sel" : ""}" data-id="${id}">
+    <i class="dot" style="--c:${genColor(p.g)}"></i><span class="nm${p.ph ? " ph" : ""}">${esc(shortName(p))}</span>
+    <span class="yrs">${p.y97 ? `<i class="in">'97</i>` : ""}${p.y26 ? `<i class="in">'26</i>` : ""}</span></button>`;
+}
+function renderList() {
+  // keep the selected person's branch open
+  if (S.sel) lineOf(S.sel).forEach(a => S.closed.delete(a));
+  const placed = new Set();
+  const branch = id => {
+    const u = unitOf(id), kids = kidsOfUnit(u), g = byId[id].g;
+    u.forEach(x => placed.add(x));
+    const open = !S.closed.has(id);
+    const head = `<div class="couple">
+      ${kids.length ? `<button type="button" class="disc" data-toggle="${id}" aria-expanded="${open}" aria-label="${open ? "Hide" : "Show"} children of ${esc(shortName(byId[id]))}">${chev}</button>` : `<span class="disc blank"></span>`}
+      ${pill(u[0])}${u[1] ? `<span class="amp">&amp;</span>${pill(u[1])}` : ""}
+      ${kids.length ? `<span class="kcount">${kids.length} ${kids.length === 1 ? "child" : "children"}</span>` : ""}</div>`;
+    const body = kids.length && open ? `<div class="kids" style="--c:${genColor((g || 0) + 1)}">${kids.map(k => branch(k.id)).join("")}</div>` : "";
+    kids.forEach(k => placed.add(k.id));
+    return `<div class="branch">${head}${body}</div>`;
+  };
+  const trees = TREE_ROOTS.map(r => {
+    const html = branch(r);
+    const label = r === "buel" ? "The Waterman family" : r === "lynn" ? "Lynn & Rick's family (connection to the tree still needed)" : "Annalise (connection still needed)";
+    return `<div class="branch"><div class="genhead">${label}</div><div class="kids" style="--c:${genColor(byId[r].g)}">${html}</div></div>`;
+  }).join("");
+  const rest = PEOPLE.filter(p => !placed.has(p.id));
+  const restHtml = rest.length ? `<div class="branch"><div class="genhead">Not placed yet</div><div class="couple">${rest.map(p => pill(p.id)).join("")}</div></div>` : "";
+  $("#t-list").innerHTML = trees + restHtml;
+  $("#expandall").textContent = S.closed.size ? "Expand all" : "Collapse all";
+}
+
+/* ---------- TREE: one family ---------- */
+function avatar(p, D) {
+  const n = p.y26 ? ["2026", p.y26] : p.y97 ? ["1997", p.y97] : null;
+  if (n) return `<span class="av" style="${cropStyle(n[0], n[1], D)}"></span>`;
+  return `<span class="av" aria-hidden="true">${esc((p.goes || p.name).trim()[0])}</span>`;
+}
+function fcard(id, big = false, sub = "") {
+  const p = byId[id];
+  const years = !isMinor(p) && p.born ? `b. ${yearOf(p.born)}` : "";
+  const line = sub || [years, [p.y97 && "'97", p.y26 && "'26"].filter(Boolean).join(" ")].filter(Boolean).join(" · ");
+  return `<button type="button" class="fcard${big ? " big" : ""}${S.sel === id ? " sel" : ""}" data-focus="${id}">
+    ${avatar(p, big ? 72 : 48)}<span class="nm${p.ph ? " ph" : ""}">${esc(shortName(p))}</span><span class="sub">${esc(line) || "&nbsp;"}</span></button>`;
+}
+function renderFamily() {
+  const id = S.focus && byId[S.focus] ? S.focus : (S.sel && byId[S.sel] ? S.sel : "buel");
+  S.focus = id;
+  const p = byId[id], g = p.g || 0;
+  const parents = (p.p || []).filter(i => byId[i]);
+  const unit = unitOf(id);
+  const kids = kidsOfUnit(unit);
+  const sibs = parents.length ? PEOPLE.filter(c => c.id !== id && (c.p || []).some(x => parents.includes(x))) : [];
+  const crumbs = lineOf(id);
+  const spouse = p.s && byId[p.s] ? p.s : null;
+  const parentRow = parents.length
+    ? `<div class="frow" style="--c:${genColor(byId[parents[0]].g)}"><h4>Parents</h4><div class="fcards">${parents.map(i => fcard(i)).join("")}</div></div>`
+    : spouse && (byId[spouse].p || []).length
+      ? `<div class="frow" style="--c:${genColor(g - 1)}"><h4>Married into the family</h4><p class="empty" style="margin:0">Joined through ${esc(shortName(byId[spouse]))}. Tap them to see their parents.</p></div>`
+      : "";
+  const centerRow = `<div class="frow" style="--c:${genColor(g)}"><h4>${spouse ? "Couple" : "Person"}${g ? ` · Generation ${g}` : ""}</h4>
+    <div class="fcards">${fcard(id, true)}${spouse ? fcard(spouse, true) : ""}</div>
+    ${sibs.length ? `<h4 style="margin-top:6px">Brothers &amp; sisters</h4><div class="fcards">${sibs.map(s => fcard(s.id)).join("")}</div>` : ""}</div>`;
+  const kidRow = `<div class="frow" style="--c:${genColor(g + 1)}"><h4>Children</h4>
+    ${kids.length ? `<div class="fcards">${kids.map(k => fcard(k.id, false, byId[k.s] ? `& ${shortName(byId[k.s])}` : "")).join("")}</div>` : `<p class="empty" style="margin:0">No children listed yet.</p>`}</div>`;
+  $("#t-family").innerHTML = `<div class="focus">
+    <nav class="crumbs" aria-label="Family line">${crumbs.map(c => `<button type="button" data-focus="${c}">${esc(shortName(byId[c]))}</button><span aria-hidden="true">›</span>`).join("")}<span class="here">${esc(shortName(p))}</span></nav>
+    ${parentRow}${centerRow}${kidRow}</div>`;
+}
+
+/* ---------- EVERYONE ---------- */
+function renderEveryone() {
+  const groups = [1, 2, 3, 4, 5, 0].map(g => {
+    const ps = PEOPLE.filter(p => (p.g || 0) === g);
+    if (!ps.length) return "";
+    return `<div class="gen-group"><h3><i class="dot" style="--c:${genColor(g)}"></i>${g ? `Generation ${g}` : "Not placed yet"} <small>${g ? GEN_LABEL[g] : "Family connection still needed"} · ${ps.length}</small></h3>
+      <div class="list">${ps.map(p => `<button type="button" class="row${S.sel === p.id ? " sel" : ""}" data-id="${p.id}">
+        <i class="dot" style="--c:${genColor(p.g)}"></i>
+        <span class="who"><div class="${p.ph ? "ph" : ""}">${esc(p.name)}${p.goes ? ` <span style="color:var(--muted);font-weight:400">"${esc(p.goes)}"</span>` : ""}</div>
+        <div>${esc(isMinor(p) ? relLine(p) : (p.lives || relLine(p)))}</div></span>
+        <span class="yrs"><i class="${p.y97 ? "in" : ""}">'97</i><i class="${p.y26 ? "in" : ""}">'26</i></span></button>`).join("")}</div></div>`;
+  }).join("");
+  $("#everyone").innerHTML = groups;
+}
+function relLine(p) {
+  const par = (p.p || []).map(i => byId[i]).filter(Boolean);
+  if (par.length) return `Child of ${par.map(x => x.goes || x.name.split(" ")[0]).join(" & ")}`;
+  if (p.s && byId[p.s]) return `Married to ${byId[p.s].goes || byId[p.s].name.split(" ")[0]}`;
+  return "";
+}
+
+/* ---------- NAME TAG ---------- */
+function cropStyle(year, n, D = 76) {
+  const hs = HOTSPOTS[year].find(h => h[0] === n); if (!hs) return "";
+  const ph = PHOTO[year];
+  const bgW = D / (hs[3] * 2.15 / 100), bgH = bgW * ph.h / ph.w;
+  return `background-image:url(${ph.src});background-size:${bgW}px ${bgH}px;background-position:${-(hs[1] / 100 * bgW - D / 2)}px ${-(hs[2] / 100 * bgH - D / 2)}px`;
+}
+function personChip(id) {
+  const p = byId[id]; if (!p) return "";
+  return `<button type="button" data-go="${p.id}"><i class="dot" style="--c:${genColor(p.g)}"></i>${esc(p.goes && !p.ph ? `${p.goes} ${p.name.split(" ").slice(-1)}` : p.name)}</button>`;
+}
+function openTag() {
+  const tag = $("#tag");
+  if (!S.sel && !S.unk) { tag.hidden = true; return; }
+  if (S.unk && !S.sel) {
+    tag.style.setProperty("--c", "var(--g0)");
+    tag.innerHTML = `<div class="tag-head"><div class="hello">HELLO</div><div class="mni">my name is</div>
+      <button class="tag-close" type="button" aria-label="Close">${xIcon}</button></div>
+      <div class="tag-body"><div><div class="tag-name ph">Not named yet</div><div class="tag-sub">Number ${S.unk} in the ${S.year} photo</div></div>
+      <div class="facepair"><button type="button" class="cur" tabindex="-1"><span class="crop" style="${cropStyle(S.year, S.unk)}"></span>'${S.year.slice(2)}</button></div>
+      <p class="note">Know who this is? Tell Evan the name and number ${S.unk}.</p></div>`;
+    tag.hidden = false; return;
+  }
+  const p = byId[S.sel], minor = isMinor(p);
+  tag.style.setProperty("--c", genColor(p.g));
+  const living = !p.died;
+  const facts = [];
+  if (!minor) {
+    if (p.born) facts.push(["Born", `${living && !PRIVACY.fullBirthDatesForLiving ? yearOf(p.born) : fmtDate(p.born)}${p.bplace ? `<br>${esc(p.bplace)}` : ""}`]);
+    else if (p.bplace) facts.push(["Born", esc(p.bplace)]);
+    if (p.died) facts.push(["Died", fmtDate(p.died)]);
+    if (p.buried) facts.push(["Resting", esc(p.buried)]);
+    if (!p.died && p.lives) facts.push(["Lives in", esc(p.lives)]);
+    if (p.maiden) facts.push(["Born a", esc(p.maiden)]);
+  }
+  const both = p.y97 && p.y26;
+  const faces = [["1997", p.y97], ["2026", p.y26]].filter(f => f[1]).map(([y, n]) =>
+    `<button type="button" class="${S.view === "photos" && S.year === y ? "cur" : ""}" data-year-go="${y}" aria-label="Show in the ${y} photo">
+      <span class="crop" style="${cropStyle(y, n)}"></span>'${y.slice(2)} · #${n}</button>`).join("");
+  const kids = kidsOf(p.id).map(k => k.id);
+  const rel = [["Parents", p.p || []], ["Spouse", p.s ? [p.s] : []], ["Children", kids]].filter(r => r[1].length)
+    .map(([h, ids]) => `<div class="rels"><h4>${h}</h4><div>${ids.map(personChip).join("")}</div></div>`).join("");
+  const other = S.year === "1997" ? "2026" : "1997";
+  const inOther = other === "1997" ? p.y97 : p.y26;
+  const acts = [];
+  if (S.view === "photos" && inOther) acts.push(`<button type="button" class="alt" data-year-go="${other}">See in ${other}</button>`);
+  if (S.view !== "photos" && (p.y97 || p.y26)) acts.push(`<button type="button" class="alt" data-year-go="${p.y97 ? "1997" : "2026"}">See in photo</button>`);
+  if (S.view !== "tree") acts.push(`<button type="button" data-tree-go="${p.id}">Show in family tree</button>`);
+  tag.innerHTML = `<div class="tag-head"><div class="hello">HELLO</div><div class="mni">my name is</div>
+      <span class="gl">${p.g ? `Gen ${p.g}` : ""}</span>
+      <button class="tag-close" type="button" aria-label="Close">${xIcon}</button></div>
+    <div class="tag-body">
+      <div><div class="tag-name${p.ph ? " ph" : ""}">${esc(p.goes && !p.ph ? p.goes : p.name)}</div>
+        <div class="tag-sub">${p.goes ? esc(p.name) : ""}${p.ph ? "Name needed" : ""}</div></div>
+      ${faces ? `<div class="facepair">${faces}</div>` : `<p class="note">Not in either photo.</p>`}
+      ${S.view === "photos" && !inOther && (p.y97 || p.y26) ? `<p class="note">Not in the ${other} photo.</p>` : ""}
+      ${minor ? `<p class="note">Details are hidden for kids under 18.</p>` : (facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>` : `<p class="note">No details yet.</p>`)}
+      ${p.a ? `<p class="note">Parents assumed from the family name. Needs confirming.</p>` : ""}
+      ${rel}
+      ${acts.length ? `<div class="acts">${acts.join("")}</div>` : ""}
+    </div>`;
+  tag.hidden = false;
+}
+function shortName(p) {
+  if (p.ph) return p.name;
+  const parts = p.name.split(" ");
+  const first = p.goes || parts[0];
+  return parts.length > 1 ? `${first} ${parts[parts.length - 1]}` : first;
+}
+const xIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>`;
+
+/* ---------- SELECTION + NAV ---------- */
+function select(id, opts = {}) {
+  S.sel = id; S.unk = null;
+  const p = byId[id];
+  if (S.view === "photos" && p) {
+    const inCur = S.year === "1997" ? p.y97 : p.y26, inOther = S.year === "1997" ? p.y26 : p.y97;
+    if (!inCur && inOther && opts.follow !== false) { setYear(S.year === "1997" ? "2026" : "1997"); return; }
+    if (!inCur && !inOther && opts.follow !== false) { setView("tree"); return; }
+  }
+  if (S.view === "tree" && S.tmode === "family" && !opts.keepFocus) S.focus = id;
+  refresh();
+  if (S.view === "photos") scrollToFace();
+  if (S.view === "tree") revealInTree(id);
+}
+function refresh() {
+  if (S.view === "photos") { renderFaces(); renderChips(); }
+  if (S.view === "tree") renderTreeView();
+  if (S.view === "everyone") renderEveryone();
+  openTag();
+}
+function setView(v) {
+  S.view = v;
+  ["photos", "tree", "everyone"].forEach(k => { $("#v-" + k).hidden = k !== v; });
+  if (v === "tree" && S.sel) S.focus = S.sel;
+  syncNav(); refresh();
+  if (v === "tree") requestAnimationFrame(() => revealInTree(S.sel || "buel"));
+  try { history.replaceState(null, "", "#" + (v === "photos" ? S.year : v)); } catch (e) {}
+}
+function syncNav() {
+  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b.dataset.view === S.view));
+  document.querySelectorAll(".stamp button").forEach(b => b.setAttribute("aria-pressed", S.view === "photos" && b.dataset.year === S.year));
+  if (S.view === "photos") try { history.replaceState(null, "", "#" + S.year); } catch (e) {}
+}
+
+/* ---------- EVENTS ---------- */
+document.addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t) {
+    if (!e.target.closest(".search")) $("#results").hidden = true;
+    return;
+  }
+  if (t.classList.contains("face") || (t.classList.contains("chip") && t.dataset.n)) {
+    const n = +t.dataset.n, id = byNum[S.year][n];
+    if (id) select(id, { follow: false }); else { S.sel = null; S.unk = n; refresh(); if (t.classList.contains("chip")) scrollToFace(); }
+    return;
+  }
+  if (t.dataset.year && t.closest(".stamp")) { if (S.view !== "photos") { S.year = t.dataset.year; setView("photos"); const ph = PHOTO[S.year]; $("#photo").src = ph.src; $("#datemark").textContent = ph.mark; setWordmarkYear(S.year); refresh(); } else setYear(t.dataset.year); return; }
+  if (t.dataset.view) { setView(t.dataset.view); return; }
+  if (t.classList.contains("tag-close")) { S.sel = null; S.unk = null; refresh(); return; }
+  if (t.dataset.go) { select(t.dataset.go); return; }
+  if (t.dataset.yearGo) {
+    const y = t.dataset.yearGo;
+    if (S.view !== "photos") { S.view = "photos"; ["photos", "tree", "everyone"].forEach(k => { $("#v-" + k).hidden = k !== "photos"; }); if (y !== S.year) setYear(y); else { refresh(); syncNav(); scrollToFace(); } syncNav(); }
+    else setYear(y);
+    return;
+  }
+  if (t.dataset.treeGo) { S.sel = t.dataset.treeGo; setView("tree"); return; }
+  if (t.dataset.id) { select(t.dataset.id, { follow: false, keepFocus: true }); return; }
+  if (t.dataset.focus) { S.focus = t.dataset.focus; select(t.dataset.focus, { follow: false }); if ($("#v-tree").getBoundingClientRect().top < 0) window.scrollTo({ top: $("#v-tree").offsetTop - 12, behavior: "smooth" }); return; }
+  if (t.dataset.toggle) { const k = t.dataset.toggle; S.closed.has(k) ? S.closed.delete(k) : S.closed.add(k); renderList(); return; }
+  if (t.id === "expandall") {
+    if (S.closed.size) S.closed.clear();
+    else PEOPLE.forEach(p => { if ((p.g || 0) >= 2 && kidsOfUnit(unitOf(p.id)).length) S.closed.add(p.id); });
+    renderList(); return;
+  }
+  if (t.dataset.tmode) { S.tmode = t.dataset.tmode; if (S.sel) S.focus = S.sel; renderTreeView(); requestAnimationFrame(() => revealInTree(S.sel || "buel")); return; }
+  if (t.dataset.mark) {
+    const st = $("#stage"); st.classList.remove("m-rings", "m-dots", "m-none"); st.classList.add("m-" + t.dataset.mark);
+    document.querySelectorAll("#markseg button").forEach(b => b.setAttribute("aria-pressed", b === t)); return;
+  }
+  if (t.id === "zin") setZoom(S.zoom + .75);
+  if (t.id === "zout") setZoom(S.zoom - .75);
+  if (t.id === "tzin") { S.tz = Math.min(1.3, S.tz + .15); renderTree(); if (S.sel) centerTreeOn(S.sel); }
+  if (t.id === "tzout") { S.tz = Math.max(.5, S.tz - .15); renderTree(); if (S.sel) centerTreeOn(S.sel); }
+  if (t.dataset.pick) { pick(t.dataset.pick); }
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && (S.sel || S.unk)) { S.sel = null; S.unk = null; refresh(); } });
+$("#gentoggle").addEventListener("change", e => $("#stage").classList.toggle("gen", e.target.checked));
+
+// Search
+const q = $("#q"), res = $("#results");
+let hits = [], hi = 0;
+function norm(s) { return String(s || "").toLowerCase(); }
+function doSearch() {
+  const v = norm(q.value.trim());
+  if (!v) { res.hidden = true; q.setAttribute("aria-expanded", "false"); return; }
+  hits = PEOPLE.filter(p => [p.name, p.goes, p.maiden].some(f => norm(f).includes(v))).slice(0, 12);
+  hi = 0;
+  res.innerHTML = hits.length ? hits.map((p, i) => `<button type="button" role="option" class="${i === 0 ? "on" : ""}" data-pick="${p.id}">
+      <i class="dot" style="--c:${genColor(p.g)}"></i>${esc(p.name)}${p.goes ? ` "${esc(p.goes)}"` : ""}<small>${[p.y97 && "'97", p.y26 && "'26"].filter(Boolean).join(" ")}</small></button>`).join("")
+    : `<div style="padding:10px;color:var(--muted)">No one by that name yet.</div>`;
+  res.hidden = false; q.setAttribute("aria-expanded", "true");
+}
+function pick(id) { res.hidden = true; q.value = ""; q.setAttribute("aria-expanded", "false"); q.blur(); select(id); }
+q.addEventListener("input", doSearch);
+q.addEventListener("keydown", e => {
+  if (res.hidden || !hits.length) return;
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+    e.preventDefault(); hi = (hi + (e.key === "ArrowDown" ? 1 : hits.length - 1)) % hits.length;
+    res.querySelectorAll("button").forEach((b, i) => b.classList.toggle("on", i === hi));
+  }
+  if (e.key === "Enter") { e.preventDefault(); pick(hits[hi].id); }
+});
+
+// Drag to pan the tree
+(() => {
+  const b = $("#treebox"); let d = null;
+  b.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse" || e.target.closest(".node")) return; d = { x: e.clientX, y: e.clientY, l: b.scrollLeft, t: b.scrollTop }; b.style.cursor = "grabbing"; });
+  window.addEventListener("pointermove", e => { if (!d) return; b.scrollLeft = d.l - (e.clientX - d.x); b.scrollTop = d.t - (e.clientY - d.y); });
+  window.addEventListener("pointerup", () => { d = null; b.style.cursor = ""; });
+})();
+
+/* ---------- BRAND: banner years + string of lights ---------- */
+function setWordmarkYear(y) { $("#yyL").textContent = y.slice(0, 2); $("#yyR").textContent = y.slice(2); }
+function drawLights() {
+  const el = $("#lights"), W = el.clientWidth, H = 96, sag = Math.min(52, 20 + W * .025), top = 6;
+  const yAt = x => top + sag * 4 * (x / W) * (1 - x / W);
+  const slope = x => sag * 4 * (1 - 2 * x / W) / W;
+  const colors = ["var(--mustard)", "var(--denim)", "var(--paisley)", "var(--sky)"];
+  let out = `<defs><radialGradient id="hg"><stop offset="0" stop-color="#ffd27a" stop-opacity=".9"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient></defs>`;
+  out += `<path class="cord" d="M0,${top} Q${W / 2},${top + sag * 2} ${W},${top}"/>`;
+  const bw = ($(".banner") || {}).offsetWidth || 0, narrow = bw > W * .7;
+  el.style.marginBottom = narrow ? "-22px" : "";
+  const step = 44; let i = 0, pc = 0;
+  for (let x = 26; x < W - 14; x += step, i++) {
+    if (!narrow && Math.abs(x - W / 2) < bw / 2 + 8) continue;
+    const y = yAt(x), a = Math.atan(slope(x)) * 180 / Math.PI;
+    if (i % 3 === 1) {
+      out += `<g transform="translate(${x},${y})"><circle r="22" fill="url(#hg)" style="opacity:calc(.55 * var(--glow))"/><rect x="-2.5" y="0" width="5" height="6" rx="1" fill="var(--cord)"/>
+        <ellipse cx="0" cy="12" rx="5.5" ry="7.5" class="bulb"/></g>`;
+    } else {
+      const c = colors[pc++ % colors.length], dots = c === "var(--paisley)" || c === "var(--denim)" ? "#f4efe6" : "#7a5418";
+      out += `<g transform="translate(${x},${y}) rotate(${a})"><path d="M-17,0 L17,0 L0,30 Z" fill="${c}"/>
+        <path d="M-12,3 L12,3 L0,24 Z" fill="none" stroke="${dots}" stroke-width=".9" stroke-dasharray="1.5 2.5" opacity=".75"/>
+        <circle cx="0" cy="9" r="2.2" fill="${dots}" opacity=".8"/><circle cx="-6" cy="5" r="1.2" fill="${dots}" opacity=".7"/><circle cx="6" cy="5" r="1.2" fill="${dots}" opacity=".7"/></g>`;
+    }
+  }
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${out}</svg>`;
+}
+drawLights();
+let _lw = 0; window.addEventListener("resize", () => { const w = $("#lights").clientWidth; if (Math.abs(w - _lw) > 20) { _lw = w; drawLights(); } });
+
+/* ---------- BOOT ---------- */
+renderLegend($("#legend")); renderLegend($("#legend2"));
+{
+  const n97 = HOTSPOTS["1997"].length, n26 = HOTSPOTS["2026"].length, both = PEOPLE.filter(p => p.y97 && p.y26).length;
+  $("#stats").textContent = `${n97} in 1997 · ${n26} in 2026 · ${both} in both`;
+}
+setZoom(1);
+const h = (location.hash || "").slice(1);
+if (h === "2026") { setWordmarkYear("2026"); S.year = "2026"; const ph = PHOTO["2026"]; $("#photo").src = ph.src; $("#photo").width = ph.w; $("#photo").height = ph.h; $("#datemark").textContent = ph.mark; }
+setView(["tree", "everyone"].includes(h) ? h : "photos");
+</script>
+</body>
+</html>
