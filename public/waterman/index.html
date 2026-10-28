@@ -412,7 +412,7 @@ const PEOPLE = [
   { id: "robert_sr", name: "Robert Gerrity", g: 2, s: "virginia" },
   { id: "joyce", name: "Joyce Norberg", goes: "Joy", maiden: "Waterman", g: 2, p: ["buel","lilly"], s: "walter", y97: 33 },
   { id: "walter", name: "Walter Norberg", g: 2, s: "joyce", y97: 19 },
-  { id: "lee", name: "Lee Waterman", g: 2, p: ["buel","lilly"], a: true, y97: 34 },
+  { id: "lee", name: "Harvey Lee Waterman", goes: "Lee", g: 2, p: ["buel","lilly"], a: true, y97: 34 },
   { id: "shirley", name: "Shirley Finn", goes: "June", maiden: "Waterman", g: 2, p: ["buel","lilly"], a: true, y97: 38 },
 
   { id: "ann", name: "Ann Casey", maiden: "Gerrity", g: 3, p: ["virginia","robert_sr"], s: "scott", lives: "Livonia, MI", y97: 43, y26: 1 },
@@ -428,12 +428,12 @@ const PEOPLE = [
   { id: "dick", name: "Dick Vessel", g: 3, s: "jan", y97: 46, y26: 18 },
   { id: "jim", name: "Jim Norberg", g: 3, p: ["joyce","walter"], s: "annette", y97: 14, y26: 21 },
   { id: "annette", name: "Annette Norberg", g: 3, s: "jim", y97: 12, y26: 25 },
-  { id: "jill", name: "Jill", g: 3, p: ["joyce","walter"], y97: 25 },
-  { id: "susan", name: "Susan Finn", g: 3, p: ["shirley"], s: "susan_h", y97: 37, y26: 15 },
-  { id: "susan_h", name: "Susan's husband", ph: true, g: 3, s: "susan", y26: 14 },
+  { id: "jill", name: "Jill Norberg", g: 3, p: ["joyce","walter"], y97: 25 },
+  { id: "lynn", name: "Lynn Gage", maiden: "Norberg", g: 3, p: ["joyce","walter"], a: true, s: "rick", y97: 21, y26: 3 },
+  { id: "rick", name: "Rick Gage", g: 3, s: "lynn", y97: 20, y26: 2 },
+  { id: "susan", name: "Susan Finn", g: 3, p: ["shirley"], s: "david", y97: 37, y26: 15 },
+  { id: "david", name: "David Baker", g: 3, s: "susan", y26: 14 },
   { id: "mikefinn", name: "Mike Finn", g: 3, p: ["shirley"], y26: 20 },
-  { id: "lynn", name: "Lynn", g: 3, s: "rick", y97: 21, y26: 3 },
-  { id: "rick", name: "Rick", g: 3, s: "lynn", y97: 20, y26: 2 },
 
   { id: "kelsey", name: "Kelsey Marie Casey", g: 4, p: ["ann","scott"], lives: "Livonia, MI", y97: 48, y26: 9 },
   { id: "ginny", name: "Virginia Casey", goes: "Ginny", g: 4, p: ["ann","scott"], y97: 6 },
@@ -448,7 +448,7 @@ const PEOPLE = [
   { id: "jennifer", name: "Jennifer Gerrity", g: 4, s: "daniel" },
   { id: "philip", name: "Philip Andrew Gerrity", g: 4, p: ["bob","julie"], s: "annmarie", lives: "Plymouth, MI", y97: 42, y26: 29 },
   { id: "annmarie", name: "Ann-Marie Gerrity", g: 4, s: "philip" },
-  { id: "erin", name: "Erin Lee Milliken", maiden: "Gerrity", g: 4, p: ["bob","julie"], s: "matthew", born: "1976-04-03", lives: "Dearborn, MI", y97: 47, y26: 31 },
+  { id: "erin", name: "Erin Lee Milliken", maiden: "Gerrity", g: 4, p: ["bob","julie"], s: "matthew", born: "1977-04-03", lives: "Dearborn, MI", y97: 47, y26: 31 },
   { id: "matthew", name: "Matthew Milliken", g: 4, s: "erin" },
   { id: "evan", name: "Evan Elise Gonzalez", maiden: "Gerrity", g: 4, p: ["bob","julie"], s: "michael", born: "1992-08-01", bplace: "Garden City, MI", lives: "Dearborn, MI", y97: 53, y26: 11 },
   { id: "michael", name: "Michael Gonzalez", g: 4, s: "evan" },
@@ -459,29 +459,35 @@ const PEOPLE = [
   { id: "sydney", name: "Sydney Trigg", maiden: "Norberg", g: 4, p: ["jim","annette"], s: "kyle", y97: 54, y26: 33 },
   { id: "kyle", name: "Kyle Trigg", g: 4, s: "sydney", y26: 37 },
   { id: "shelby", name: "Shelby Norberg", g: 4, p: ["jim","annette"], y26: 34 },
-  { id: "joel", name: "Joel", g: 4, p: ["susan","susan_h"], s: "joel_s", y26: 17 },
-  { id: "joel_s", name: "Joel's spouse", ph: true, g: 4, s: "joel", y26: 16 },
-  { id: "aidan", name: "Aidan", g: 4, p: ["susan","susan_h"], s: "aidan_w", y26: 24 },
-  { id: "aidan_w", name: "Aidan's wife", ph: true, g: 4, s: "aidan", y26: 38 },
-  { id: "ricky", name: "Ricky", g: 4, p: ["lynn","rick"], y97: 45, y26: 4 },
-  { id: "lizzie", name: "Lizzie", g: 4, p: ["lynn","rick"], s: "sean", y97: 44, y26: 7 },
-  { id: "sean", name: "Sean", g: 4, s: "lizzie", y26: 6 },
+  { id: "ricky", name: "Ricky Gage", g: 4, p: ["lynn","rick"], y97: 45, y26: 4 },
+  { id: "lizzie", name: "Lizzie Hazlegrove", maiden: "Gage", g: 4, p: ["lynn","rick"], s: "sean", y97: 44, y26: 7 },
+  { id: "sean", name: "Sean Hazlegrove", g: 4, s: "lizzie", y26: 6 },
+  { id: "joel", name: "Joel Finn-Harris", g: 4, p: ["susan"], s: "cyndi", y26: 17 },
+  { id: "cyndi", name: "Cyndi Whiting", g: 4, s: "joel", y26: 16 },
+  { id: "aidan", name: "Aidan Finn", g: 4, p: ["susan"], s: "julia", y97: 40, y26: 24 },
+  { id: "julia", name: "Julia Finn", g: 4, s: "aidan", y26: 38 },
 
   { id: "lucy", name: "Lucy Gonzalez", g: 5, p: ["evan","michael"], born: "2014-03-08", bplace: "Novi, MI", lives: "Dearborn, MI" },
   { id: "ben", name: "Benjamin Gonzalez", g: 5, p: ["evan","michael"], born: "2016-05-20", bplace: "Novi, MI", lives: "Dearborn, MI" },
   { id: "rivi", name: "Rivi Trigg", g: 5, p: ["sydney","kyle"], y26: 36 },
   { id: "ford", name: "Ford Trigg", g: 5, p: ["sydney","kyle"], y26: 39 },
   { id: "reid", name: "Reid Trigg", g: 5, p: ["sydney","kyle"], y26: 44 },
-  { id: "zariana", name: "Zariana", g: 5, p: ["katie"], y26: 41 },
-  { id: "aidanbaby", name: "Aidan's baby", ph: true, g: 5, p: ["aidan","aidan_w"], y26: 22 },
-  { id: "cora", name: "Cora", g: 5, p: ["aidan","aidan_w"], y26: 40 },
-  { id: "lizdau", name: "Lizzie's daughter", ph: true, g: 5, p: ["lizzie","sean"], y26: 42 },
-  { id: "lizson", name: "Lizzie's son", ph: true, g: 5, p: ["lizzie","sean"], y26: 43 },
-  { id: "annalise", name: "Annalise", g: 5, s: "annalise_bf", y26: 13 },
-  { id: "annalise_bf", name: "Annalise's boyfriend", ph: true, g: 5, s: "annalise", y26: 12 },
+  { id: "xarianna", name: "Xarianna", g: 5, p: ["katie"], y26: 41 },
+  { id: "maya", name: "Maya Finn", g: 5, p: ["aidan","julia"], y26: 22 },
+  { id: "cora", name: "Cora Finn", g: 5, p: ["aidan","julia"], y26: 40 },
+  { id: "ella", name: "Ella Hazlegrove", g: 5, p: ["lizzie","sean"], y26: 42 },
+  { id: "cameron", name: "Cameron Hazlegrove", g: 5, p: ["lizzie","sean"], y26: 43 },
+  { id: "anneliese", name: "Anneliese Finn-Harris", g: 5, s: "chandler", y26: 13 },
+  { id: "chandler", name: "Chandler", g: 5, s: "anneliese", y26: 12 },
 
-  { id: "sally", name: "Sally", y26: 23 },
+  { id: "sally", name: "Sally Finn", y26: 23 },
   { id: "jack", name: "Jack", y97: 26 },
+  { id: "debbie", name: "Debbie Anton Waterman", y97: 4 },
+  { id: "robert_anton", name: "Robert Anton", y97: 5 },
+  { id: "rita", name: "Rita Waterman", y97: 8 },
+  { id: "nancy", name: "Nancy Waterman Hotek", y97: 22 },
+  { id: "billy", name: "William Waterman", goes: "Billy", y97: 29 },
+  { id: "ethel", name: "Ethel Waterman", y97: 35 },
 ];
 const GEN_LABEL = { 1: "Buel & Lilly", 2: "Their children", 3: "Grandchildren", 4: "Great-grandchildren", 5: "Great-great-grandchildren", 0: "Not placed yet" };
 
@@ -507,7 +513,7 @@ const S = { view: "photos", year: "1997", sel: null, unk: null, zoom: 1, tz: 0.9
 /* family helpers shared by the tree views */
 const unitOf = id => { const p = byId[id]; return p.s && byId[p.s] ? [id, p.s] : [id]; };
 const kidsOfUnit = u => { const seen = new Set(); return PEOPLE.filter(c => (c.p || []).some(pid => u.includes(pid)) && !seen.has(c.id) && seen.add(c.id)); };
-const TREE_ROOTS = ["buel", "lynn", "annalise"];
+const TREE_ROOTS = ["buel", "anneliese"];
 const ancestorsOf = id => { const out = []; let cur = byId[id]; const guard = new Set();
   while (cur) { let par = (cur.p || []).map(i => byId[i]).filter(Boolean)[0];
     if (!par || guard.has(par.id)) break; guard.add(par.id); out.unshift(par.id); cur = par; }
@@ -607,7 +613,7 @@ function layoutTree() {
     if (kids.length) links.push({ from: u, kids: kidX });
   };
   // roots: people with no parents who are not a spouse of someone with parents
-  const roots = ["buel", "lynn", "annalise"];
+  const roots = TREE_ROOTS;
   let x = LEFT;
   roots.forEach(r => { measure(r); place(r, x); x += width[r] + SG * 3; });
   // anyone left (unplaced)
@@ -701,9 +707,12 @@ function renderList() {
     kids.forEach(k => placed.add(k.id));
     return `<div class="branch">${head}${body}</div>`;
   };
+  // everyone reachable from a root counts as placed, open or collapsed
+  const walk = id => { unitOf(id).forEach(x => placed.add(x)); kidsOfUnit(unitOf(id)).forEach(k => { if (!placed.has(k.id)) walk(k.id); }); };
+  TREE_ROOTS.forEach(walk);
   const trees = TREE_ROOTS.map(r => {
     const html = branch(r);
-    const label = r === "buel" ? "The Waterman family" : r === "lynn" ? "Lynn & Rick's family (connection to the tree still needed)" : "Annalise (connection still needed)";
+    const label = r === "buel" ? "The Waterman family" : `${shortName(byId[r])} (connection to the tree still needed)`;
     return `<div class="branch"><div class="genhead">${label}</div><div class="kids" style="--c:${genColor(byId[r].g)}">${html}</div></div>`;
   }).join("");
   const rest = PEOPLE.filter(p => !placed.has(p.id));
