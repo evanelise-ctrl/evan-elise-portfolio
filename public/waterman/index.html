@@ -29,7 +29,7 @@
   --mustard: #c9973a; --denim: #8ea4c2; --paisley: #2f2a26; --sky: #b9c9dc;
   --tag-paper: #ffffff;
   --tag-ink: #161616;
-  --g1: #8e5b86; --g2: #c2593b; --g3: #4f8a5e; --g4: #5b80b3; --g5: #93b8dc; --g0: #a99a87;
+  --g1: #8e5b86; --g2: #c2593b; --g3: #4f8a5e; --g4: #5b80b3; --g5: #d0738f; --g0: #a99a87;
   --band-mix: 14%;
   --shadow: 0 18px 48px rgb(60 36 20 / .20), 0 2px 6px rgb(60 36 20 / .12);
   --f-display: "Josefin Sans", "Futura", "Century Gothic", sans-serif;
@@ -115,8 +115,9 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
   display: grid; place-items: center; font: 600 18px var(--f-mono); }
 .iconbtn:disabled { opacity: .4; cursor: default; }
 
-.stage { position: relative; overflow: auto; border-radius: 6px; background: var(--surface-2); max-width: 100%;
-  box-shadow: 0 1px 0 var(--line); overscroll-behavior: contain; }
+.stage { position: relative; border-radius: 6px; background: var(--surface-2); max-width: 100%;
+  box-shadow: 0 1px 0 var(--line); overflow: hidden; }
+.stage.zoomed { overflow-x: auto; overflow-y: hidden; }
 .print { position: relative; width: calc(100% * var(--z, 1)); transition: width .25s ease; }
 .print img { display: block; width: 100%; height: auto; max-width: none; user-select: none; -webkit-user-drag: none; transition: opacity .3s ease; }
 .print.swap img { opacity: 0; }
@@ -203,7 +204,7 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 /* Tree */
 .treebar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
 .treebox { position: relative; overflow: auto; border-radius: 6px; border: 1px solid var(--line); background: var(--surface);
-  height: min(72vh, 760px); overscroll-behavior: contain; }
+  height: min(72vh, 760px); }
 .tree { position: relative; }
 .band { position: absolute; left: 0; background: color-mix(in srgb, var(--c) var(--band-mix), var(--surface)); border-top: 1px solid color-mix(in srgb, var(--c) 35%, transparent); }
 .band .lbl { position: sticky; left: 0; display: inline-block; padding: 8px 12px; font: 600 11px var(--f-mono); letter-spacing: .1em;
@@ -226,13 +227,13 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 .gen-group h3 { margin: 0; display: flex; gap: 10px; align-items: center; font: 700 16px var(--f-display); letter-spacing: .08em; text-transform: uppercase; }
 .gen-group h3 small { font: 500 13px var(--f-body); color: var(--muted); }
 .list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 6px; }
-.row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; min-height: 52px; text-align: left; padding: 8px 12px;
+.row { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; min-height: 52px; text-align: left; padding: 8px 12px;
   border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; min-width: 0; }
 .row .who { min-width: 0; }
 .row .who div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .row .who div:first-child { font-weight: 600; }
 .row .who div:last-child { font-size: 13px; color: var(--muted); }
-.row .ph { font-style: italic; font-weight: 500 !important; color: var(--muted); }
+.row .inlaw { font-style: italic; font-weight: 500 !important; }
 .yrs { display: flex; gap: 4px; font: 600 11px var(--f-mono); }
 .yrs i { font-style: normal; padding: 2px 5px; border-radius: 5px; border: 1px solid var(--line); color: var(--muted); }
 .yrs i.in { border-color: var(--stamp); color: var(--stamp-text); }
@@ -345,7 +346,7 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
           <div id="faces"></div>
         </div>
       </div>
-      <p class="hint" id="photohint">Tap a face. Dashed markers are people we haven't named yet.</p>
+      <p class="hint" id="photohint">Tap a face to see who it is.</p>
       <div class="roster">
         <h2 id="rosterh">In the 1997 photo</h2>
         <div class="chips" id="chips"></div>
@@ -390,7 +391,6 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
     <div class="everyone" id="everyone"></div>
   </section>
 
-  <footer class="foot">Names and dates are still being collected. Know someone we haven't named, or spot a mistake? Tell Evan.</footer>
 </div>
 
 <aside class="tag" id="tag" hidden aria-live="polite" aria-label="Person details"></aside>
@@ -404,92 +404,98 @@ const PHOTO = { "1997": { w: 2200, h: 1520, src: "/waterman/img/1997.jpg", mark:
 // Privacy: living people show birth year only; under-18s show name and family only.
 const PRIVACY = { fullBirthDatesForLiving: false, hideMinors: true, minorCutoffYear: 2008 };
 
-// p = parents, s = spouse, g = generation, ph = placeholder name, a = parents assumed (needs confirming)
+// Built from the Photo Key spreadsheet by build_people.py. Edit the sheet, not this list.
+// g = generation used for color and tree rows, gen = generation in the sheet,
+// p = parents, s = partner in the tree, sp = spouse/partner stated in the sheet, off = not on the tree
 const PEOPLE = [
-  { id: "buel", name: "Buel Waterman", g: 1, s: "lilly" },
-  { id: "lilly", name: "Lilly Waterman", g: 1, s: "buel" },
-  { id: "virginia", name: "Virginia Dee Gerrity", goes: "Ginger", maiden: "Waterman", g: 2, p: ["buel","lilly"], s: "robert_sr", y97: 32 },
-  { id: "robert_sr", name: "Robert Gerrity", g: 2, s: "virginia" },
-  { id: "joyce", name: "Joyce Norberg", goes: "Joy", maiden: "Waterman", g: 2, p: ["buel","lilly"], s: "walter", y97: 33 },
-  { id: "walter", name: "Walter Norberg", g: 2, s: "joyce", y97: 19 },
-  { id: "lee", name: "Harvey Lee Waterman", goes: "Lee", g: 2, p: ["buel","lilly"], a: true, y97: 34 },
-  { id: "shirley", name: "Shirley Finn", goes: "June", maiden: "Waterman", g: 2, p: ["buel","lilly"], a: true, y97: 38 },
-
-  { id: "ann", name: "Ann Casey", maiden: "Gerrity", g: 3, p: ["virginia","robert_sr"], s: "scott", lives: "Livonia, MI", y97: 43, y26: 1 },
-  { id: "scott", name: "Scott Casey", g: 3, s: "ann", lives: "Livonia, MI", y97: 2 },
-  { id: "patty", name: "Patricia Joy Guzman", goes: "Patty", maiden: "Gerrity", g: 3, p: ["virginia","robert_sr"], s: "greg_sr", lives: "Canton, MI", y97: 23, y26: 5 },
-  { id: "greg_sr", name: "Greg Guzman", g: 3, s: "patty" },
-  { id: "bob", name: "Robert John Gerrity", goes: "Bob", g: 3, p: ["virginia","robert_sr"], s: "julie", lives: "New Boston, MI", y97: 9, y26: 30 },
-  { id: "julie", name: "Julie Gerrity", g: 3, s: "bob", lives: "New Boston, MI", y97: 10, y26: 26 },
-  { id: "kiki", name: "Carolyn Fine", goes: "Kiki", maiden: "Gerrity", g: 3, p: ["virginia","robert_sr"], s: "mikefine", lives: "Summit, NJ", y97: 3, y26: 35 },
-  { id: "mikefine", name: "Michael Fine", goes: "Mike", g: 3, s: "kiki", y97: 11, y26: 28 },
-  { id: "leo", name: "Leo Gerrity", g: 3, p: ["virginia","robert_sr"], lives: "Birmingham, MI", y97: 18 },
-  { id: "jan", name: "Jan Vessel", maiden: "Norberg", g: 3, p: ["joyce","walter"], s: "dick", y97: 39, y26: 19 },
-  { id: "dick", name: "Dick Vessel", g: 3, s: "jan", y97: 46, y26: 18 },
-  { id: "jim", name: "Jim Norberg", g: 3, p: ["joyce","walter"], s: "annette", y97: 14, y26: 21 },
-  { id: "annette", name: "Annette Norberg", g: 3, s: "jim", y97: 12, y26: 25 },
-  { id: "jill", name: "Jill Norberg", g: 3, p: ["joyce","walter"], y97: 25 },
-  { id: "lynn", name: "Lynn Gage", maiden: "Norberg", g: 3, p: ["joyce","walter"], a: true, s: "rick", y97: 21, y26: 3 },
-  { id: "rick", name: "Rick Gage", g: 3, s: "lynn", y97: 20, y26: 2 },
-  { id: "susan", name: "Susan Finn", g: 3, p: ["shirley"], s: "david", y97: 37, y26: 15 },
-  { id: "david", name: "David Baker", g: 3, s: "susan", y26: 14 },
-  { id: "mikefinn", name: "Mike Finn", g: 3, p: ["shirley"], y26: 20 },
-
-  { id: "kelsey", name: "Kelsey Marie Casey", g: 4, p: ["ann","scott"], lives: "Livonia, MI", y97: 48, y26: 9 },
-  { id: "ginny", name: "Virginia Casey", goes: "Ginny", g: 4, p: ["ann","scott"], y97: 6 },
-  { id: "allison", name: "Allison Casey", g: 4, p: ["ann","scott"], y97: 49 },
-  { id: "kendall", name: "Kendall Joy Casey", g: 4, p: ["ann","scott"], s: "tom", lives: "Dearborn Heights, MI", y97: 52 },
-  { id: "tom", name: "Tom", g: 4, s: "kendall" },
-  { id: "gregory", name: "Gregory Guzman", g: 4, p: ["patty","greg_sr"], s: "catherine", y26: 8 },
-  { id: "catherine", name: "Catherine", g: 4, s: "gregory", y26: 10 },
-  { id: "paula", name: "Paula Joy Guzman", g: 4, p: ["patty","greg_sr"], s: "ryanc" },
-  { id: "ryanc", name: "Ryan Canna", g: 4, s: "paula" },
-  { id: "daniel", name: "Daniel Patrick Gerrity", g: 4, p: ["bob","julie"], s: "jennifer", lives: "Ferndale, MI", y97: 41, y26: 27 },
-  { id: "jennifer", name: "Jennifer Gerrity", g: 4, s: "daniel" },
-  { id: "philip", name: "Philip Andrew Gerrity", g: 4, p: ["bob","julie"], s: "annmarie", lives: "Plymouth, MI", y97: 42, y26: 29 },
-  { id: "annmarie", name: "Ann-Marie Gerrity", g: 4, s: "philip" },
-  { id: "erin", name: "Erin Lee Milliken", maiden: "Gerrity", g: 4, p: ["bob","julie"], s: "matthew", born: "1977-04-03", lives: "Dearborn, MI", y97: 47, y26: 31 },
-  { id: "matthew", name: "Matthew Milliken", g: 4, s: "erin" },
-  { id: "evan", name: "Evan Elise Gonzalez", maiden: "Gerrity", g: 4, p: ["bob","julie"], s: "michael", born: "1992-08-01", bplace: "Garden City, MI", lives: "Dearborn, MI", y97: 53, y26: 11 },
-  { id: "michael", name: "Michael Gonzalez", g: 4, s: "evan" },
-  { id: "benfine", name: "Benjamin Fine", g: 4, p: ["kiki","mikefine"], y97: 55 },
-  { id: "alyssa", name: "Alyssa Fine", g: 4, p: ["kiki","mikefine"], y97: 56 },
-  { id: "ryan", name: "Ryan Vessel", g: 4, p: ["jan","dick"], y97: 50, y26: 32 },
-  { id: "katie", name: "Katie Vessel", g: 4, p: ["jan","dick"], y97: 51 },
-  { id: "sydney", name: "Sydney Trigg", maiden: "Norberg", g: 4, p: ["jim","annette"], s: "kyle", y97: 54, y26: 33 },
-  { id: "kyle", name: "Kyle Trigg", g: 4, s: "sydney", y26: 37 },
-  { id: "shelby", name: "Shelby Norberg", g: 4, p: ["jim","annette"], y26: 34 },
-  { id: "ricky", name: "Ricky Gage", g: 4, p: ["lynn","rick"], y97: 45, y26: 4 },
-  { id: "lizzie", name: "Lizzie Hazlegrove", maiden: "Gage", g: 4, p: ["lynn","rick"], s: "sean", y97: 44, y26: 7 },
-  { id: "sean", name: "Sean Hazlegrove", g: 4, s: "lizzie", y26: 6 },
-  { id: "joel", name: "Joel Finn-Harris", g: 4, p: ["susan"], s: "cyndi", y26: 17 },
-  { id: "cyndi", name: "Cyndi Whiting", g: 4, s: "joel", y26: 16 },
-  { id: "aidan", name: "Aidan Finn", g: 4, p: ["susan"], s: "julia", y97: 40, y26: 24 },
-  { id: "julia", name: "Julia Finn", g: 4, s: "aidan", y26: 38 },
-
-  { id: "lucy", name: "Lucy Gonzalez", g: 5, p: ["evan","michael"], born: "2014-03-08", bplace: "Novi, MI", lives: "Dearborn, MI" },
-  { id: "ben", name: "Benjamin Gonzalez", g: 5, p: ["evan","michael"], born: "2016-05-20", bplace: "Novi, MI", lives: "Dearborn, MI" },
-  { id: "rivi", name: "Rivi Trigg", g: 5, p: ["sydney","kyle"], y26: 36 },
-  { id: "ford", name: "Ford Trigg", g: 5, p: ["sydney","kyle"], y26: 39 },
-  { id: "reid", name: "Reid Trigg", g: 5, p: ["sydney","kyle"], y26: 44 },
-  { id: "xarianna", name: "Xarianna", g: 5, p: ["katie"], y26: 41 },
-  { id: "maya", name: "Maya Finn", g: 5, p: ["aidan","julia"], y26: 22 },
-  { id: "cora", name: "Cora Finn", g: 5, p: ["aidan","julia"], y26: 40 },
-  { id: "ella", name: "Ella Hazlegrove", g: 5, p: ["lizzie","sean"], y26: 42 },
-  { id: "cameron", name: "Cameron Hazlegrove", g: 5, p: ["lizzie","sean"], y26: 43 },
-  { id: "anneliese", name: "Anneliese Finn-Harris", g: 5, s: "chandler", y26: 13 },
-  { id: "chandler", name: "Chandler", g: 5, s: "anneliese", y26: 12 },
-
-  { id: "sally", name: "Sally Finn", y26: 23 },
-  { id: "jack", name: "Jack", y97: 26 },
-  { id: "debbie", name: "Debbie Anton Waterman", y97: 4 },
-  { id: "robert_anton", name: "Robert Anton", y97: 5 },
-  { id: "rita", name: "Rita Waterman", y97: 8 },
-  { id: "nancy", name: "Nancy Waterman Hotek", y97: 22 },
-  { id: "billy", name: "William Waterman", goes: "Billy", y97: 29 },
-  { id: "ethel", name: "Ethel Waterman", y97: 35 },
+  {"id": "buel", "name": "Buel Waterman", "g": 1, "gen": 1, "s": "lilly_waterman", "born": "1887-02-10", "died": "1948-08-27", "buried": "Elroy, WI"},
+  {"id": "lilly_waterman", "name": "Lilly Waterman", "maiden": "Rifleman", "g": 1, "gen": 1, "s": "buel", "born": "1888", "died": "1977"},
+  {"id": "virginia_gerrity", "name": "Virginia Gerrity", "goes": "Ginger", "maiden": "Waterman", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "s": "robert_sr", "sp": "spouse", "born": "1928-06-18", "bplace": "Wisconsin", "died": "2005-01-04", "buried": "Plymouth, MI", "y97": 32},
+  {"id": "bill", "name": "William Waterman", "goes": "Bill", "off": true, "born": "1914", "died": "1997"},
+  {"id": "joyce_norberg", "name": "Joyce Norberg", "goes": "Joy", "maiden": "Waterman", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "s": "walter_norberg", "sp": "spouse", "bplace": "Wisconsin", "y97": 33},
+  {"id": "harvey_waterman", "name": "Harvey Waterman", "goes": "Lee", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "s": "ethel_waterman", "born": "1917-03-09", "bplace": "Wisconsin", "died": "2003-12-27", "y97": 34},
+  {"id": "shirley_finn", "name": "Shirley Finn", "goes": "June", "maiden": "Waterman", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "born": "1919", "bplace": "Wisconsin", "died": "1997", "y97": 38},
+  {"id": "ann_casey", "name": "Ann Casey", "maiden": "Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "scott_casey", "sp": "spouse", "bplace": "Michigan", "lives": "Michigan", "y97": 43, "y26": 1},
+  {"id": "lynn_gage", "name": "Lynn Gage", "maiden": "Norberg", "g": 3, "gen": 3, "p": ["joyce_norberg", "walter_norberg"], "s": "rick_gage", "lives": "California", "y97": 21, "y26": 3},
+  {"id": "patricia_guzman", "name": "Patricia Guzman", "goes": "Patty", "maiden": "Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "greg_guzman", "bplace": "Michigan", "lives": "Michigan", "y97": 23, "y26": 5},
+  {"id": "susan_finn", "name": "Susan Finn", "g": 3, "gen": 3, "p": ["shirley_finn"], "s": "david_baker", "sp": "spouse", "lives": "Michigan", "y97": 37, "y26": 15},
+  {"id": "jan_vessel", "name": "Jan Vessel", "maiden": "Norberg", "g": 3, "gen": 3, "p": ["joyce_norberg", "walter_norberg"], "s": "dick_vessel", "sp": "spouse", "lives": "California", "y97": 39, "y26": 19},
+  {"id": "mike_finn", "name": "Mike Finn", "g": 3, "gen": 3, "p": ["shirley_finn"], "s": "sally_finn", "sp": "spouse", "lives": "California", "y26": 20},
+  {"id": "jim_norberg", "name": "Jim Norberg", "g": 3, "gen": 3, "p": ["joyce_norberg", "walter_norberg"], "s": "annette_norberg", "sp": "spouse", "bplace": "Michigan", "lives": "California", "y97": 14, "y26": 21},
+  {"id": "bob", "name": "Robert Gerrity", "goes": "Bob", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "julie_gerrity", "sp": "spouse", "born": "1956-10-31", "bplace": "Michigan", "lives": "Michigan", "y97": 9, "y26": 30},
+  {"id": "carolyn_fine", "name": "Carolyn Fine", "goes": "Kiki", "maiden": "Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "mike_fine", "sp": "spouse", "bplace": "Michigan", "lives": "New Jersey", "y97": 3, "y26": 35},
+  {"id": "jill_norberg", "name": "Jill Norberg", "g": 3, "gen": 3, "p": ["joyce_norberg", "walter_norberg"], "bplace": "Michigan", "lives": "California", "y97": 25},
+  {"id": "leo_gerrity", "name": "Leo Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "bplace": "Michigan", "lives": "Michigan", "y97": 18},
+  {"id": "ricky_gage", "name": "Ricky Gage", "g": 4, "gen": 4, "p": ["lynn_gage", "rick_gage"], "bplace": "California", "lives": "California", "y97": 45, "y26": 4},
+  {"id": "elizabeth_hazlegrove", "name": "Elizabeth Hazlegrove", "goes": "Lizzie", "maiden": "Gage", "g": 4, "gen": 4, "p": ["lynn_gage", "rick_gage"], "s": "sean_hazlegrove", "sp": "spouse", "bplace": "California", "y97": 44, "y26": 7},
+  {"id": "gregory_guzman", "name": "Gregory Guzman", "g": 4, "gen": 4, "p": ["patricia_guzman", "greg_guzman"], "s": "catherine_manceor", "sp": "spouse", "bplace": "Michigan", "y26": 8},
+  {"id": "kelsey_casey", "name": "Kelsey Casey", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "s": "alex_cramer", "born": "1990-12-19", "bplace": "Michigan", "lives": "Livonia, MI", "y97": 48, "y26": 9},
+  {"id": "evan_gonzalez", "name": "Evan Gonzalez", "maiden": "Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "michael_gonzalez", "sp": "spouse", "born": "1992-08-01", "bplace": "Michigan", "lives": "Dearborn, MI", "y97": 53, "y26": 11},
+  {"id": "joel_finn_harris", "name": "Joel Finn-Harris", "g": 4, "gen": 4, "p": ["susan_finn"], "s": "cyndi_whiting", "sp": "partner", "y26": 17},
+  {"id": "aidan_finn", "name": "Aidan Finn", "g": 4, "gen": 4, "p": ["susan_finn"], "s": "julia_finn", "sp": "spouse", "y97": 40, "y26": 24},
+  {"id": "daniel_gerrity", "name": "Daniel Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "jennifer_gerrity", "sp": "spouse", "born": "1979-09-10", "bplace": "Michigan", "lives": "Ferndale, MI", "y97": 41, "y26": 27},
+  {"id": "philip_gerrity", "name": "Philip Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "ann_marie_gerrity", "sp": "spouse", "born": "1983-02-25", "bplace": "Michigan", "lives": "Plymouth, MI", "y97": 42, "y26": 29},
+  {"id": "erin_milliken", "name": "Erin Milliken", "maiden": "Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "matthew_milliken", "sp": "spouse", "born": "1977-04-03", "bplace": "Michigan", "lives": "Dearborn, MI", "y97": 47, "y26": 31},
+  {"id": "ryan_vessel", "name": "Ryan Vessel", "g": 4, "gen": 4, "p": ["jan_vessel", "dick_vessel"], "y97": 50, "y26": 32},
+  {"id": "sydney_trigg", "name": "Sydney Trigg", "maiden": "Norberg", "g": 4, "gen": 4, "p": ["jim_norberg", "annette_norberg"], "s": "kyle_trigg", "sp": "spouse", "y97": 54, "y26": 33},
+  {"id": "shelby_norberg", "name": "Shelby Norberg", "g": 4, "gen": 4, "p": ["jim_norberg", "annette_norberg"], "y26": 34},
+  {"id": "virginia_casey", "name": "Virginia Casey", "goes": "Ginny", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "born": "1980-12-26", "bplace": "Michigan", "died": "2022-01-17", "buried": "Michigan", "y97": 6},
+  {"id": "allison_casey", "name": "Allison Casey", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "born": "1986-04-14", "y97": 49},
+  {"id": "katie_vessel", "name": "Katie Vessel", "g": 4, "gen": 4, "p": ["jan_vessel", "dick_vessel"], "y97": 51},
+  {"id": "kendall_casey", "name": "Kendall Casey", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "s": "tom", "sp": "spouse", "born": "1987-09-01", "lives": "Dearborn Heights, MI", "y97": 52},
+  {"id": "benjamin_fine", "name": "Benjamin Fine", "g": 4, "gen": 4, "p": ["carolyn_fine", "mike_fine"], "bplace": "Minnesota", "y97": 55},
+  {"id": "alyssa_fine", "name": "Alyssa Fine", "g": 4, "gen": 4, "p": ["carolyn_fine", "mike_fine"], "born": "1991-04-07", "bplace": "Minnesota", "y97": 56},
+  {"id": "paula_guzman", "name": "Paula Guzman", "g": 4, "gen": 4, "p": ["patricia_guzman", "greg_guzman"], "s": "ryan_canna", "sp": "spouse", "born": "1998", "bplace": "Michigan"},
+  {"id": "anneliese_finn_harris", "name": "Anneliese Finn-Harris", "g": 5, "gen": 5, "p": ["joel_finn_harris"], "s": "chandler", "sp": "partner", "y26": 13},
+  {"id": "maya_finn", "name": "Maya Finn", "g": 5, "gen": 5, "p": ["aidan_finn", "julia_finn"], "bplace": "California", "y26": 22},
+  {"id": "rivi_trigg", "name": "Rivi Trigg", "g": 5, "gen": 5, "p": ["sydney_trigg", "kyle_trigg"], "bplace": "California", "y26": 36},
+  {"id": "ford_trigg", "name": "Ford Trigg", "g": 5, "gen": 5, "p": ["sydney_trigg", "kyle_trigg"], "bplace": "California", "y26": 39},
+  {"id": "cora_finn", "name": "Cora Finn", "g": 5, "gen": 5, "p": ["aidan_finn", "julia_finn"], "bplace": "California", "y26": 40},
+  {"id": "xarianna", "name": "Xarianna", "g": 5, "gen": 5, "p": ["katie_vessel"], "bplace": "California", "y26": 41},
+  {"id": "ella_hazlegrove", "name": "Ella Hazlegrove", "g": 5, "gen": 5, "p": ["elizabeth_hazlegrove", "sean_hazlegrove"], "bplace": "California", "y26": 42},
+  {"id": "cameron_hazlegrove", "name": "Cameron Hazlegrove", "g": 5, "gen": 5, "p": ["elizabeth_hazlegrove", "sean_hazlegrove"], "bplace": "California", "y26": 43},
+  {"id": "reid_trigg", "name": "Reid Trigg", "g": 5, "gen": 5, "p": ["sydney_trigg", "kyle_trigg"], "bplace": "California", "y26": 44},
+  {"id": "lucy_gonzalez", "name": "Lucy Gonzalez", "g": 5, "gen": 5, "p": ["evan_gonzalez", "michael_gonzalez"], "born": "2014-03-08", "bplace": "Michigan", "lives": "Dearborn, MI"},
+  {"id": "benjmain_gonzalez", "name": "Benjamin Gonzalez", "g": 5, "gen": 5, "p": ["evan_gonzalez", "michael_gonzalez"], "born": "2016-05-20", "bplace": "Michigan", "lives": "Dearborn, MI"},
+  {"id": "rick_gage", "name": "Rick Gage", "g": 3, "inlaw": true, "s": "lynn_gage", "y97": 20, "y26": 2},
+  {"id": "sean_hazlegrove", "name": "Sean Hazlegrove", "g": 4, "inlaw": true, "s": "elizabeth_hazlegrove", "sp": "spouse", "y26": 6},
+  {"id": "catherine_manceor", "name": "Catherine Manceor", "g": 4, "inlaw": true, "s": "gregory_guzman", "sp": "spouse", "y26": 10},
+  {"id": "chandler", "name": "Chandler", "g": 5, "inlaw": true, "s": "anneliese_finn_harris", "sp": "partner", "y26": 12},
+  {"id": "david_baker", "name": "David Baker", "g": 3, "inlaw": true, "s": "susan_finn", "sp": "spouse", "y26": 14},
+  {"id": "cyndi_whiting", "name": "Cyndi Whiting", "g": 4, "inlaw": true, "s": "joel_finn_harris", "sp": "partner", "y26": 16},
+  {"id": "dick_vessel", "name": "Dick Vessel", "g": 3, "inlaw": true, "s": "jan_vessel", "sp": "spouse", "y97": 46, "y26": 18},
+  {"id": "sally_finn", "name": "Sally Finn", "g": 3, "inlaw": true, "s": "mike_finn", "sp": "spouse", "y26": 23},
+  {"id": "annette_norberg", "name": "Annette Norberg", "g": 3, "inlaw": true, "s": "jim_norberg", "sp": "spouse", "y97": 12, "y26": 25},
+  {"id": "julie_gerrity", "name": "Julie Gerrity", "g": 3, "inlaw": true, "s": "bob", "sp": "spouse", "lives": "New Boston, MI", "y97": 10, "y26": 26},
+  {"id": "mike_fine", "name": "Mike Fine", "g": 3, "inlaw": true, "s": "carolyn_fine", "sp": "spouse", "y97": 11, "y26": 28},
+  {"id": "kyle_trigg", "name": "Kyle Trigg", "g": 4, "inlaw": true, "s": "sydney_trigg", "sp": "spouse", "y26": 37},
+  {"id": "julia_finn", "name": "Julia Finn", "g": 4, "inlaw": true, "s": "aidan_finn", "sp": "spouse", "y26": 38},
+  {"id": "scott_casey", "name": "Scott Casey", "g": 3, "inlaw": true, "s": "ann_casey", "sp": "spouse", "lives": "Livonia, MI", "y97": 2},
+  {"id": "walter_norberg", "name": "Walter Norberg", "g": 2, "inlaw": true, "s": "joyce_norberg", "sp": "spouse", "y97": 19},
+  {"id": "jack", "name": "Jack", "off": true, "y97": 26},
+  {"id": "robert_sr", "name": "Robert Gerrity", "g": 2, "inlaw": true, "s": "virginia_gerrity", "sp": "spouse"},
+  {"id": "aidan_milliken", "name": "Aidan Milliken", "g": 5, "gen": 5, "p": ["erin_milliken", "matthew_milliken"], "born": "2008-05-04", "bplace": "Michigan"},
+  {"id": "carraig_milliken", "name": "Carraig Milliken", "g": 5, "gen": 5, "p": ["erin_milliken", "matthew_milliken"], "born": "2011-06-24", "bplace": "Michigan"},
+  {"id": "colin_gerrity", "name": "Colin Gerrity", "g": 5, "gen": 5, "p": ["philip_gerrity", "ann_marie_gerrity"], "born": "2011-03-03", "bplace": "Michigan"},
+  {"id": "brynn_gerrity", "name": "Brynn Gerrity", "g": 5, "gen": 5, "p": ["philip_gerrity", "ann_marie_gerrity"], "born": "2013-08-02", "bplace": "Michigan"},
+  {"id": "ellie_cramer", "name": "Ellie Cramer", "g": 5, "gen": 5, "p": ["kelsey_casey", "alex_cramer"], "bplace": "Michigan"},
+  {"id": "molly_cramer", "name": "Molly Cramer", "g": 5, "gen": 5, "p": ["kelsey_casey", "alex_cramer"], "bplace": "Michigan"},
+  {"id": "debbie_anton", "name": "Debbie Anton", "maiden": "Waterman", "g": 3, "p": ["harvey_waterman", "ethel_waterman"], "y97": 4},
+  {"id": "nancy_hotek", "name": "Nancy Hotek", "maiden": "Waterman", "g": 3, "p": ["harvey_waterman", "ethel_waterman"], "y97": 22},
+  {"id": "billy", "name": "William Waterman", "goes": "Billy", "g": 3, "p": ["harvey_waterman", "ethel_waterman"], "y97": 29},
+  {"id": "greg_guzman", "name": "Greg Guzman", "g": 3, "inlaw": true, "s": "patricia_guzman"},
+  {"id": "michael_gonzalez", "name": "Michael Gonzalez", "g": 4, "inlaw": true, "s": "evan_gonzalez", "sp": "spouse"},
+  {"id": "jennifer_gerrity", "name": "Jennifer Gerrity", "g": 4, "inlaw": true, "s": "daniel_gerrity", "sp": "spouse"},
+  {"id": "ann_marie_gerrity", "name": "Ann-Marie Gerrity", "g": 4, "inlaw": true, "s": "philip_gerrity", "sp": "spouse"},
+  {"id": "matthew_milliken", "name": "Matthew Milliken", "g": 4, "inlaw": true, "s": "erin_milliken", "sp": "spouse"},
+  {"id": "tom", "name": "Tom", "g": 4, "inlaw": true, "s": "kendall_casey", "sp": "spouse"},
+  {"id": "ryan_canna", "name": "Ryan Canna", "g": 4, "inlaw": true, "s": "paula_guzman", "sp": "spouse"},
+  {"id": "alex_cramer", "name": "Alex Cramer", "g": 4, "inlaw": true, "s": "kelsey_casey"},
+  {"id": "ethel_waterman", "name": "Ethel Waterman", "g": 2, "inlaw": true, "s": "harvey_waterman", "y97": 35},
+  {"id": "robert_anton", "name": "Robert Anton", "off": true, "y97": 5},
+  {"id": "rita_waterman", "name": "Rita Waterman", "off": true, "y97": 8},
 ];
-const GEN_LABEL = { 1: "Buel & Lilly", 2: "Their children", 3: "Grandchildren", 4: "Great-grandchildren", 5: "Great-great-grandchildren", 0: "Not placed yet" };
+const GEN_LABEL = { 1: "Buel & Lilly", 2: "Their children", 3: "Grandchildren", 4: "Great-grandchildren", 5: "Great-great-grandchildren", 0: "Others" };
 
 /* ---------- INDEX ---------- */
 const byId = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
@@ -499,7 +505,12 @@ const kidsOf = id => PEOPLE.filter(c => (c.p || []).includes(id));
 const genColor = g => `var(--g${g || 0})`;
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const yearOf = d => d ? +String(d).slice(0, 4) : null;
-const isMinor = p => PRIVACY.hideMinors && yearOf(p.born) && yearOf(p.born) >= PRIVACY.minorCutoffYear;
+const isMinor = p => {
+  if (!PRIVACY.hideMinors || !p.born || p.died) return false;
+  const [y, m = 1, d = 1] = String(p.born).split("-").map(Number), now = new Date();
+  const age = now.getFullYear() - y - ((now.getMonth() + 1 < m || (now.getMonth() + 1 === m && now.getDate() < d)) ? 1 : 0);
+  return age < 18;
+};
 const fmtDate = d => {
   if (!d) return "";
   const [y, m, dd] = String(d).split("-");
@@ -513,7 +524,7 @@ const S = { view: "photos", year: "1997", sel: null, unk: null, zoom: 1, tz: 0.9
 /* family helpers shared by the tree views */
 const unitOf = id => { const p = byId[id]; return p.s && byId[p.s] ? [id, p.s] : [id]; };
 const kidsOfUnit = u => { const seen = new Set(); return PEOPLE.filter(c => (c.p || []).some(pid => u.includes(pid)) && !seen.has(c.id) && seen.add(c.id)); };
-const TREE_ROOTS = ["buel", "anneliese"];
+const TREE_ROOTS = ["buel"];
 const ancestorsOf = id => { const out = []; let cur = byId[id]; const guard = new Set();
   while (cur) { let par = (cur.p || []).map(i => byId[i]).filter(Boolean)[0];
     if (!par || guard.has(par.id)) break; guard.add(par.id); out.unshift(par.id); cur = par; }
@@ -526,9 +537,9 @@ function renderLegend(el) {
 }
 function renderFaces() {
   const box = $("#faces");
-  box.innerHTML = HOTSPOTS[S.year].map(([n, x, y, r]) => {
+  box.innerHTML = HOTSPOTS[S.year].filter(([n]) => byNum[S.year][n]).map(([n, x, y, r]) => {
     const id = byNum[S.year][n], p = byId[id];
-    const label = p ? `${p.name}, number ${n}` : `Unnamed person, number ${n}`;
+    const label = p.name;
     const sel = (p && S.sel === id) || (!p && S.unk === n);
     return `<button type="button" class="face${p ? "" : " unk"}${sel ? " sel" : ""}" data-n="${n}" aria-label="${esc(label)}"
       style="left:${x}%;top:${y}%;width:${r * 2}%;--c:${p ? genColor(p.g) : "transparent"}"></button>`;
@@ -548,11 +559,13 @@ function updateSpot() {
 }
 function renderChips() {
   $("#rosterh").textContent = `In the ${S.year} photo`;
-  $("#chips").innerHTML = HOTSPOTS[S.year].map(([n]) => {
-    const p = byId[byNum[S.year][n]];
-    const on = (p && S.sel === p.id) || (!p && S.unk === n);
-    return `<button type="button" class="chip${p ? "" : " unk"}${on ? " on" : ""}" data-n="${n}"><b>${n}</b>
-      ${p ? `<i class="dot" style="--c:${genColor(p.g)}"></i>` : ""}<span>${p ? esc(p.goes ? `${p.name} (${p.goes})` : p.name) : "Not named yet"}</span></button>`;
+  const last = p => p.name.split(" ").slice(-1)[0];
+  const ps = HOTSPOTS[S.year].map(([n]) => byId[byNum[S.year][n]]).filter(Boolean)
+    .sort((a, b) => last(a).localeCompare(last(b)) || shortName(a).localeCompare(shortName(b)));
+  $("#chips").innerHTML = ps.map(p => {
+    const n = S.year === "1997" ? p.y97 : p.y26;
+    return `<button type="button" class="chip${S.sel === p.id ? " on" : ""}" data-n="${n}">
+      <i class="dot" style="--c:${genColor(p.g)}"></i><span>${esc(p.goes ? `${p.name} (${p.goes})` : p.name)}</span></button>`;
   }).join("");
 }
 function setYear(y, keep = true) {
@@ -584,6 +597,7 @@ function setZoom(z) {
   S.zoom = Math.max(1, Math.min(3, z));
   $("#print").style.setProperty("--z", S.zoom);
   $("#zout").disabled = S.zoom <= 1; $("#zin").disabled = S.zoom >= 3;
+  $("#stage").classList.toggle("zoomed", S.zoom > 1);
   setTimeout(() => { updateSpot(); scrollToFace(); }, 280);
 }
 if (window.ResizeObserver) new ResizeObserver(() => updateSpot()).observe(document.getElementById("print"));
@@ -617,15 +631,14 @@ function layoutTree() {
   let x = LEFT;
   roots.forEach(r => { measure(r); place(r, x); x += width[r] + SG * 3; });
   // anyone left (unplaced)
-  PEOPLE.filter(p => !pos[p.id]).forEach(p => { pos[p.id] = { x, y: rowY(p.g || 6) }; x += W + SG; });
   const totalW = x + LEFT * .4, totalH = TOP + 6 * ROW + 10 * z;
   return { pos, links, W, H, ROW, TOP, totalW, totalH };
 }
 function renderTree() {
   const L = layoutTree(), t = $("#tree");
   t.style.width = L.totalW + "px"; t.style.height = L.totalH + "px"; t.style.setProperty("--tz", S.tz);
-  const bands = [1, 2, 3, 4, 5, 6].map(g => `<div class="band" style="top:${L.TOP + (g - 1) * L.ROW}px;height:${L.ROW}px;width:${L.totalW}px;--c:${genColor(g === 6 ? 0 : g)}">
-    <span class="lbl">${g === 6 ? "Not placed yet" : `Gen ${g} · ${GEN_LABEL[g]}`}</span></div>`).join("");
+  const bands = [1, 2, 3, 4, 5].map(g => `<div class="band" style="top:${L.TOP + (g - 1) * L.ROW}px;height:${L.ROW}px;width:${L.totalW}px;--c:${genColor(g)}">
+    <span class="lbl">Gen ${g} · ${GEN_LABEL[g]}</span></div>`).join("");
   const mid = ids => { const xs = ids.map(i => L.pos[i].x + L.W / 2); return (Math.min(...xs) + Math.max(...xs)) / 2; };
   const paths = L.links.map(({ from, kids }) => {
     const px = mid(from), py = L.pos[from[0]].y + L.H;
@@ -712,12 +725,10 @@ function renderList() {
   TREE_ROOTS.forEach(walk);
   const trees = TREE_ROOTS.map(r => {
     const html = branch(r);
-    const label = r === "buel" ? "The Waterman family" : `${shortName(byId[r])} (connection to the tree still needed)`;
+    const label = "The Waterman family";
     return `<div class="branch"><div class="genhead">${label}</div><div class="kids" style="--c:${genColor(byId[r].g)}">${html}</div></div>`;
   }).join("");
-  const rest = PEOPLE.filter(p => !placed.has(p.id));
-  const restHtml = rest.length ? `<div class="branch"><div class="genhead">Not placed yet</div><div class="couple">${rest.map(p => pill(p.id)).join("")}</div></div>` : "";
-  $("#t-list").innerHTML = trees + restHtml;
+  $("#t-list").innerHTML = trees;
   $("#expandall").textContent = S.closed.size ? "Expand all" : "Collapse all";
 }
 
@@ -735,7 +746,8 @@ function fcard(id, big = false, sub = "") {
     ${avatar(p, big ? 72 : 48)}<span class="nm${p.ph ? " ph" : ""}">${esc(shortName(p))}</span><span class="sub">${esc(line) || "&nbsp;"}</span></button>`;
 }
 function renderFamily() {
-  const id = S.focus && byId[S.focus] ? S.focus : (S.sel && byId[S.sel] ? S.sel : "buel");
+  const ok = i => i && byId[i] && !byId[i].off;
+  const id = ok(S.focus) ? S.focus : (ok(S.sel) ? S.sel : "buel");
   S.focus = id;
   const p = byId[id], g = p.g || 0;
   const parents = (p.p || []).filter(i => byId[i]);
@@ -747,7 +759,7 @@ function renderFamily() {
   const parentRow = parents.length
     ? `<div class="frow" style="--c:${genColor(byId[parents[0]].g)}"><h4>Parents</h4><div class="fcards">${parents.map(i => fcard(i)).join("")}</div></div>`
     : spouse && (byId[spouse].p || []).length
-      ? `<div class="frow" style="--c:${genColor(g - 1)}"><h4>Married into the family</h4><p class="empty" style="margin:0">Joined through ${esc(shortName(byId[spouse]))}. Tap them to see their parents.</p></div>`
+      ? `<div class="frow" style="--c:${genColor(g - 1)}"><h4>Joined the family</h4><p class="empty" style="margin:0">Through ${esc(shortName(byId[spouse]))}. Tap them to see their parents.</p></div>`
       : "";
   const centerRow = `<div class="frow" style="--c:${genColor(g)}"><h4>${spouse ? "Couple" : "Person"}${g ? ` · Generation ${g}` : ""}</h4>
     <div class="fcards">${fcard(id, true)}${spouse ? fcard(spouse, true) : ""}</div>
@@ -762,14 +774,13 @@ function renderFamily() {
 /* ---------- EVERYONE ---------- */
 function renderEveryone() {
   const groups = [1, 2, 3, 4, 5, 0].map(g => {
-    const ps = PEOPLE.filter(p => (p.g || 0) === g);
+    const ps = PEOPLE.filter(p => (p.off ? 0 : (p.g || 0)) === g);
     if (!ps.length) return "";
-    return `<div class="gen-group"><h3><i class="dot" style="--c:${genColor(g)}"></i>${g ? `Generation ${g}` : "Not placed yet"} <small>${g ? GEN_LABEL[g] : "Family connection still needed"} · ${ps.length}</small></h3>
+    return `<div class="gen-group"><h3><i class="dot" style="--c:${genColor(g)}"></i>${g ? `Generation ${g}` : "Others"} <small>${g ? GEN_LABEL[g] : "Not on the family tree"} · ${ps.length}</small></h3>
       <div class="list">${ps.map(p => `<button type="button" class="row${S.sel === p.id ? " sel" : ""}" data-id="${p.id}">
-        <i class="dot" style="--c:${genColor(p.g)}"></i>
-        <span class="who"><div class="${p.ph ? "ph" : ""}">${esc(p.name)}${p.goes ? ` <span style="color:var(--muted);font-weight:400">"${esc(p.goes)}"</span>` : ""}</div>
-        <div>${esc(isMinor(p) ? relLine(p) : (p.lives || relLine(p)))}</div></span>
-        <span class="yrs"><i class="${p.y97 ? "in" : ""}">'97</i><i class="${p.y26 ? "in" : ""}">'26</i></span></button>`).join("")}</div></div>`;
+        <i class="dot" style="--c:${genColor(p.off ? 0 : p.g)}"></i>
+        <span class="who"><div class="${p.inlaw ? "inlaw" : ""}">${esc(p.name)}${p.goes ? ` <span style="color:var(--muted);font-weight:400;font-style:normal">"${esc(p.goes)}"</span>` : ""}</div>
+        ${p.inlaw && p.sp ? `<div>${p.sp === "partner" ? "Partner of" : "Married to"} ${esc(shortName(byId[p.s]))}</div>` : ""}</span></button>`).join("")}</div></div>`;
   }).join("");
   $("#everyone").innerHTML = groups;
 }
@@ -811,33 +822,31 @@ function openTag() {
     if (p.born) facts.push(["Born", `${living && !PRIVACY.fullBirthDatesForLiving ? yearOf(p.born) : fmtDate(p.born)}${p.bplace ? `<br>${esc(p.bplace)}` : ""}`]);
     else if (p.bplace) facts.push(["Born", esc(p.bplace)]);
     if (p.died) facts.push(["Died", fmtDate(p.died)]);
-    if (p.buried) facts.push(["Resting", esc(p.buried)]);
+    if (p.buried) facts.push(["Buried", esc(p.buried)]);
     if (!p.died && p.lives) facts.push(["Lives in", esc(p.lives)]);
-    if (p.maiden) facts.push(["Born a", esc(p.maiden)]);
   }
   const both = p.y97 && p.y26;
   const faces = [["1997", p.y97], ["2026", p.y26]].filter(f => f[1]).map(([y, n]) =>
     `<button type="button" class="${S.view === "photos" && S.year === y ? "cur" : ""}" data-year-go="${y}" aria-label="Show in the ${y} photo">
-      <span class="crop" style="${cropStyle(y, n)}"></span>'${y.slice(2)} · #${n}</button>`).join("");
+      <span class="crop" style="${cropStyle(y, n)}"></span>'${y.slice(2)}</button>`).join("");
   const kids = kidsOf(p.id).map(k => k.id);
-  const rel = [["Parents", p.p || []], ["Spouse", p.s ? [p.s] : []], ["Children", kids]].filter(r => r[1].length)
+  const rel = [["Parents", p.p || []], [p.sp === "partner" ? "Partner" : "Spouse", p.sp ? [p.s] : []], ["Children", kids]].filter(r => r[1].length)
     .map(([h, ids]) => `<div class="rels"><h4>${h}</h4><div>${ids.map(personChip).join("")}</div></div>`).join("");
   const other = S.year === "1997" ? "2026" : "1997";
   const inOther = other === "1997" ? p.y97 : p.y26;
   const acts = [];
   if (S.view === "photos" && inOther) acts.push(`<button type="button" class="alt" data-year-go="${other}">See in ${other}</button>`);
   if (S.view !== "photos" && (p.y97 || p.y26)) acts.push(`<button type="button" class="alt" data-year-go="${p.y97 ? "1997" : "2026"}">See in photo</button>`);
-  if (S.view !== "tree") acts.push(`<button type="button" data-tree-go="${p.id}">Show in family tree</button>`);
+  if (S.view !== "tree" && !p.off) acts.push(`<button type="button" data-tree-go="${p.id}">Show in family tree</button>`);
   tag.innerHTML = `<div class="tag-head"><div class="hello">HELLO</div><div class="mni">my name is</div>
-      <span class="gl">${p.g ? `Gen ${p.g}` : ""}</span>
+      <span class="gl">${p.gen ? `Gen ${p.gen}` : ""}</span>
       <button class="tag-close" type="button" aria-label="Close">${xIcon}</button></div>
     <div class="tag-body">
-      <div><div class="tag-name${p.ph ? " ph" : ""}">${esc(p.goes && !p.ph ? p.goes : p.name)}</div>
-        <div class="tag-sub">${p.goes ? esc(p.name) : ""}${p.ph ? "Name needed" : ""}</div></div>
+      <div><div class="tag-name">${esc(p.goes || p.name)}</div>
+        ${p.goes ? `<div class="tag-sub">${esc(p.name)}</div>` : ""}</div>
       ${faces ? `<div class="facepair">${faces}</div>` : `<p class="note">Not in either photo.</p>`}
       ${S.view === "photos" && !inOther && (p.y97 || p.y26) ? `<p class="note">Not in the ${other} photo.</p>` : ""}
-      ${minor ? `<p class="note">Details are hidden for kids under 18.</p>` : (facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>` : `<p class="note">No details yet.</p>`)}
-      ${p.a ? `<p class="note">Parents assumed from the family name. Needs confirming.</p>` : ""}
+      ${minor ? `<p class="note">Details are hidden for kids under 18.</p>` : (facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>` : "")}
       ${rel}
       ${acts.length ? `<div class="acts">${acts.join("")}</div>` : ""}
     </div>`;
@@ -858,7 +867,7 @@ function select(id, opts = {}) {
   if (S.view === "photos" && p) {
     const inCur = S.year === "1997" ? p.y97 : p.y26, inOther = S.year === "1997" ? p.y26 : p.y97;
     if (!inCur && inOther && opts.follow !== false) { setYear(S.year === "1997" ? "2026" : "1997"); return; }
-    if (!inCur && !inOther && opts.follow !== false) { setView("tree"); return; }
+    if (!inCur && !inOther && opts.follow !== false) { setView(p.off ? "everyone" : "tree"); return; }
   }
   if (S.view === "tree" && S.tmode === "family" && !opts.keepFocus) S.focus = id;
   refresh();
@@ -996,7 +1005,7 @@ let _lw = 0; window.addEventListener("resize", () => { const w = $("#lights").cl
 renderLegend($("#legend")); renderLegend($("#legend2"));
 {
   const n97 = HOTSPOTS["1997"].length, n26 = HOTSPOTS["2026"].length, both = PEOPLE.filter(p => p.y97 && p.y26).length;
-  $("#stats").textContent = `${n97} in 1997 · ${n26} in 2026 · ${both} in both`;
+  $("#stats").textContent = `${n97} people in 1997 · ${n26} in 2026 · ${both} in both`;
 }
 setZoom(1);
 const h = (location.hash || "").slice(1);
