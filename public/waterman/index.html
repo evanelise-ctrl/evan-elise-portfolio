@@ -233,7 +233,9 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 .row .who div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .row .who div:first-child { font-weight: 600; }
 .row .who div:last-child { font-size: 13px; color: var(--muted); }
-.row .inlaw { font-style: italic; font-weight: 500 !important; }
+.row.inlaw { min-height: 44px; padding-block: 6px; }
+.row .inlaw { font-style: italic; font-weight: 500 !important; font-size: 13px; }
+.row.inlaw .who div:last-child { font-size: 12px; }
 .yrs { display: flex; gap: 4px; font: 600 11px var(--f-mono); }
 .yrs i { font-style: normal; padding: 2px 5px; border-radius: 5px; border: 1px solid var(--line); color: var(--muted); }
 .yrs i.in { border-color: var(--stamp); color: var(--stamp-text); }
@@ -267,11 +269,13 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 .rels div { display: flex; flex-wrap: wrap; gap: 6px; }
 .rels button { border: 1px solid #d5d5d5; background: #f4f4f4; color: #161616; border-radius: 16px; padding: 4px 10px; min-height: 32px; cursor: pointer; font-size: 13px; display: inline-flex; gap: 6px; align-items: center; }
 .rels button:hover { border-color: #999; }
+.rels .ghost { display: inline-flex; align-items: center; min-height: 32px; padding: 4px 10px; border-radius: 16px; border: 1px dashed #d5d5d5; color: #555; font-size: 13px; }
 .acts { display: flex; flex-wrap: wrap; gap: 8px; }
 .acts button { flex: 1 1 auto; min-height: 44px; border-radius: 10px; border: 1.5px solid #161616; background: #161616; color: #fff; font-weight: 600; cursor: pointer; padding: 0 12px; }
 .acts button.alt { background: #fff; color: #161616; }
 .note { font-size: 13px; color: #6a6a6a; margin: 0; }
-.foot { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; }
+.foot { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; text-align: center; }
+.foot a { color: var(--fg); font-weight: 600; text-underline-offset: 3px; user-select: all; }
 
 @media (max-width: 720px) {
   .tag { top: auto; bottom: 0; right: 0; left: 0; width: auto; border-radius: 18px 18px 0 0; max-height: 78%;
@@ -391,6 +395,8 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
     <div class="everyone" id="everyone"></div>
   </section>
 
+  <footer class="foot">Spot a mistake or know someone we missed? Reach out to Evan at <a href="mailto:evanelise@gmail.com">evanelise@gmail.com</a>.</footer>
+
 </div>
 
 <aside class="tag" id="tag" hidden aria-live="polite" aria-label="Person details"></aside>
@@ -405,96 +411,104 @@ const PHOTO = { "1997": { w: 2200, h: 1520, src: "/waterman/img/1997.jpg", mark:
 const PRIVACY = { fullBirthDatesForLiving: false, hideMinors: true, minorCutoffYear: 2008 };
 
 // Built from the Photo Key spreadsheet by build_people.py. Edit the sheet, not this list.
-// g = generation used for color and tree rows, gen = generation in the sheet,
-// p = parents, s = partner in the tree, sp = spouse/partner stated in the sheet, off = not on the tree
+// g = generation for color and tree rows, gen = generation shown on the card, p = parents,
+// s = spouse or partner, inlaw = married in, off = not on the tree, ghost = name on a card only
 const PEOPLE = [
-  {"id": "buel", "name": "Buel Waterman", "g": 1, "gen": 1, "s": "lilly_waterman", "born": "1887-02-10", "died": "1948-08-27", "buried": "Elroy, WI"},
-  {"id": "lilly_waterman", "name": "Lilly Waterman", "maiden": "Rifleman", "g": 1, "gen": 1, "s": "buel", "born": "1888", "died": "1977"},
-  {"id": "virginia_gerrity", "name": "Virginia Gerrity", "goes": "Ginger", "maiden": "Waterman", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "s": "robert_sr", "sp": "spouse", "born": "1928-06-18", "bplace": "Wisconsin", "died": "2005-01-04", "buried": "Plymouth, MI", "y97": 32},
-  {"id": "bill", "name": "William Waterman", "goes": "Bill", "off": true, "born": "1914", "died": "1997"},
-  {"id": "joyce_norberg", "name": "Joyce Norberg", "goes": "Joy", "maiden": "Waterman", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "s": "walter_norberg", "sp": "spouse", "bplace": "Wisconsin", "y97": 33},
-  {"id": "harvey_waterman", "name": "Harvey Waterman", "goes": "Lee", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "s": "ethel_waterman", "born": "1917-03-09", "bplace": "Wisconsin", "died": "2003-12-27", "y97": 34},
-  {"id": "shirley_finn", "name": "Shirley Finn", "goes": "June", "maiden": "Waterman", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "born": "1919", "bplace": "Wisconsin", "died": "1997", "y97": 38},
-  {"id": "ann_casey", "name": "Ann Casey", "maiden": "Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "scott_casey", "sp": "spouse", "bplace": "Michigan", "lives": "Michigan", "y97": 43, "y26": 1},
-  {"id": "lynn_gage", "name": "Lynn Gage", "maiden": "Norberg", "g": 3, "gen": 3, "p": ["joyce_norberg", "walter_norberg"], "s": "rick_gage", "lives": "California", "y97": 21, "y26": 3},
-  {"id": "patricia_guzman", "name": "Patricia Guzman", "goes": "Patty", "maiden": "Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "greg_guzman", "bplace": "Michigan", "lives": "Michigan", "y97": 23, "y26": 5},
-  {"id": "susan_finn", "name": "Susan Finn", "g": 3, "gen": 3, "p": ["shirley_finn"], "s": "david_baker", "sp": "spouse", "lives": "Michigan", "y97": 37, "y26": 15},
-  {"id": "jan_vessel", "name": "Jan Vessel", "maiden": "Norberg", "g": 3, "gen": 3, "p": ["joyce_norberg", "walter_norberg"], "s": "dick_vessel", "sp": "spouse", "lives": "California", "y97": 39, "y26": 19},
-  {"id": "mike_finn", "name": "Mike Finn", "g": 3, "gen": 3, "p": ["shirley_finn"], "s": "sally_finn", "sp": "spouse", "lives": "California", "y26": 20},
-  {"id": "jim_norberg", "name": "Jim Norberg", "g": 3, "gen": 3, "p": ["joyce_norberg", "walter_norberg"], "s": "annette_norberg", "sp": "spouse", "bplace": "Michigan", "lives": "California", "y97": 14, "y26": 21},
-  {"id": "bob", "name": "Robert Gerrity", "goes": "Bob", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "julie_gerrity", "sp": "spouse", "born": "1956-10-31", "bplace": "Michigan", "lives": "Michigan", "y97": 9, "y26": 30},
-  {"id": "carolyn_fine", "name": "Carolyn Fine", "goes": "Kiki", "maiden": "Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "mike_fine", "sp": "spouse", "bplace": "Michigan", "lives": "New Jersey", "y97": 3, "y26": 35},
-  {"id": "jill_norberg", "name": "Jill Norberg", "g": 3, "gen": 3, "p": ["joyce_norberg", "walter_norberg"], "bplace": "Michigan", "lives": "California", "y97": 25},
-  {"id": "leo_gerrity", "name": "Leo Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "bplace": "Michigan", "lives": "Michigan", "y97": 18},
-  {"id": "ricky_gage", "name": "Ricky Gage", "g": 4, "gen": 4, "p": ["lynn_gage", "rick_gage"], "bplace": "California", "lives": "California", "y97": 45, "y26": 4},
-  {"id": "elizabeth_hazlegrove", "name": "Elizabeth Hazlegrove", "goes": "Lizzie", "maiden": "Gage", "g": 4, "gen": 4, "p": ["lynn_gage", "rick_gage"], "s": "sean_hazlegrove", "sp": "spouse", "bplace": "California", "y97": 44, "y26": 7},
-  {"id": "gregory_guzman", "name": "Gregory Guzman", "g": 4, "gen": 4, "p": ["patricia_guzman", "greg_guzman"], "s": "catherine_manceor", "sp": "spouse", "bplace": "Michigan", "y26": 8},
-  {"id": "kelsey_casey", "name": "Kelsey Casey", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "s": "alex_cramer", "born": "1990-12-19", "bplace": "Michigan", "lives": "Livonia, MI", "y97": 48, "y26": 9},
-  {"id": "evan_gonzalez", "name": "Evan Gonzalez", "maiden": "Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "michael_gonzalez", "sp": "spouse", "born": "1992-08-01", "bplace": "Michigan", "lives": "Dearborn, MI", "y97": 53, "y26": 11},
-  {"id": "joel_finn_harris", "name": "Joel Finn-Harris", "g": 4, "gen": 4, "p": ["susan_finn"], "s": "cyndi_whiting", "sp": "partner", "y26": 17},
-  {"id": "aidan_finn", "name": "Aidan Finn", "g": 4, "gen": 4, "p": ["susan_finn"], "s": "julia_finn", "sp": "spouse", "y97": 40, "y26": 24},
-  {"id": "daniel_gerrity", "name": "Daniel Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "jennifer_gerrity", "sp": "spouse", "born": "1979-09-10", "bplace": "Michigan", "lives": "Ferndale, MI", "y97": 41, "y26": 27},
-  {"id": "philip_gerrity", "name": "Philip Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "ann_marie_gerrity", "sp": "spouse", "born": "1983-02-25", "bplace": "Michigan", "lives": "Plymouth, MI", "y97": 42, "y26": 29},
-  {"id": "erin_milliken", "name": "Erin Milliken", "maiden": "Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "matthew_milliken", "sp": "spouse", "born": "1977-04-03", "bplace": "Michigan", "lives": "Dearborn, MI", "y97": 47, "y26": 31},
-  {"id": "ryan_vessel", "name": "Ryan Vessel", "g": 4, "gen": 4, "p": ["jan_vessel", "dick_vessel"], "y97": 50, "y26": 32},
-  {"id": "sydney_trigg", "name": "Sydney Trigg", "maiden": "Norberg", "g": 4, "gen": 4, "p": ["jim_norberg", "annette_norberg"], "s": "kyle_trigg", "sp": "spouse", "y97": 54, "y26": 33},
-  {"id": "shelby_norberg", "name": "Shelby Norberg", "g": 4, "gen": 4, "p": ["jim_norberg", "annette_norberg"], "y26": 34},
-  {"id": "virginia_casey", "name": "Virginia Casey", "goes": "Ginny", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "born": "1980-12-26", "bplace": "Michigan", "died": "2022-01-17", "buried": "Michigan", "y97": 6},
-  {"id": "allison_casey", "name": "Allison Casey", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "born": "1986-04-14", "y97": 49},
-  {"id": "katie_vessel", "name": "Katie Vessel", "g": 4, "gen": 4, "p": ["jan_vessel", "dick_vessel"], "y97": 51},
-  {"id": "kendall_casey", "name": "Kendall Casey", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "s": "tom", "sp": "spouse", "born": "1987-09-01", "lives": "Dearborn Heights, MI", "y97": 52},
-  {"id": "benjamin_fine", "name": "Benjamin Fine", "g": 4, "gen": 4, "p": ["carolyn_fine", "mike_fine"], "bplace": "Minnesota", "y97": 55},
-  {"id": "alyssa_fine", "name": "Alyssa Fine", "g": 4, "gen": 4, "p": ["carolyn_fine", "mike_fine"], "born": "1991-04-07", "bplace": "Minnesota", "y97": 56},
-  {"id": "paula_guzman", "name": "Paula Guzman", "g": 4, "gen": 4, "p": ["patricia_guzman", "greg_guzman"], "s": "ryan_canna", "sp": "spouse", "born": "1998", "bplace": "Michigan"},
-  {"id": "anneliese_finn_harris", "name": "Anneliese Finn-Harris", "g": 5, "gen": 5, "p": ["joel_finn_harris"], "s": "chandler", "sp": "partner", "y26": 13},
-  {"id": "maya_finn", "name": "Maya Finn", "g": 5, "gen": 5, "p": ["aidan_finn", "julia_finn"], "bplace": "California", "y26": 22},
-  {"id": "rivi_trigg", "name": "Rivi Trigg", "g": 5, "gen": 5, "p": ["sydney_trigg", "kyle_trigg"], "bplace": "California", "y26": 36},
-  {"id": "ford_trigg", "name": "Ford Trigg", "g": 5, "gen": 5, "p": ["sydney_trigg", "kyle_trigg"], "bplace": "California", "y26": 39},
-  {"id": "cora_finn", "name": "Cora Finn", "g": 5, "gen": 5, "p": ["aidan_finn", "julia_finn"], "bplace": "California", "y26": 40},
-  {"id": "xarianna", "name": "Xarianna", "g": 5, "gen": 5, "p": ["katie_vessel"], "bplace": "California", "y26": 41},
-  {"id": "ella_hazlegrove", "name": "Ella Hazlegrove", "g": 5, "gen": 5, "p": ["elizabeth_hazlegrove", "sean_hazlegrove"], "bplace": "California", "y26": 42},
-  {"id": "cameron_hazlegrove", "name": "Cameron Hazlegrove", "g": 5, "gen": 5, "p": ["elizabeth_hazlegrove", "sean_hazlegrove"], "bplace": "California", "y26": 43},
-  {"id": "reid_trigg", "name": "Reid Trigg", "g": 5, "gen": 5, "p": ["sydney_trigg", "kyle_trigg"], "bplace": "California", "y26": 44},
-  {"id": "lucy_gonzalez", "name": "Lucy Gonzalez", "g": 5, "gen": 5, "p": ["evan_gonzalez", "michael_gonzalez"], "born": "2014-03-08", "bplace": "Michigan", "lives": "Dearborn, MI"},
-  {"id": "benjmain_gonzalez", "name": "Benjamin Gonzalez", "g": 5, "gen": 5, "p": ["evan_gonzalez", "michael_gonzalez"], "born": "2016-05-20", "bplace": "Michigan", "lives": "Dearborn, MI"},
-  {"id": "rick_gage", "name": "Rick Gage", "g": 3, "inlaw": true, "s": "lynn_gage", "y97": 20, "y26": 2},
-  {"id": "sean_hazlegrove", "name": "Sean Hazlegrove", "g": 4, "inlaw": true, "s": "elizabeth_hazlegrove", "sp": "spouse", "y26": 6},
-  {"id": "catherine_manceor", "name": "Catherine Manceor", "g": 4, "inlaw": true, "s": "gregory_guzman", "sp": "spouse", "y26": 10},
-  {"id": "chandler", "name": "Chandler", "g": 5, "inlaw": true, "s": "anneliese_finn_harris", "sp": "partner", "y26": 12},
-  {"id": "david_baker", "name": "David Baker", "g": 3, "inlaw": true, "s": "susan_finn", "sp": "spouse", "y26": 14},
-  {"id": "cyndi_whiting", "name": "Cyndi Whiting", "g": 4, "inlaw": true, "s": "joel_finn_harris", "sp": "partner", "y26": 16},
-  {"id": "dick_vessel", "name": "Dick Vessel", "g": 3, "inlaw": true, "s": "jan_vessel", "sp": "spouse", "y97": 46, "y26": 18},
-  {"id": "sally_finn", "name": "Sally Finn", "g": 3, "inlaw": true, "s": "mike_finn", "sp": "spouse", "y26": 23},
-  {"id": "annette_norberg", "name": "Annette Norberg", "g": 3, "inlaw": true, "s": "jim_norberg", "sp": "spouse", "y97": 12, "y26": 25},
-  {"id": "julie_gerrity", "name": "Julie Gerrity", "g": 3, "inlaw": true, "s": "bob", "sp": "spouse", "lives": "New Boston, MI", "y97": 10, "y26": 26},
-  {"id": "mike_fine", "name": "Mike Fine", "g": 3, "inlaw": true, "s": "carolyn_fine", "sp": "spouse", "y97": 11, "y26": 28},
-  {"id": "kyle_trigg", "name": "Kyle Trigg", "g": 4, "inlaw": true, "s": "sydney_trigg", "sp": "spouse", "y26": 37},
-  {"id": "julia_finn", "name": "Julia Finn", "g": 4, "inlaw": true, "s": "aidan_finn", "sp": "spouse", "y26": 38},
-  {"id": "scott_casey", "name": "Scott Casey", "g": 3, "inlaw": true, "s": "ann_casey", "sp": "spouse", "lives": "Livonia, MI", "y97": 2},
-  {"id": "walter_norberg", "name": "Walter Norberg", "g": 2, "inlaw": true, "s": "joyce_norberg", "sp": "spouse", "y97": 19},
-  {"id": "jack", "name": "Jack", "off": true, "y97": 26},
-  {"id": "robert_sr", "name": "Robert Gerrity", "g": 2, "inlaw": true, "s": "virginia_gerrity", "sp": "spouse"},
-  {"id": "aidan_milliken", "name": "Aidan Milliken", "g": 5, "gen": 5, "p": ["erin_milliken", "matthew_milliken"], "born": "2008-05-04", "bplace": "Michigan"},
-  {"id": "carraig_milliken", "name": "Carraig Milliken", "g": 5, "gen": 5, "p": ["erin_milliken", "matthew_milliken"], "born": "2011-06-24", "bplace": "Michigan"},
-  {"id": "colin_gerrity", "name": "Colin Gerrity", "g": 5, "gen": 5, "p": ["philip_gerrity", "ann_marie_gerrity"], "born": "2011-03-03", "bplace": "Michigan"},
-  {"id": "brynn_gerrity", "name": "Brynn Gerrity", "g": 5, "gen": 5, "p": ["philip_gerrity", "ann_marie_gerrity"], "born": "2013-08-02", "bplace": "Michigan"},
-  {"id": "ellie_cramer", "name": "Ellie Cramer", "g": 5, "gen": 5, "p": ["kelsey_casey", "alex_cramer"], "bplace": "Michigan"},
-  {"id": "molly_cramer", "name": "Molly Cramer", "g": 5, "gen": 5, "p": ["kelsey_casey", "alex_cramer"], "bplace": "Michigan"},
-  {"id": "debbie_anton", "name": "Debbie Anton", "maiden": "Waterman", "g": 3, "p": ["harvey_waterman", "ethel_waterman"], "y97": 4},
-  {"id": "nancy_hotek", "name": "Nancy Hotek", "maiden": "Waterman", "g": 3, "p": ["harvey_waterman", "ethel_waterman"], "y97": 22},
-  {"id": "billy", "name": "William Waterman", "goes": "Billy", "g": 3, "p": ["harvey_waterman", "ethel_waterman"], "y97": 29},
-  {"id": "greg_guzman", "name": "Greg Guzman", "g": 3, "inlaw": true, "s": "patricia_guzman"},
-  {"id": "michael_gonzalez", "name": "Michael Gonzalez", "g": 4, "inlaw": true, "s": "evan_gonzalez", "sp": "spouse"},
-  {"id": "jennifer_gerrity", "name": "Jennifer Gerrity", "g": 4, "inlaw": true, "s": "daniel_gerrity", "sp": "spouse"},
-  {"id": "ann_marie_gerrity", "name": "Ann-Marie Gerrity", "g": 4, "inlaw": true, "s": "philip_gerrity", "sp": "spouse"},
-  {"id": "matthew_milliken", "name": "Matthew Milliken", "g": 4, "inlaw": true, "s": "erin_milliken", "sp": "spouse"},
-  {"id": "tom", "name": "Tom", "g": 4, "inlaw": true, "s": "kendall_casey", "sp": "spouse"},
-  {"id": "ryan_canna", "name": "Ryan Canna", "g": 4, "inlaw": true, "s": "paula_guzman", "sp": "spouse"},
-  {"id": "alex_cramer", "name": "Alex Cramer", "g": 4, "inlaw": true, "s": "kelsey_casey"},
-  {"id": "ethel_waterman", "name": "Ethel Waterman", "g": 2, "inlaw": true, "s": "harvey_waterman", "y97": 35},
-  {"id": "robert_anton", "name": "Robert Anton", "off": true, "y97": 5},
-  {"id": "rita_waterman", "name": "Rita Waterman", "off": true, "y97": 8},
+  {"id": "chandler", "first": "Chandler", "g": 5, "inlaw": true, "s": "anneliese_finn_harris", "partner": true, "lives": "North Carolina", "y26": 12},
+  {"id": "debbie_anton", "first": "Debbie", "last": "Anton", "maiden": "Waterman", "g": 3, "gen": 3, "p": ["harvey_waterman", "ethel_waterman"], "bplace": "Wisconsin", "y97": 4},
+  {"id": "david_baker", "first": "David", "last": "Baker", "g": 3, "inlaw": true, "s": "susan_finn", "lives": "Michigan", "y26": 14},
+  {"id": "ann_casey", "first": "Ann", "last": "Casey", "maiden": "Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "scott_casey", "born": "1957-12-02", "bplace": "Michigan", "lives": "Michigan", "y97": 43, "y26": 1},
+  {"id": "kelsey_casey", "first": "Kelsey", "last": "Casey", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "born": "1990-12-19", "bplace": "Michigan", "lives": "Michigan", "y97": 48, "y26": 9},
+  {"id": "virginia_casey", "first": "Virginia", "last": "Casey", "goes": "Ginny", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "born": "1980-12-26", "bplace": "Michigan", "died": "2022-01-17", "buried": "Michigan", "y97": 6},
+  {"id": "allison_casey", "first": "Allison", "last": "Casey", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "born": "1986-04-14", "lives": "New York", "y97": 49},
+  {"id": "kendall_casey", "first": "Kendall", "last": "Casey", "g": 4, "gen": 4, "p": ["ann_casey", "scott_casey"], "s": "tom_wesley", "born": "1987-09-01", "lives": "Dearborn Heights, MI", "y97": 52},
+  {"id": "scott_casey", "first": "Scott", "last": "Casey", "g": 3, "inlaw": true, "s": "ann_casey", "lives": "Michigan", "y97": 2},
+  {"id": "ellie_cramer", "first": "Ellie", "last": "Cramer", "g": 5, "gen": 5, "p": ["kelsey_casey"], "bplace": "Michigan", "lives": "Michigan"},
+  {"id": "molly_cramer", "first": "Molly", "last": "Cramer", "g": 5, "gen": 5, "p": ["kelsey_casey"], "born": "2013-06-06", "bplace": "Michigan", "lives": "Michigan"},
+  {"id": "carolyn_fine", "first": "Carolyn", "last": "Fine", "goes": "Kiki", "maiden": "Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "mike_fine", "born": "1959-07-28", "bplace": "Michigan", "lives": "New Jersey", "y97": 3, "y26": 35},
+  {"id": "benjamin_fine", "first": "Benjamin", "last": "Fine", "g": 4, "gen": 4, "p": ["carolyn_fine", "mike_fine"], "born": "1993-12-30", "bplace": "Minnesota", "lives": "New York", "y97": 55},
+  {"id": "alyssa_fine", "first": "Alyssa", "last": "Fine", "g": 4, "gen": 4, "p": ["carolyn_fine", "mike_fine"], "born": "1991-04-07", "bplace": "Minnesota", "lives": "New Jersey", "y97": 56},
+  {"id": "mike_fine", "first": "Mike", "last": "Fine", "g": 3, "inlaw": true, "s": "carolyn_fine", "born": "1956-10-07", "lives": "New Jersey", "y97": 11, "y26": 28},
+  {"id": "shirley_finn", "first": "Shirley", "last": "Finn", "goes": "June", "maiden": "Waterman", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "born": "1919-06-26", "bplace": "Wisconsin", "died": "1997-12-26", "y97": 38},
+  {"id": "susan_finn", "first": "Susan", "last": "Finn", "g": 3, "gen": 3, "p": ["shirley_finn"], "s": "david_baker", "lives": "Michigan", "y97": 37, "y26": 15},
+  {"id": "mike_finn", "first": "Mike", "last": "Finn", "g": 3, "gen": 3, "p": ["shirley_finn"], "s": "sally_finn", "lives": "California", "y26": 20},
+  {"id": "aidan_finn", "first": "Aidan", "last": "Finn", "g": 4, "gen": 4, "p": ["susan_finn"], "s": "julia_finn", "lives": "California", "y97": 40, "y26": 24},
+  {"id": "maya_finn", "first": "Maya", "last": "Finn", "g": 5, "gen": 5, "p": ["aidan_finn", "julia_finn"], "bplace": "California", "lives": "California", "y26": 22},
+  {"id": "cora_finn", "first": "Cora", "last": "Finn", "g": 5, "gen": 5, "p": ["aidan_finn", "julia_finn"], "bplace": "California", "lives": "California", "y26": 40},
+  {"id": "sally_finn", "first": "Sally", "last": "Finn", "g": 3, "inlaw": true, "s": "mike_finn", "lives": "California", "y26": 23},
+  {"id": "julia_finn", "first": "Julia", "last": "Finn", "g": 4, "inlaw": true, "s": "aidan_finn", "lives": "California", "y26": 38},
+  {"id": "joel_finn_harris", "first": "Joel", "last": "Finn-Harris", "g": 4, "gen": 4, "p": ["susan_finn"], "s": "cyndi_whiting", "partner": true, "lives": "North Carolina", "y97": 26, "y26": 17},
+  {"id": "anneliese_finn_harris", "first": "Anneliese", "last": "Finn-Harris", "g": 5, "gen": 5, "p": ["joel_finn_harris"], "s": "chandler", "partner": true, "lives": "North Carolina", "y26": 13},
+  {"id": "lynn_gage", "first": "Lynn", "last": "Gage", "maiden": "Norberg", "g": 3, "gen": 3, "p": ["helen_norberg", "walter_norberg"], "s": "rick_gage", "lives": "California", "y97": 21, "y26": 3},
+  {"id": "ricky_gage", "first": "Ricky", "last": "Gage", "g": 4, "gen": 4, "p": ["lynn_gage", "rick_gage"], "bplace": "California", "lives": "California", "y97": 45, "y26": 4},
+  {"id": "rick_gage", "first": "Rick", "last": "Gage", "g": 3, "inlaw": true, "s": "lynn_gage", "lives": "California", "y97": 20, "y26": 2},
+  {"id": "virginia_gerrity", "first": "Virginia", "last": "Gerrity", "goes": "Ginger", "maiden": "Waterman", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "s": "robert_sr", "born": "1928-06-18", "bplace": "Wisconsin", "died": "2005-01-04", "buried": "Michigan", "y97": 32},
+  {"id": "robert_sr", "first": "Robert", "last": "Gerrity", "g": 2, "inlaw": true, "p": ["leo_aloysius_gerrity", "agnes_bridget_mcdermott"], "s": "virginia_gerrity", "born": "1929-01-14", "bplace": "Pennsylvania", "died": "1995-06-24", "buried": "Michigan", "lives": "Michigan"},
+  {"id": "leo_gerrity", "first": "Leo", "last": "Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "born": "1962-09-03", "bplace": "Michigan", "lives": "Michigan", "y97": 18},
+  {"id": "daniel_gerrity", "first": "Daniel", "last": "Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "jennifer_gerrity", "born": "1979-09-10", "bplace": "Michigan", "lives": "Michigan", "y97": 41, "y26": 27},
+  {"id": "philip_gerrity", "first": "Philip", "last": "Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "ann_marie_gerrity", "born": "1983-02-25", "bplace": "Michigan", "lives": "Michigan", "y97": 42, "y26": 29},
+  {"id": "julie_gerrity", "first": "Julie", "last": "Gerrity", "g": 3, "inlaw": true, "s": "bob", "born": "1960-02-07", "lives": "Michigan", "y97": 10, "y26": 26},
+  {"id": "bob", "first": "Robert", "last": "Gerrity", "goes": "Bob", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "julie_gerrity", "born": "1956-10-31", "lives": "Michigan", "y97": 9, "y26": 30},
+  {"id": "colin_gerrity", "first": "Colin", "last": "Gerrity", "g": 5, "gen": 5, "p": ["philip_gerrity", "ann_marie_gerrity"], "born": "2011-03-03", "bplace": "Michigan", "lives": "Michigan"},
+  {"id": "brynn_gerrity", "first": "Brynn", "last": "Gerrity", "g": 5, "gen": 5, "p": ["philip_gerrity", "ann_marie_gerrity"], "born": "2013-08-02", "bplace": "Michigan", "lives": "Michigan"},
+  {"id": "evan_gonzalez", "first": "Evan", "last": "Gonzalez", "maiden": "Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "michael_gonzalez", "born": "1992-08-01", "bplace": "Michigan", "lives": "Michigan", "y97": 53, "y26": 11},
+  {"id": "lucy_gonzalez", "first": "Lucy", "last": "Gonzalez", "g": 5, "gen": 5, "p": ["evan_gonzalez", "michael_gonzalez"], "born": "2014-03-08", "bplace": "Michigan", "lives": "Michigan"},
+  {"id": "benjamin_gonzalez", "first": "Benjamin", "last": "Gonzalez", "g": 5, "gen": 5, "p": ["evan_gonzalez", "michael_gonzalez"], "born": "2016-05-20", "bplace": "Michigan", "lives": "Michigan"},
+  {"id": "patricia_guzman", "first": "Patricia", "last": "Guzman", "goes": "Patty", "maiden": "Gerrity", "g": 3, "gen": 3, "p": ["virginia_gerrity", "robert_sr"], "s": "greg_guzman", "born": "1963-09-04", "bplace": "Michigan", "lives": "Michigan", "y97": 23, "y26": 5},
+  {"id": "gregory_guzman", "first": "Gregory", "last": "Guzman", "g": 4, "gen": 4, "p": ["patricia_guzman", "greg_guzman"], "s": "catherine_manceor", "born": "2001-02-10", "bplace": "Michigan", "lives": "Texas", "y26": 8},
+  {"id": "paula_guzman", "first": "Paula", "last": "Guzman", "g": 4, "gen": 4, "p": ["patricia_guzman", "greg_guzman"], "s": "ryan_canna", "born": "1998-08-20", "bplace": "Michigan", "lives": "Michigan"},
+  {"id": "elizabeth_hazlegrove", "first": "Elizabeth", "last": "Hazlegrove", "goes": "Lizzie", "maiden": "Gage", "g": 4, "gen": 4, "p": ["lynn_gage", "rick_gage"], "s": "sean_hazlegrove", "bplace": "California", "lives": "California", "y97": 44, "y26": 7},
+  {"id": "ella_hazlegrove", "first": "Ella", "last": "Hazlegrove", "g": 5, "gen": 5, "p": ["elizabeth_hazlegrove", "sean_hazlegrove"], "bplace": "California", "lives": "California", "y26": 42},
+  {"id": "cameron_hazlegrove", "first": "Cameron", "last": "Hazlegrove", "g": 5, "gen": 5, "p": ["elizabeth_hazlegrove", "sean_hazlegrove"], "bplace": "California", "lives": "California", "y26": 43},
+  {"id": "sean_hazlegrove", "first": "Sean", "last": "Hazlegrove", "g": 4, "inlaw": true, "s": "elizabeth_hazlegrove", "lives": "California", "y26": 6},
+  {"id": "nancy_hotek", "first": "Nancy", "last": "Hotek", "maiden": "Waterman", "g": 3, "gen": 3, "p": ["harvey_waterman", "ethel_waterman"], "born": "1942-02-08", "bplace": "Wisconsin", "died": "2023-05-27", "y97": 22},
+  {"id": "catherine_manceor", "first": "Catherine", "last": "Manceor", "g": 4, "inlaw": true, "s": "gregory_guzman", "lives": "Texas", "y26": 10},
+  {"id": "erin_milliken", "first": "Erin", "last": "Milliken", "maiden": "Gerrity", "g": 4, "gen": 4, "p": ["bob", "julie_gerrity"], "s": "matthew_milliken", "born": "1977-04-03", "bplace": "Michigan", "lives": "Michigan", "y97": 47, "y26": 31},
+  {"id": "aidan_milliken", "first": "Aidan", "last": "Milliken", "g": 5, "gen": 5, "p": ["erin_milliken", "matthew_milliken"], "born": "2008-05-04", "bplace": "Michigan", "lives": "Michigan"},
+  {"id": "carraig_milliken", "first": "Carraig", "last": "Milliken", "g": 5, "gen": 5, "p": ["erin_milliken", "matthew_milliken"], "born": "2011-06-24", "bplace": "Michigan", "lives": "Michigan"},
+  {"id": "helen_norberg", "first": "Helen", "last": "Norberg", "goes": "Joy", "maiden": "Waterman", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "s": "walter_norberg", "born": "1921-12-08", "bplace": "Wisconsin", "died": "2009-12-23", "y97": 33},
+  {"id": "jim_norberg", "first": "Jim", "last": "Norberg", "g": 3, "gen": 3, "p": ["helen_norberg", "walter_norberg"], "s": "annette_norberg", "born": "1956-09-07", "bplace": "Michigan", "lives": "California", "y97": 14, "y26": 21},
+  {"id": "jill_norberg", "first": "Jill", "last": "Norberg", "g": 3, "gen": 3, "p": ["helen_norberg", "walter_norberg"], "bplace": "Michigan", "lives": "California", "y97": 25},
+  {"id": "shelby_norberg", "first": "Shelby", "last": "Norberg", "g": 4, "gen": 4, "p": ["jim_norberg", "annette_norberg"], "lives": "California", "y26": 34},
+  {"id": "annette_norberg", "first": "Annette", "last": "Norberg", "g": 3, "inlaw": true, "s": "jim_norberg", "lives": "California", "y97": 12, "y26": 25},
+  {"id": "walter_norberg", "first": "Walter", "last": "Norberg", "g": 2, "inlaw": true, "s": "helen_norberg", "born": "1922-08-24", "died": "2005-12-20", "y97": 19},
+  {"id": "sydney_trigg", "first": "Sydney", "last": "Trigg", "maiden": "Norberg", "g": 4, "gen": 4, "p": ["jim_norberg", "annette_norberg"], "s": "kyle_trigg", "lives": "California", "y97": 54, "y26": 33},
+  {"id": "rivi_trigg", "first": "Rivi", "last": "Trigg", "g": 5, "gen": 5, "p": ["sydney_trigg", "kyle_trigg"], "bplace": "California", "lives": "California", "y26": 36},
+  {"id": "ford_trigg", "first": "Ford", "last": "Trigg", "g": 5, "gen": 5, "p": ["sydney_trigg", "kyle_trigg"], "bplace": "California", "lives": "California", "y26": 39},
+  {"id": "reid_trigg", "first": "Reid", "last": "Trigg", "g": 5, "gen": 5, "p": ["sydney_trigg", "kyle_trigg"], "bplace": "California", "lives": "California", "y26": 44},
+  {"id": "kyle_trigg", "first": "Kyle", "last": "Trigg", "g": 4, "inlaw": true, "s": "sydney_trigg", "lives": "California", "y26": 37},
+  {"id": "jan_vessel", "first": "Jan", "last": "Vessel", "maiden": "Norberg", "g": 3, "gen": 3, "p": ["helen_norberg", "walter_norberg"], "s": "dick_vessel", "lives": "California", "y97": 39, "y26": 19},
+  {"id": "ryan_vessel", "first": "Ryan", "last": "Vessel", "g": 4, "gen": 4, "p": ["jan_vessel", "dick_vessel"], "lives": "Michigan", "y97": 50, "y26": 32},
+  {"id": "katie_vessel", "first": "Katie", "last": "Vessel", "g": 4, "gen": 4, "p": ["jan_vessel", "dick_vessel"], "lives": "California", "y97": 51},
+  {"id": "dick_vessel", "first": "Dick", "last": "Vessel", "g": 3, "inlaw": true, "s": "jan_vessel", "lives": "California", "y97": 46, "y26": 18},
+  {"id": "buel", "first": "Buel", "last": "Waterman", "g": 1, "gen": 1, "s": "lilly_waterman", "born": "1887-02-10", "died": "1948-08-27", "buried": "Wisconsin"},
+  {"id": "lilly_waterman", "first": "Lilly", "last": "Waterman", "maiden": "Rifleman", "g": 1, "gen": 1, "s": "buel", "born": "1888", "died": "1977"},
+  {"id": "bill", "first": "William", "last": "Waterman", "goes": "Bill", "off": true, "born": "1914", "died": "1997"},
+  {"id": "harvey_waterman", "first": "Harvey", "last": "Waterman", "goes": "Lee", "g": 2, "gen": 2, "p": ["buel", "lilly_waterman"], "s": "ethel_waterman", "born": "1917-03-09", "bplace": "Wisconsin", "died": "2003-12-27", "y97": 34},
+  {"id": "billy", "first": "William", "last": "Waterman", "goes": "Billy", "g": 3, "gen": 3, "p": ["harvey_waterman", "ethel_waterman"], "s": "rita_waterman", "born": "1947-01-20", "bplace": "Wisconsin", "died": "2023-06-16", "y97": 29},
+  {"id": "rita_waterman", "first": "Rita", "last": "Waterman", "g": 3, "inlaw": true, "s": "billy", "y97": 8},
+  {"id": "ethel_waterman", "first": "Ethel", "last": "Waterman", "g": 2, "inlaw": true, "s": "harvey_waterman", "born": "1919", "y97": 35},
+  {"id": "cyndi_whiting", "first": "Cyndi", "last": "Whiting", "g": 4, "inlaw": true, "s": "joel_finn_harris", "partner": true, "lives": "North Carolina", "y26": 16},
+  {"id": "xarianna", "first": "Xarianna", "g": 5, "gen": 5, "p": ["katie_vessel"], "bplace": "California", "lives": "California", "y26": 41},
+  {"id": "tom_wesley", "first": "Tom", "last": "Wesley", "g": 4, "inlaw": true, "s": "kendall_casey"},
+  {"id": "leo_aloysius_gerrity", "first": "Leo", "last": "Aloysius Gerrity", "off": true, "ghost": true},
+  {"id": "agnes_bridget_mcdermott", "first": "Agnes", "last": "Bridget McDermott", "off": true, "ghost": true},
+  {"id": "jennifer_gerrity", "first": "Jennifer", "last": "Gerrity", "g": 4, "inlaw": true, "s": "daniel_gerrity"},
+  {"id": "ann_marie_gerrity", "first": "Ann-Marie", "last": "Gerrity", "g": 4, "inlaw": true, "s": "philip_gerrity"},
+  {"id": "michael_gonzalez", "first": "Michael", "last": "Gonzalez", "g": 4, "inlaw": true, "s": "evan_gonzalez"},
+  {"id": "greg_guzman", "first": "Greg", "last": "Guzman", "g": 3, "inlaw": true, "s": "patricia_guzman"},
+  {"id": "ryan_canna", "first": "Ryan", "last": "Canna", "g": 4, "inlaw": true, "s": "paula_guzman"},
+  {"id": "matthew_milliken", "first": "Matthew", "last": "Milliken", "g": 4, "inlaw": true, "s": "erin_milliken"},
+  {"id": "robert_anton", "first": "Robert", "last": "Anton", "off": true, "y97": 5},
 ];
+// Names: name = first + last, pref = what they go by (used everywhere), full = with nickname (tree and card)
+PEOPLE.forEach(p => {
+  p.name = [p.first, p.last].filter(Boolean).join(" ");
+  p.pref = [p.goes || p.first, p.last].filter(Boolean).join(" ");
+  p.full = [p.first, p.goes ? `"${p.goes}"` : "", p.last].filter(Boolean).join(" ");
+});
+const lastKey = p => `${(p.last || p.first).toLowerCase()} ${(p.goes || p.first).toLowerCase()}`;
+const byLast = (a, b) => lastKey(a).localeCompare(lastKey(b));
 const GEN_LABEL = { 1: "Buel & Lilly", 2: "Their children", 3: "Grandchildren", 4: "Great-grandchildren", 5: "Great-great-grandchildren", 0: "Others" };
 
 /* ---------- INDEX ---------- */
@@ -526,7 +540,7 @@ const unitOf = id => { const p = byId[id]; return p.s && byId[p.s] ? [id, p.s] :
 const kidsOfUnit = u => { const seen = new Set(); return PEOPLE.filter(c => (c.p || []).some(pid => u.includes(pid)) && !seen.has(c.id) && seen.add(c.id)); };
 const TREE_ROOTS = ["buel"];
 const ancestorsOf = id => { const out = []; let cur = byId[id]; const guard = new Set();
-  while (cur) { let par = (cur.p || []).map(i => byId[i]).filter(Boolean)[0];
+  while (cur) { let par = (cur.p || []).map(i => byId[i]).filter(x => x && !x.ghost)[0];
     if (!par || guard.has(par.id)) break; guard.add(par.id); out.unshift(par.id); cur = par; }
   return out; };
 const $ = s => document.querySelector(s);
@@ -539,7 +553,7 @@ function renderFaces() {
   const box = $("#faces");
   box.innerHTML = HOTSPOTS[S.year].filter(([n]) => byNum[S.year][n]).map(([n, x, y, r]) => {
     const id = byNum[S.year][n], p = byId[id];
-    const label = p.name;
+    const label = p.pref;
     const sel = (p && S.sel === id) || (!p && S.unk === n);
     return `<button type="button" class="face${p ? "" : " unk"}${sel ? " sel" : ""}" data-n="${n}" aria-label="${esc(label)}"
       style="left:${x}%;top:${y}%;width:${r * 2}%;--c:${p ? genColor(p.g) : "transparent"}"></button>`;
@@ -559,13 +573,11 @@ function updateSpot() {
 }
 function renderChips() {
   $("#rosterh").textContent = `In the ${S.year} photo`;
-  const last = p => p.name.split(" ").slice(-1)[0];
-  const ps = HOTSPOTS[S.year].map(([n]) => byId[byNum[S.year][n]]).filter(Boolean)
-    .sort((a, b) => last(a).localeCompare(last(b)) || shortName(a).localeCompare(shortName(b)));
+  const ps = HOTSPOTS[S.year].map(([n]) => byId[byNum[S.year][n]]).filter(Boolean).sort(byLast);
   $("#chips").innerHTML = ps.map(p => {
     const n = S.year === "1997" ? p.y97 : p.y26;
     return `<button type="button" class="chip${S.sel === p.id ? " on" : ""}" data-n="${n}">
-      <i class="dot" style="--c:${genColor(p.g)}"></i><span>${esc(p.goes ? `${p.name} (${p.goes})` : p.name)}</span></button>`;
+      <i class="dot" style="--c:${genColor(p.g)}"></i><span>${esc(p.pref)}</span></button>`;
   }).join("");
 }
 function setYear(y, keep = true) {
@@ -659,7 +671,7 @@ function renderTree() {
     const yrs = p.born ? (isMinor(p) ? "" : `b. ${yearOf(p.born)}`) : "";
     return `<button type="button" class="node${S.sel === p.id ? " sel" : ""}${rel.has(p.id) ? " rel" : ""}" data-id="${p.id}"
       style="left:${q.x}px;top:${q.y}px;width:${L.W}px;height:${L.H}px">
-      <span class="nm${p.ph ? " ph" : ""}"><i class="dot" style="--c:${genColor(p.g)}"></i>${esc(shortName(p))}</span>
+      <span class="nm"><i class="dot" style="--c:${genColor(p.g)}"></i>${esc(p.full)}</span>
       <span class="meta">${p.y97 ? `<span class="yr">'97</span>` : ""}${p.y26 ? `<span class="yr">'26</span>` : ""}${yrs ? `<span>${yrs}</span>` : ""}</span></button>`;
   }).join("");
   t.innerHTML = bands + `<svg width="${L.totalW}" height="${L.totalH}" aria-hidden="true">${couples}${paths}</svg>` + nodes;
@@ -675,7 +687,7 @@ function centerTreeOn(id) {
 // The "line" a person belongs to: their own parents, or for someone who married in, their spouse's.
 function lineOf(id) {
   const p = byId[id];
-  if (!(p.p || []).length && p.s && byId[p.s] && (byId[p.s].p || []).length) return [...ancestorsOf(p.s), p.s];
+  if ((p.inlaw || !(p.p || []).length) && p.s && byId[p.s] && (byId[p.s].p || []).length) return [...ancestorsOf(p.s), p.s];
   return ancestorsOf(id);
 }
 function renderTreeView() {
@@ -701,7 +713,7 @@ const chev = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke
 function pill(id) {
   const p = byId[id];
   return `<button type="button" class="pill${S.sel === id ? " sel" : ""}" data-id="${id}">
-    <i class="dot" style="--c:${genColor(p.g)}"></i><span class="nm${p.ph ? " ph" : ""}">${esc(shortName(p))}</span>
+    <i class="dot" style="--c:${genColor(p.g)}"></i><span class="nm">${esc(p.full)}</span>
     <span class="yrs">${p.y97 ? `<i class="in">'97</i>` : ""}${p.y26 ? `<i class="in">'26</i>` : ""}</span></button>`;
 }
 function renderList() {
@@ -713,7 +725,7 @@ function renderList() {
     u.forEach(x => placed.add(x));
     const open = !S.closed.has(id);
     const head = `<div class="couple">
-      ${kids.length ? `<button type="button" class="disc" data-toggle="${id}" aria-expanded="${open}" aria-label="${open ? "Hide" : "Show"} children of ${esc(shortName(byId[id]))}">${chev}</button>` : `<span class="disc blank"></span>`}
+      ${kids.length ? `<button type="button" class="disc" data-toggle="${id}" aria-expanded="${open}" aria-label="${open ? "Hide" : "Show"} children of ${esc(byId[id].pref)}">${chev}</button>` : `<span class="disc blank"></span>`}
       ${pill(u[0])}${u[1] ? `<span class="amp">&amp;</span>${pill(u[1])}` : ""}
       ${kids.length ? `<span class="kcount">${kids.length} ${kids.length === 1 ? "child" : "children"}</span>` : ""}</div>`;
     const body = kids.length && open ? `<div class="kids" style="--c:${genColor((g || 0) + 1)}">${kids.map(k => branch(k.id)).join("")}</div>` : "";
@@ -736,21 +748,21 @@ function renderList() {
 function avatar(p, D) {
   const n = p.y26 ? ["2026", p.y26] : p.y97 ? ["1997", p.y97] : null;
   if (n) return `<span class="av" style="${cropStyle(n[0], n[1], D)}"></span>`;
-  return `<span class="av" aria-hidden="true">${esc((p.goes || p.name).trim()[0])}</span>`;
+  return `<span class="av" aria-hidden="true">${esc((p.goes || p.first).trim()[0])}</span>`;
 }
 function fcard(id, big = false, sub = "") {
   const p = byId[id];
   const years = !isMinor(p) && p.born ? `b. ${yearOf(p.born)}` : "";
   const line = sub || [years, [p.y97 && "'97", p.y26 && "'26"].filter(Boolean).join(" ")].filter(Boolean).join(" · ");
   return `<button type="button" class="fcard${big ? " big" : ""}${S.sel === id ? " sel" : ""}" data-focus="${id}">
-    ${avatar(p, big ? 72 : 48)}<span class="nm${p.ph ? " ph" : ""}">${esc(shortName(p))}</span><span class="sub">${esc(line) || "&nbsp;"}</span></button>`;
+    ${avatar(p, big ? 72 : 48)}<span class="nm">${esc(p.full)}</span><span class="sub">${esc(line) || "&nbsp;"}</span></button>`;
 }
 function renderFamily() {
   const ok = i => i && byId[i] && !byId[i].off;
   const id = ok(S.focus) ? S.focus : (ok(S.sel) ? S.sel : "buel");
   S.focus = id;
   const p = byId[id], g = p.g || 0;
-  const parents = (p.p || []).filter(i => byId[i]);
+  const parents = (p.p || []).filter(i => byId[i] && !byId[i].ghost);
   const unit = unitOf(id);
   const kids = kidsOfUnit(unit);
   const sibs = parents.length ? PEOPLE.filter(c => c.id !== id && (c.p || []).some(x => parents.includes(x))) : [];
@@ -759,28 +771,29 @@ function renderFamily() {
   const parentRow = parents.length
     ? `<div class="frow" style="--c:${genColor(byId[parents[0]].g)}"><h4>Parents</h4><div class="fcards">${parents.map(i => fcard(i)).join("")}</div></div>`
     : spouse && (byId[spouse].p || []).length
-      ? `<div class="frow" style="--c:${genColor(g - 1)}"><h4>Joined the family</h4><p class="empty" style="margin:0">Through ${esc(shortName(byId[spouse]))}. Tap them to see their parents.</p></div>`
+      ? `<div class="frow" style="--c:${genColor(g - 1)}"><h4>Joined the family</h4><p class="empty" style="margin:0">Through ${esc(byId[spouse].full)}. Tap them to see their parents.</p></div>`
       : "";
   const centerRow = `<div class="frow" style="--c:${genColor(g)}"><h4>${spouse ? "Couple" : "Person"}${g ? ` · Generation ${g}` : ""}</h4>
     <div class="fcards">${fcard(id, true)}${spouse ? fcard(spouse, true) : ""}</div>
     ${sibs.length ? `<h4 style="margin-top:6px">Brothers &amp; sisters</h4><div class="fcards">${sibs.map(s => fcard(s.id)).join("")}</div>` : ""}</div>`;
   const kidRow = `<div class="frow" style="--c:${genColor(g + 1)}"><h4>Children</h4>
-    ${kids.length ? `<div class="fcards">${kids.map(k => fcard(k.id, false, byId[k.s] ? `& ${shortName(byId[k.s])}` : "")).join("")}</div>` : `<p class="empty" style="margin:0">No children listed yet.</p>`}</div>`;
+    ${kids.length ? `<div class="fcards">${kids.map(k => fcard(k.id, false, byId[k.s] ? `& ${byId[k.s].full}` : "")).join("")}</div>` : `<p class="empty" style="margin:0">No children listed yet.</p>`}</div>`;
   $("#t-family").innerHTML = `<div class="focus">
-    <nav class="crumbs" aria-label="Family line">${crumbs.map(c => `<button type="button" data-focus="${c}">${esc(shortName(byId[c]))}</button><span aria-hidden="true">›</span>`).join("")}<span class="here">${esc(shortName(p))}</span></nav>
+    <nav class="crumbs" aria-label="Family line">${crumbs.map(c => `<button type="button" data-focus="${c}">${esc(byId[c].full)}</button><span aria-hidden="true">›</span>`).join("")}<span class="here">${esc(p.full)}</span></nav>
     ${parentRow}${centerRow}${kidRow}</div>`;
 }
 
 /* ---------- EVERYONE ---------- */
 function renderEveryone() {
   const groups = [1, 2, 3, 4, 5, 0].map(g => {
-    const ps = PEOPLE.filter(p => (p.off ? 0 : (p.g || 0)) === g);
+    const inG = PEOPLE.filter(p => !p.ghost && (p.off ? 0 : (p.g || 0)) === g);
+    const ps = [...inG.filter(p => !p.inlaw).sort(byLast), ...inG.filter(p => p.inlaw).sort(byLast)];
     if (!ps.length) return "";
     return `<div class="gen-group"><h3><i class="dot" style="--c:${genColor(g)}"></i>${g ? `Generation ${g}` : "Others"} <small>${g ? GEN_LABEL[g] : "Not on the family tree"} · ${ps.length}</small></h3>
-      <div class="list">${ps.map(p => `<button type="button" class="row${S.sel === p.id ? " sel" : ""}" data-id="${p.id}">
+      <div class="list">${ps.map(p => `<button type="button" class="row${p.inlaw ? " inlaw" : ""}${S.sel === p.id ? " sel" : ""}" data-id="${p.id}">
         <i class="dot" style="--c:${genColor(p.off ? 0 : p.g)}"></i>
-        <span class="who"><div class="${p.inlaw ? "inlaw" : ""}">${esc(p.name)}${p.goes ? ` <span style="color:var(--muted);font-weight:400;font-style:normal">"${esc(p.goes)}"</span>` : ""}</div>
-        ${p.inlaw && p.sp ? `<div>${p.sp === "partner" ? "Partner of" : "Married to"} ${esc(shortName(byId[p.s]))}</div>` : ""}</span></button>`).join("")}</div></div>`;
+        <span class="who"><div class="${p.inlaw ? "inlaw" : ""}">${esc(p.pref)}</div>
+        ${p.inlaw && p.s ? `<div>${p.partner ? "Partner of" : "Married to"} ${esc(byId[p.s].pref)}</div>` : ""}</span></button>`).join("")}</div></div>`;
   }).join("");
   $("#everyone").innerHTML = groups;
 }
@@ -800,7 +813,8 @@ function cropStyle(year, n, D = 76) {
 }
 function personChip(id) {
   const p = byId[id]; if (!p) return "";
-  return `<button type="button" data-go="${p.id}"><i class="dot" style="--c:${genColor(p.g)}"></i>${esc(p.goes && !p.ph ? `${p.goes} ${p.name.split(" ").slice(-1)}` : p.name)}</button>`;
+  if (p.ghost) return `<span class="ghost">${esc(p.pref)}</span>`;
+  return `<button type="button" data-go="${p.id}"><i class="dot" style="--c:${genColor(p.g)}"></i>${esc(p.pref)}</button>`;
 }
 function openTag() {
   const tag = $("#tag");
@@ -830,7 +844,7 @@ function openTag() {
     `<button type="button" class="${S.view === "photos" && S.year === y ? "cur" : ""}" data-year-go="${y}" aria-label="Show in the ${y} photo">
       <span class="crop" style="${cropStyle(y, n)}"></span>'${y.slice(2)}</button>`).join("");
   const kids = kidsOf(p.id).map(k => k.id);
-  const rel = [["Parents", p.p || []], [p.sp === "partner" ? "Partner" : "Spouse", p.sp ? [p.s] : []], ["Children", kids]].filter(r => r[1].length)
+  const rel = [["Parents", p.p || []], [p.partner ? "Partner" : "Spouse", p.s ? [p.s] : []], ["Children", kids]].filter(r => r[1].length)
     .map(([h, ids]) => `<div class="rels"><h4>${h}</h4><div>${ids.map(personChip).join("")}</div></div>`).join("");
   const other = S.year === "1997" ? "2026" : "1997";
   const inOther = other === "1997" ? p.y97 : p.y26;
@@ -843,7 +857,7 @@ function openTag() {
       <button class="tag-close" type="button" aria-label="Close">${xIcon}</button></div>
     <div class="tag-body">
       <div><div class="tag-name">${esc(p.goes || p.name)}</div>
-        ${p.goes ? `<div class="tag-sub">${esc(p.name)}</div>` : ""}</div>
+        ${p.goes ? `<div class="tag-sub">${esc(p.full)}</div>` : ""}</div>
       ${faces ? `<div class="facepair">${faces}</div>` : `<p class="note">Not in either photo.</p>`}
       ${S.view === "photos" && !inOther && (p.y97 || p.y26) ? `<p class="note">Not in the ${other} photo.</p>` : ""}
       ${minor ? `<p class="note">Details are hidden for kids under 18.</p>` : (facts.length ? `<dl class="facts">${facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>` : "")}
@@ -853,7 +867,7 @@ function openTag() {
   tag.hidden = false;
 }
 function shortName(p) {
-  if (p.ph) return p.name;
+  return p.pref;
   const parts = p.name.split(" ");
   const first = p.goes || parts[0];
   return parts.length > 1 ? `${first} ${parts[parts.length - 1]}` : first;
@@ -945,10 +959,10 @@ function norm(s) { return String(s || "").toLowerCase(); }
 function doSearch() {
   const v = norm(q.value.trim());
   if (!v) { res.hidden = true; q.setAttribute("aria-expanded", "false"); return; }
-  hits = PEOPLE.filter(p => [p.name, p.goes, p.maiden].some(f => norm(f).includes(v))).slice(0, 12);
+  hits = PEOPLE.filter(p => !p.ghost && [p.name, p.pref, p.goes, p.maiden].some(f => norm(f).includes(v))).sort(byLast).slice(0, 12);
   hi = 0;
   res.innerHTML = hits.length ? hits.map((p, i) => `<button type="button" role="option" class="${i === 0 ? "on" : ""}" data-pick="${p.id}">
-      <i class="dot" style="--c:${genColor(p.g)}"></i>${esc(p.name)}${p.goes ? ` "${esc(p.goes)}"` : ""}<small>${[p.y97 && "'97", p.y26 && "'26"].filter(Boolean).join(" ")}</small></button>`).join("")
+      <i class="dot" style="--c:${genColor(p.g)}"></i>${esc(p.pref)}<small>${[p.y97 && "'97", p.y26 && "'26"].filter(Boolean).join(" ")}</small></button>`).join("")
     : `<div style="padding:10px;color:var(--muted)">No one by that name yet.</div>`;
   res.hidden = false; q.setAttribute("aria-expanded", "true");
 }
