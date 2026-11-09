@@ -559,9 +559,9 @@ function renderLegend(el) {
 }
 function renderFaces() {
   const box = $("#faces");
-  box.innerHTML = HOTSPOTS[S.year].filter(([n]) => byNum[S.year][n]).map(([n, x, y, r]) => {
+  box.innerHTML = HOTSPOTS[S.year].map(([n, x, y, r]) => {
     const id = byNum[S.year][n], p = byId[id];
-    const label = p.pref;
+    const label = p ? p.pref : "Not identified yet";
     const sel = (p && S.sel === id) || (!p && S.unk === n);
     return `<button type="button" class="face${p ? "" : " unk"}${sel ? " sel" : ""}" data-n="${n}" aria-label="${esc(label)}"
       style="left:${x}%;top:${y}%;width:${r * 2}%;--c:${p ? genColor(p.g) : "transparent"}"></button>`;
@@ -831,9 +831,9 @@ function openTag() {
     tag.style.setProperty("--c", "var(--g0)");
     tag.innerHTML = `<div class="tag-head"><div class="hello">HELLO</div><div class="mni">my name is</div>
       <button class="tag-close" type="button" aria-label="Close">${xIcon}</button></div>
-      <div class="tag-body"><div><div class="tag-name ph">Not named yet</div><div class="tag-sub">Number ${S.unk} in the ${S.year} photo</div></div>
+      <div class="tag-body"><div><div class="tag-name ph">Not identified yet</div></div>
       <div class="facepair"><button type="button" class="cur" tabindex="-1"><span class="crop" style="${cropStyle(S.year, S.unk)}"></span>'${S.year.slice(2)}</button></div>
-      <p class="note">Know who this is? Tell Evan the name and number ${S.unk}.</p></div>`;
+      <p class="note">Know who this is? Reach out to Evan at evanelise@gmail.com.</p></div>`;
     tag.hidden = false; return;
   }
   const p = byId[S.sel], minor = isMinor(p);
