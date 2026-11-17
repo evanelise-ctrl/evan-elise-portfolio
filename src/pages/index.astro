@@ -12,7 +12,7 @@ import MainLayout from '../layouts/MainLayout.astro';
       playsinline 
       webkit-playsinline
       poster="/drone-poster.png"
-      preload="none" 
+      preload="auto" 
       class="w-full h-full object-cover grayscale opacity-40"
     >
       <source src="/drone-road.mp4" type="video/mp4" />
@@ -125,7 +125,6 @@ import MainLayout from '../layouts/MainLayout.astro';
 </MainLayout>
 
 <script>
-  const video = document.getElementById('scroll-video') as HTMLVideoElement | null;
   const evolvingText = document.getElementById('evolving-text');
   const heroPin = document.getElementById('hero-pin');
   const heroTrack = document.getElementById('hero-track');
@@ -141,8 +140,6 @@ import MainLayout from '../layouts/MainLayout.astro';
     "Development"
   ];
 
-  let targetTime = 0;
-  let currentTime = 0;
   let lastWordIndex = 0;
 
   window.addEventListener('scroll', () => {
@@ -151,11 +148,6 @@ import MainLayout from '../layouts/MainLayout.astro';
     const scrollPos = window.scrollY;
     const windowHeight = window.innerHeight;
     const trackHeight = heroTrack.offsetHeight;
-    const totalDocHeight = document.documentElement.scrollHeight - windowHeight;
-
-    if (video && video.duration) {
-      targetTime = video.duration * (scrollPos / totalDocHeight);
-    }
 
     const wordIndex = Math.floor(scrollPos / 300) % words.length;
 
@@ -178,13 +170,6 @@ import MainLayout from '../layouts/MainLayout.astro';
       heroPin.style.top = '0';
     }
   });
-
-  function render() {
-    currentTime += (targetTime - currentTime) * 0.1;
-    if (video) video.currentTime = currentTime;
-    requestAnimationFrame(render);
-  }
-  requestAnimationFrame(render);
 </script>
 
 <style>
