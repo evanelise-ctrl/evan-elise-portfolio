@@ -5,13 +5,14 @@ import MainLayout from '../layouts/MainLayout.astro';
 <MainLayout title="Evan Elise | Creative Portfolio">
   <div class="fixed inset-0 z-0 h-screen w-screen overflow-hidden">
     <video 
+      id="scroll-video" 
       muted 
       autoplay 
       loop 
       playsinline 
       webkit-playsinline
       poster="/drone-poster.png"
-      preload="auto" 
+      preload="none" 
       class="w-full h-full object-cover grayscale opacity-40"
     >
       <source src="/drone-road.mp4" type="video/mp4" />
@@ -46,13 +47,9 @@ import MainLayout from '../layouts/MainLayout.astro';
         <a href="/cisco-spaces" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
           <div class="group" style="cursor: pointer;">
             <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative;">
-              <iframe 
-                src="https://player.vimeo.com/video/1225612183?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1" 
-                frameborder="0" 
-                allow="autoplay; fullscreen; picture-in-picture" 
-                style="position:absolute;top:0;left:0;width:100%;height:100%; pointer-events: none;" 
-                title="Cisco Spaces Preview">
-              </iframe>
+              <video autoplay muted loop playsinline preload="none" class="w-full h-full object-cover opacity-80" style="transition: opacity 0.5s ease;">
+                <source src="/spaces-launch.mp4" type="video/mp4" />
+              </video>
               <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
             </div>
             <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Cisco Spaces</h3>
@@ -67,6 +64,7 @@ import MainLayout from '../layouts/MainLayout.astro';
                 src="https://player.vimeo.com/video/1164128684?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1" 
                 frameborder="0" 
                 allow="autoplay; fullscreen; picture-in-picture" 
+                loading="lazy"
                 style="position:absolute;top:0;left:0;width:100%;height:100%; pointer-events: none;" 
                 title="Cisco Secure Preview">
               </iframe>
@@ -80,7 +78,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 <a href="/bedrock-lifestyle" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
       <div class="group" style="cursor: pointer;">
         <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
-          <img src="/lifestyle-brakeman-3.webp" alt="Bedrock Residential & Editorial" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
+          <img src="/lifestyle-brakeman-3.webp" alt="Bedrock Residential & Editorial" loading="lazy" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
           <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
         </div>
         <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Residential & Editorial Identity</h3>
@@ -91,7 +89,7 @@ import MainLayout from '../layouts/MainLayout.astro';
         <a href="/bedrock-experiential" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
           <div class="group" style="cursor: pointer;">
             <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
-              <img src="/bedrock-qline.png" alt="Bedrock Experiential" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
+              <img src="/bedrock-qline.png" alt="Bedrock Experiential" loading="lazy" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
               <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
             </div>
             <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Experiential & Destination</h3>
@@ -102,7 +100,7 @@ import MainLayout from '../layouts/MainLayout.astro';
         <a href="/bedrock-culture" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
           <div class="group" style="cursor: pointer;">
             <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
-              <img src="/bedrock-culture-1.png" alt="Bedrock Culture" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
+              <img src="/bedrock-culture-1.png" alt="Bedrock Culture" loading="lazy" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
               <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
             </div>
             <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">Brand Culture & Advocacy</h3>
@@ -113,13 +111,7 @@ import MainLayout from '../layouts/MainLayout.astro';
         <a href="/e3-refillery" style="text-decoration: none; color: inherit; display: block; min-width: 0;">
           <div class="group" style="cursor: pointer;">
             <div style="aspect-ratio: 16/9; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; position: relative; background: #0a0a0a;">
-              <iframe 
-                src="https://player.vimeo.com/video/1225636279?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&background=1" 
-                frameborder="0" 
-                allow="autoplay; fullscreen; picture-in-picture" 
-                style="position:absolute;top:0;left:0;width:100%;height:100%; pointer-events: none;" 
-                title="e3 Refillery Preview">
-              </iframe>
+              <img src="/e3-hero.png" alt="e3 Refillery Branding" loading="lazy" class="w-full h-full object-cover opacity-60" style="transition: opacity 0.5s ease;" />
               <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));"></div>
             </div>
             <h3 style="margin-top: 24px; font-size: clamp(20px, 3vw, 26px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em;">e3 Refillery</h3>
@@ -133,6 +125,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 </MainLayout>
 
 <script>
+  const video = document.getElementById('scroll-video') as HTMLVideoElement | null;
   const evolvingText = document.getElementById('evolving-text');
   const heroPin = document.getElementById('hero-pin');
   const heroTrack = document.getElementById('hero-track');
@@ -148,24 +141,24 @@ import MainLayout from '../layouts/MainLayout.astro';
     "Development"
   ];
 
+  let targetTime = 0;
+  let currentTime = 0;
   let lastWordIndex = 0;
-  let ticking = false;
 
-  // Cache layout reads; refresh only on resize instead of every scroll frame.
-  let windowHeight = window.innerHeight;
-  let trackHeight = heroTrack ? heroTrack.offsetHeight : 0;
-
-  function measure() {
-    windowHeight = window.innerHeight;
-    trackHeight = heroTrack ? heroTrack.offsetHeight : 0;
-  }
-
-  function update() {
+  window.addEventListener('scroll', () => {
     if (!heroTrack || !heroPin) return;
-    const scrollPos = window.scrollY;
 
-    // Word swap
+    const scrollPos = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const trackHeight = heroTrack.offsetHeight;
+    const totalDocHeight = document.documentElement.scrollHeight - windowHeight;
+
+    if (video && video.duration) {
+      targetTime = video.duration * (scrollPos / totalDocHeight);
+    }
+
     const wordIndex = Math.floor(scrollPos / 300) % words.length;
+
     if (evolvingText && wordIndex !== lastWordIndex) {
       lastWordIndex = wordIndex;
       evolvingText.style.opacity = "0";
@@ -175,8 +168,8 @@ import MainLayout from '../layouts/MainLayout.astro';
       }, 150);
     }
 
-    // Pin release
     const releasePoint = trackHeight - windowHeight;
+
     if (scrollPos >= releasePoint) {
       heroPin.style.position = 'absolute';
       heroPin.style.top = releasePoint + 'px';
@@ -184,25 +177,14 @@ import MainLayout from '../layouts/MainLayout.astro';
       heroPin.style.position = 'fixed';
       heroPin.style.top = '0';
     }
+  });
+
+  function render() {
+    currentTime += (targetTime - currentTime) * 0.1;
+    if (video) video.currentTime = currentTime;
+    requestAnimationFrame(render);
   }
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(() => {
-        update();
-        ticking = false;
-      });
-    }
-  });
-
-  window.addEventListener('resize', () => {
-    measure();
-    update();
-  });
-
-  measure();
-  update();
+  requestAnimationFrame(render);
 </script>
 
 <style>
@@ -214,7 +196,7 @@ import MainLayout from '../layouts/MainLayout.astro';
     text-shadow: 0 0 50px rgba(255, 0, 128, 0.4);
   }
   /* HOVER EFFECTS */
-  .group:hover video, .group:hover img, .group:hover iframe {
+  .group:hover video, .group:hover img {
     opacity: 1 !important;
     transform: scale(1.05);
   }

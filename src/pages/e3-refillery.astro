@@ -1,8 +1,8 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 
-// 👇 Swap in your real live site URL here. It feeds the button + the link by the video.
-const liveUrl = "https://e3refillery.com";
+// 👇 Live site URL. Feeds the button + the link by the video.
+const liveUrl = "https://www.e3refillery.com";
 ---
 
 <MainLayout title="e3 Refillery | Evan Elise">
@@ -75,34 +75,24 @@ const liveUrl = "https://e3refillery.com";
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 48px;">
             <div class="space-y-4">
                 <div class="rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg">
-                   <img src="/e3-sign.png" class="w-full h-auto block" alt="e3 Refillery Signage" />
+                    <img src="/e3-sign.png" class="w-full h-auto block" alt="e3 Refillery Signage" loading="lazy" />
                 </div>
-                <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Branding Materials and Signage</p>
+                <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Visual Systems</p>
             </div>
             <div class="space-y-4">
                 <div class="rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg">
-                    <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/e3-web-preview.mp4" type="video/mp4" /></video>
+                    <video autoplay muted loop playsinline preload="none" class="w-full h-auto block"><source src="/e3-web-preview.mp4" type="video/mp4" /></video>
                 </div>
-                <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Brand Identity</p>
+                <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Web Interaction</p>
             </div>
             <div class="space-y-4">
                 <div class="rounded-lg overflow-hidden bg-neutral-900 border border-white/5 shadow-lg">
-                    <video autoplay muted loop playsinline class="w-full h-auto block"><source src="/e3-detail.mp4" type="video/mp4" /></video>
+                    <video autoplay muted loop playsinline preload="none" class="w-full h-auto block"><source src="/e3-detail.mp4" type="video/mp4" /></video>
                 </div>
                 <p style="font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em;">Interface Mechanics</p>
             </div>
         </div>
     </section>
-
-    <footer class="px-[10%] py-20 border-t border-white/5 text-center">
-       <a href={liveUrl} target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-bottom: 24px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3em; color: var(--accent); text-decoration: none;">
-         Visit e3 Refillery ↗
-       </a>
-       <br/>
-       <a href="/" class="text-[10px] uppercase tracking-[0.5em] text-white/30 hover:text-[var(--accent)] transition-all">
-         Back to Index
-       </a>
-    </footer>
 
   </main>
 </MainLayout>
